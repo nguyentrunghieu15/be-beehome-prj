@@ -9,10 +9,12 @@ import (
 func GenerateRandomBytes(n uint32) ([]byte, error) {
 	var b = make([]byte, n)
 	_, err := rand.Read(b)
+	if err != nil {
+		return nil, err
+	}
 	return b, err
 }
 
-func GenerateRandomUUID() (string, error) {
-	generatedUUID, err := uuid.NewRandom()
-	return generatedUUID.String(), err
+func GenerateRandomUUID() string {
+	return uuid.Must(uuid.NewRandom()).String()
 }
