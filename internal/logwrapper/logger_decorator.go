@@ -57,7 +57,7 @@ func NewFileLoggerInstance(enableRotate bool, dir string, prefix string) *FileLo
 		log.Panic(err)
 	}
 	var fileLogger = FileLogger{
-		l:              log.New(defaultWriter, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Llongfile),
+		l:              log.New(defaultWriter, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile),
 		current:        time.Now(),
 		EnableRotate:   enableRotate,
 		DirLogger:      dir,

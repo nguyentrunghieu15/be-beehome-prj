@@ -12,7 +12,7 @@ func TestFileLogger_Log(t *testing.T) {
 	}{
 		{
 			name:   "Standar",
-			logger: NewFileLoggerInstance(false, ".", "test"),
+			logger: NewFileLoggerInstance(true, ".", "test"),
 		},
 	}
 	for _, tt := range tests {

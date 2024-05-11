@@ -1,6 +1,9 @@
 package validator
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/go-playground/validator/v10"
 )
 
@@ -22,4 +25,13 @@ func (v *ValidatorStuctMap) Validate(e interface{}) error {
 
 func ContructValidateStructMap() *ValidatorStuctMap {
 	return &ValidatorStuctMap{}
+}
+
+func ValidateMap(rules map[string]interface{}, data map[string]interface{}) error {
+	validate := validator.New()
+	err := validate.ValidateMap(data, rules)
+	if len(err) > 0 {
+		return errors.New(fmt.Sprintln(err))
+	}
+	return nil
 }
