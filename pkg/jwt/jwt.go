@@ -49,5 +49,5 @@ func (*CustomJWTTokenizer) ParseToken(token string) (interface{}, error) {
 	if claim, ok := jwttoken.Claims.(*TempClaims); ok {
 		return claim.data, nil
 	}
-	return nil, errors.New("Error get claim from token")
+	return nil, errors.New("error get claim from token")
 }

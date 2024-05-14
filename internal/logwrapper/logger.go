@@ -56,9 +56,22 @@ type WarnMsg struct {
 }
 
 func (m *WarnMsg) String() string {
-	return m.msg
+	return fmt.Sprintf("WARN | %v", m.msg)
 }
 
 func NewWarnMsg(msg string) *WarnMsg {
 	return &WarnMsg{msg: msg}
+}
+
+type StandardMsg struct {
+	ILogMsg
+	msg string
+}
+
+func (m *StandardMsg) String() string {
+	return m.msg
+}
+
+func NewStandardMsg(msg string) *StandardMsg {
+	return &StandardMsg{msg: msg}
 }
