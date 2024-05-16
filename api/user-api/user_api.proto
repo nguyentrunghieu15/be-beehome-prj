@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+option go_package="github.com/nguyentrunghieu15/be-beehome-prj/proto/userapi";
+
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "User Api For BeeHome";
+    version: "2.0";
+    contact: {
+      name: "Author";
+      url: "github.com/nguyentrunghieu15";
+      email: "thanime.15112002@gmail.com";
+    };
+  };
+  // Overwriting host entry breaks tests, so this is not done here.
+  external_docs: {
+    url: "https://github.com/grpc-ecosystem/grpc-gateway";
+    description: "More about gRPC-Gateway";
+  }
+  
+  schemes: HTTP;
+  schemes: HTTPS;
+  consumes: "application/json";
+  produces: "application/json";
+  security_definitions: {
+    security: {
+      key: "ApiKeyAuth";
+      value: {
+        type: TYPE_API_KEY;
+        in: IN_HEADER;
+        name: "Authorization";
+      }
+    }
+  }
+  security: {
+    security_requirement: {
+      key: "ApiKeyAuth";
+      value: {};
+    }
+  }
+
+};
+
+// Generated according to https://cloud.google.com/apis/design/standard_methods
+service UserService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "User"
+    description: "Manager user"
+  };
+
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/user"
+    };
+  }
+
+  rpc GetUser(GetUserRequest) returns (UserInfor) {
+    option (google.api.http) = {
+      get: "/api/v1/user/{id}"
+    };
+  }
+
+  rpc CreateUser(CreateUserRequest) returns (UserInfor) {
+    option (google.api.http) = {
+      post: "/api/v1/user"
+      body: "*"
+    };
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (UserInfor) {
+    option (google.api.http) = {
+      patch: "/api/v1/user/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/user/{id}"
+    };
+  }
+
+  rpc BlockUser (BlockRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      post: "/api/v1/user/block/{id}"
+      body:"*"
+    };
+  }
+}
+
+message User {
+  string id = 1;
+  string created_at = 2;
+  string created_by = 3;
+  string updated_at = 4;
+  string updated_by = 5;
+  string deleted_by = 6;
+  string deleted_at = 7;
+  string email = 8;
+  string password = 9;
+  string phone = 10;
+  string first_name = 11;
+  string last_name = 13;
+  string status = 12;
+}
+
+message Pagination {
+  int32 page_size = 1;
+  int32 page_token = 2;
+}
+
+message Sort {
+  string type = 1;
+  string field = 2;
+}
+
+message UserInfor {
+  string id = 1;
+  string created_at = 2;
+  string created_by = 3;
+  string updated_at = 4;
+  string updated_by = 5;
+  string deleted_by = 6;
+  string deleted_at = 7;
+  string email = 8;
+  string phone = 10;
+  string name = 11;
+  string status = 12;
+}
+
+message ListUsersRequest {
+  optional Pagination pagination = 1;
+  optional Sort sort = 2;
+}
+
+message ListUsersResponse {
+  // The field name should match the noun "User" in the method name.
+  // There will be a maximum number of items returned based on the page_size field in the request.
+  repeated UserInfor users = 1;
+}
+
+message GetUserRequest {
+  // The field will contain name of the resource requested.
+  string id = 1;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string password = 2;
+  string phone = 3;
+  string first_name = 4;
+  string last_name = 5;
+}
+
+message UpdateUserRequest {
+  string id  = 7;
+  string email = 1;
+  string phone = 3;
+  string first_name = 4;
+  string last_name = 5;
+  string status = 6;
+}
+
+message DeleteUserRequest {
+  // The resource name of the User to be deleted.
+  string id = 1;
+}
+
+message BlockRequest {
+  string id = 1;
+  string description = 2;
+}
+
+// Generated according to https://cloud.google.com/apis/design/standard_methods
+service ProfileService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Profile"
+    description: "User manage profile"
+  };
+
+  rpc GetProfile (google.protobuf.Empty) returns (UserInfor){
+    option (google.api.http) = {
+      get: "/api/v1/profile"
+    };
+  };
+
+  rpc ChangeEmail (ChangeEmailRequest) returns (UserInfor){
+    option (google.api.http) = {
+      post: "/api/v1/profile/change-mail"
+      body:"*"
+    };
+  };
+
+  rpc ChangeName (ChangeNameRequest) returns (UserInfor){
+    option (google.api.http) = {
+      post: "/api/v1/profile/change-name"
+      body:"*"
+    };
+  };
+
+  rpc  AddCard (AddCardRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      post: "/api/v1/profile/add-card"
+      body:"*"
+    };
+  };
+}
+
+message ChangeEmailRequest {
+  string email = 1;
+}
+
+message Card {
+  string card_number = 1;
+  string owner_name = 2;
+  string bank_name = 3;
+}
+
+message AddCardRequest {
+  Card card = 1;
+}
+
+message ChangeNameRequest {
+  string name = 1;
+}
