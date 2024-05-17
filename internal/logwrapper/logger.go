@@ -1,77 +1,76 @@
 package logwrapper
 
-import "fmt"
+import (
+	"io"
+	"log"
 
-type ILogMsg interface {
-	String() string
+	"github.com/natefinch/lumberjack"
+)
+
+func NewRollbackWriterFile(logFilename string, maxAge, maxSize, maxBackups int) io.Writer {
+	writer := &lumberjack.Logger{
+		Filename:   logFilename,
+		MaxAge:     maxAge,
+		MaxSize:    maxSize,
+		MaxBackups: maxBackups,
+		Compress:   true,
+	}
+	return writer
 }
 
 type ILoggerWrapper interface {
-	Log(...ILogMsg)
-	AddLogger(l ILoggerWrapper)
+	Infor(string)
+	Error(string)
+	Warn(string)
+	Debug(string)
+	Printf(string, ...interface{})
+	SetWriter(io.Writer)
 }
 
-type DebugMsg struct {
-	ILogMsg
-	msg string
+// LoggerWrapper struct implements the ILoggerWrapper interface
+type LoggerWrapper struct {
+	logger *log.Logger
 }
 
-func (m *DebugMsg) String() string {
-	return fmt.Sprintf("DEBUG | %v", m.msg)
+// NewLoggerWrapper creates a new LoggerWrapper instance with an optional prefix
+func NewLoggerWrapper() *LoggerWrapper {
+	return &LoggerWrapper{
+		logger: log.New(
+			log.Writer(),
+			"",
+			log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile|log.Lmsgprefix),
+	}
 }
 
-func NewDebugMsg(msg string) *DebugMsg {
-	return &DebugMsg{msg: msg}
+// Info logs a message with INFO level
+func (l *LoggerWrapper) Info(msg string) {
+	l.log("| Info | " + msg)
 }
 
-type ErrorMsg struct {
-	ILogMsg
-	msg string
+// Error logs a message with ERROR level
+func (l *LoggerWrapper) Error(msg string) {
+	l.log("| Error | " + msg)
 }
 
-func (m *ErrorMsg) String() string {
-	return fmt.Sprintf("ERROR | %v", m.msg)
+// Warn logs a message with WARN level
+func (l *LoggerWrapper) Warn(msg string) {
+	l.log("| Warn | " + msg)
 }
 
-func NewErrorMsg(msg string) *ErrorMsg {
-	return &ErrorMsg{msg: msg}
+// Debug logs a message with DEBUG level
+func (l *LoggerWrapper) Debug(msg string) {
+	l.log("| Debug | " + msg)
 }
 
-type InforMsg struct {
-	ILogMsg
-	msg string
+// Printf logs a formatted message with any level based on the log package flags
+func (l *LoggerWrapper) Printf(format string, v ...interface{}) {
+	l.logger.Printf(format, v...)
 }
 
-func (m *InforMsg) String() string {
-	return fmt.Sprintf("INFOR | %v", m.msg)
+func (l *LoggerWrapper) log(msg string) {
+	l.logger.Println(msg)
 }
 
-func NewInforMsg(msg string) *InforMsg {
-	return &InforMsg{msg: msg}
-}
-
-type WarnMsg struct {
-	ILogMsg
-	msg string
-}
-
-func (m *WarnMsg) String() string {
-	return fmt.Sprintf("WARN | %v", m.msg)
-}
-
-func NewWarnMsg(msg string) *WarnMsg {
-	return &WarnMsg{msg: msg}
-}
-
-type StandardMsg struct {
-	ILogMsg
-	msg string
-}
-
-func (m *StandardMsg) String() string {
-	return m.msg
-}
-
-func NewStandardMsg(msg string) *StandardMsg {
-	return &StandardMsg{msg: msg}
+func (l *LoggerWrapper) SetWriter(writer io.Writer) {
+	l.logger.SetOutput(writer)
 }

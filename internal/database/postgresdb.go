@@ -28,7 +28,15 @@ func (p *PostgreDb) Init() *PostgreDb {
 		db, err := gorm.Open(postgres.New(postgres.Config{
 			DSN:                  dns,
 			PreferSimpleProtocol: true,
-		}), &gorm.Config{})
+		}), &gorm.Config{
+			Logger: logger.New(logwrapper.NewLoggerWrapper(), logger.Config{
+				LogLevel:                  logger.Info,
+				SlowThreshold:             time.Millisecond,
+				ParameterizedQueries:      true,
+				IgnoreRecordNotFoundError: false,
+				Colorful:                  false,
+			}),
+		})
 		if err != nil {
 			log.Println(errors.New("postgres error: cant establish connection"))
 			log.Printf("postgres error: %v", err)
@@ -37,26 +45,4 @@ func (p *PostgreDb) Init() *PostgreDb {
 		}
 		return (*PostgreDb)(db)
 	}
-}
-
-func (p *PostgreDb) UseLogger(l logwrapper.ILoggerWrapper) {
-	p.Logger = logger.New(&PostgreWriter{
-		loggerwrapper: l,
-	}, logger.Config{
-		SlowThreshold:             time.Second, // Slow SQL threshold
-		LogLevel:                  logger.Info, // Log level
-		IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
-		ParameterizedQueries:      true,        // Don't include params in the SQL log
-		Colorful:                  true,        // Disable color
-	})
-}
-
-type PostgreWriter struct {
-	loggerwrapper logwrapper.ILoggerWrapper
-}
-
-func (lw *PostgreWriter) Printf(format string, value ...interface{}) {
-	lw.loggerwrapper.Log(logwrapper.NewStandardMsg(
-		fmt.Sprintf(format, value...),
-	))
 }
