@@ -6,7 +6,8 @@ import (
 )
 
 func MigrationDatasource(db *database.PostgreDb) error {
-	return db.Statement.AutoMigrate(
+	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
+	return db.AutoMigrate(
 		&datasource.User{},
 		&datasource.Card{})
 }

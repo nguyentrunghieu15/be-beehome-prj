@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/crypto/aes"
 	argon "github.com/nguyentrunghieu15/be-beehome-prj/internal/crypto/argon2"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
-	"gorm.io/gorm"
 )
 
 type IUserRepo interface {
@@ -18,7 +18,7 @@ type IUserRepo interface {
 }
 
 type UserRepo struct {
-	db *gorm.DB
+	db *database.PostgreDb
 }
 
 func (ur *UserRepo) FindOneById(id uuid.UUID) (*User, error) {

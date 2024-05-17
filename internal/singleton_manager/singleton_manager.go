@@ -6,7 +6,7 @@ import (
 )
 
 type IInstances interface {
-	Init() IInstances
+	Init() interface{}
 }
 
 type ISingletonManager interface {
@@ -36,4 +36,10 @@ func (s *SingletonManager) GetInstance(k IInstances) interface{} {
 		return v
 	}
 	return nil
+}
+
+func NewSingletonManager() *SingletonManager {
+	return &SingletonManager{
+		resource: make(map[string]interface{}),
+	}
 }

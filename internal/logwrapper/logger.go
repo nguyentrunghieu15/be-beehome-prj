@@ -7,13 +7,18 @@ import (
 	"github.com/natefinch/lumberjack"
 )
 
-func NewRollbackWriterFile(logFilename string, maxAge, maxSize, maxBackups int) io.Writer {
+type ConfigRollbackWriter struct {
+	MaxAge, MaxSize, MaxBackups int
+	Compress                    bool
+}
+
+func NewRollbackWriterFile(logFilename string, config ConfigRollbackWriter) io.Writer {
 	writer := &lumberjack.Logger{
 		Filename:   logFilename,
-		MaxAge:     maxAge,
-		MaxSize:    maxSize,
-		MaxBackups: maxBackups,
-		Compress:   true,
+		MaxAge:     config.MaxAge,
+		MaxSize:    config.MaxSize,
+		MaxBackups: config.MaxBackups,
+		Compress:   config.Compress,
 	}
 	return writer
 }
@@ -33,7 +38,7 @@ type LoggerWrapper struct {
 }
 
 // NewLoggerWrapper creates a new LoggerWrapper instance with an optional prefix
-func NewLoggerWrapper() *LoggerWrapper {
+func (*LoggerWrapper) Init() interface{} {
 	return &LoggerWrapper{
 		logger: log.New(
 			log.Writer(),
@@ -44,22 +49,22 @@ func NewLoggerWrapper() *LoggerWrapper {
 
 // Info logs a message with INFO level
 func (l *LoggerWrapper) Info(msg string) {
-	l.log("| Info | " + msg)
+	l.log(" [info] " + msg)
 }
 
 // Error logs a message with ERROR level
 func (l *LoggerWrapper) Error(msg string) {
-	l.log("| Error | " + msg)
+	l.log(" [error] " + msg)
 }
 
 // Warn logs a message with WARN level
 func (l *LoggerWrapper) Warn(msg string) {
-	l.log("| Warn | " + msg)
+	l.log(" [warn] " + msg)
 }
 
 // Debug logs a message with DEBUG level
 func (l *LoggerWrapper) Debug(msg string) {
-	l.log("| Debug | " + msg)
+	l.log(" [debug] " + msg)
 }
 
 // Printf logs a formatted message with any level based on the log package flags

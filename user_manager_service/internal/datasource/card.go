@@ -3,7 +3,8 @@ package datasource
 import (
 	"github.com/google/uuid"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/crypto/aes"
-	"gorm.io/gorm"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
 )
 
 type ICardRepo interface {
@@ -14,7 +15,7 @@ type ICardRepo interface {
 }
 
 type CardRepo struct {
-	db *gorm.DB
+	db *database.PostgreDb
 }
 
 func (c *CardRepo) CreateCard(cardData map[string]interface{}) (*Card, error) {
@@ -22,20 +23,16 @@ func (c *CardRepo) CreateCard(cardData map[string]interface{}) (*Card, error) {
 	if err != nil {
 		return nil, err
 	}
-	card := &Card{
-		ID:         uuid.New(),
-		CardNumber: cryptedCardNumber,
-		OwnerName:  cardData["owner_name"].(string),
-		BankName:   cardData["bank_name"].(string),
-		UserId:     cardData["user_id"].(uuid.UUID),
-	}
 
-	result := c.db.Create(card)
+	cardData["card_number"] = cryptedCardNumber
+	cardData["id"] = random.GenerateRandomUUID()
+
+	result := c.db.Model(&Card{}).Create(cardData)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
-	return card, nil
+	return c.FindOneById(cardData["id"].(uuid.UUID))
 }
 
 func (c *CardRepo) FindOneById(id uuid.UUID) (*Card, error) {

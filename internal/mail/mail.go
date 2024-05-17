@@ -28,7 +28,7 @@ type AuthStmp struct {
 	Password string
 }
 
-func SendMail(auth AuthStmp, letter Letter) error {
+func sendMail(auth AuthStmp, letter Letter) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", letter.From)
 	m.SetHeader("To", letter.To...)
@@ -50,4 +50,13 @@ func SendMail(auth AuthStmp, letter Letter) error {
 		return err
 	}
 	return nil
+}
+
+type IMailBox interface {
+	SendMail(AuthStmp, Letter) error
+}
+type MailBox struct{}
+
+func (*MailBox) SendMail(auth AuthStmp, letter Letter) error {
+	return sendMail(auth, letter)
 }

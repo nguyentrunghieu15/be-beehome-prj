@@ -15,14 +15,6 @@ import (
 
 var cipherKey []byte
 
-func init() {
-	cipherKeyString, ok := os.LookupEnv("CHIPHER_KEY")
-	if !ok {
-		log.Fatal("CHIPHER_KEY lost")
-	}
-	cipherKey = []byte(cipherKeyString)
-}
-
 func addBase64Padding(value string) string {
 	m := len(value) % 4
 	if m != 0 {
@@ -54,6 +46,11 @@ func unpad(src []byte) ([]byte, error) {
 }
 
 func Encrypt(text string) (string, error) {
+	cipherKeyString, ok := os.LookupEnv("CHIPHER_KEY")
+	if !ok {
+		log.Fatal("CHIPHER_KEY lost")
+	}
+	cipherKey = []byte(cipherKeyString)
 	block, err := cryptoaes.NewCipher(cipherKey)
 	if err != nil {
 		return "", err
@@ -73,6 +70,11 @@ func Encrypt(text string) (string, error) {
 }
 
 func Decrypt(text string) (string, error) {
+	cipherKeyString, ok := os.LookupEnv("CHIPHER_KEY")
+	if !ok {
+		log.Fatal("CHIPHER_KEY lost")
+	}
+	cipherKey = []byte(cipherKeyString)
 	block, err := cryptoaes.NewCipher(cipherKey)
 	if err != nil {
 		return "", err

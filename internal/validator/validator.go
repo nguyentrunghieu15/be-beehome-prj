@@ -23,7 +23,7 @@ func (v *ValidatorStuctMap) Validate(e interface{}) error {
 	return v.validate.Struct(e)
 }
 
-func ContructValidateStructMap() *ValidatorStuctMap {
+func (*ValidatorStuctMap) Init() interface{} {
 	return &ValidatorStuctMap{}
 }
 
