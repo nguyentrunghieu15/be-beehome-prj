@@ -12,6 +12,7 @@ import (
 
 type IUserRepo interface {
 	FindOneById(uuid.UUID) (*User, error)
+	FindOneByEmail(email string) (*User, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*User, error)
 	CreateUser(map[string]interface{}) (*User, error)
 	DeleteOneById(uuid.UUID) error
@@ -32,6 +33,21 @@ func (ur *UserRepo) FindOneById(id uuid.UUID) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	return user, nil
+}
+
+func (ur *UserRepo) FindOneByEmail(email string) (*User, error) {
+	encryptedEmail, err := aes.Encrypt(email)
+	if err != nil {
+		return nil, err
+	}
+
+	user := &User{}
+	result := ur.db.First(user, "email = ?", encryptedEmail)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	user.Email = email
 	return user, nil
 }
 
@@ -96,4 +112,10 @@ func (ur *UserRepo) DeleteOneById(id uuid.UUID) error {
 		return result.Error
 	}
 	return nil
+}
+
+func NewUserRepo(db *database.PostgreDb) *UserRepo {
+	return &UserRepo{
+		db: db,
+	}
 }

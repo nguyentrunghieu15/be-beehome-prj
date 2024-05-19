@@ -45,7 +45,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   }
 };
 
-service LoginService {
+service AuthService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
     name: "Authentication"
     description: "Authentication user"
@@ -96,7 +96,7 @@ message LoginResponse {
     string access_token = 1;
     int64 expire_time = 2;
     string refresh_token = 3;
-    string type_token = 4;
+    string token_type = 4;
 }
 
 message RefreshTokenRequest {
@@ -104,7 +104,7 @@ message RefreshTokenRequest {
 }
 
 message RefreshTokenResponse {
-    string acess_token = 1;
+    string access_token = 1;
 }
 
 message ForgotPasswordRequest {

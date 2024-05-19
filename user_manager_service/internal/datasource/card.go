@@ -58,3 +58,9 @@ func (c *CardRepo) FindAllOfUser(userId uuid.UUID) ([]*Card, error) {
 	}
 	return cards, nil
 }
+
+func NewCardRepo(db *database.PostgreDb) *CardRepo {
+	return &CardRepo{
+		db: db,
+	}
+}

@@ -43,12 +43,12 @@ func (*LoggerWrapper) Init() interface{} {
 		logger: log.New(
 			log.Writer(),
 			"",
-			log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile|log.Lmsgprefix),
+			log.Ldate|log.Ltime|log.Lmicroseconds|log.Lmsgprefix),
 	}
 }
 
 // Info logs a message with INFO level
-func (l *LoggerWrapper) Info(msg string) {
+func (l *LoggerWrapper) Infor(msg string) {
 	l.log(" [info] " + msg)
 }
 

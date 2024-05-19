@@ -47,14 +47,16 @@ func (p *PostgreDb) UseLogger(newLogger logger.Writer) {
 		SlowThreshold:        time.Millisecond * 300,
 		LogLevel:             logger.Info,
 		ParameterizedQueries: true,
+		Colorful:             false,
 	})
 }
 
 type PostgreLoggerDecorater struct {
-	logwrapper.LoggerWrapper
+	LoggerWrapper logwrapper.ILoggerWrapper
 }
 
 func (pl *PostgreLoggerDecorater) Printf(format string, data ...interface{}) {
 	format = strings.ReplaceAll(format, "\n", " ")
-	pl.LoggerWrapper.Printf(format, data...)
+	format = strings.Replace(format, "%s", "", 1)
+	pl.LoggerWrapper.Printf(format, data[1:]...)
 }

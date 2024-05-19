@@ -9,6 +9,7 @@ import (
 
 type IValidator interface {
 	Validate(interface{}) error
+	RegisterRules(rules map[string]string, typeStruct interface{})
 }
 
 type ValidatorStuctMap struct {

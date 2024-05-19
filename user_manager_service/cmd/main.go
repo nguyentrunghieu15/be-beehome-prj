@@ -39,18 +39,27 @@ func validateEnverionment() error {
 }
 
 func initObject(manager *singletonmanager.SingletonManager) {
-	// Create connection to postgres
-	manager.RegisterInstances(&database.PostgreDb{})
-
 	// Create logger for app
 	manager.RegisterInstances(&logwrapper.LoggerWrapper{})
 	// set output for logger
+	logger, _ := (manager.GetInstance(&logwrapper.LoggerWrapper{})).(*logwrapper.LoggerWrapper)
 	fileWriter := logwrapper.NewRollbackWriterFile(logDir, rotateWriterConfig)
 	out := io.MultiWriter(os.Stdout, fileWriter)
-	(manager.GetInstance(&logwrapper.LoggerWrapper{})).(*logwrapper.LoggerWrapper).SetWriter(out)
+	logger.SetWriter(out)
 
 	// create validator for app
 	manager.RegisterInstances(&validator.ValidatorStuctMap{})
+
+	// Create connection to postgres
+	manager.RegisterInstances(&database.PostgreDb{})
+	(manager.GetInstance(&database.PostgreDb{})).(*database.PostgreDb).UseLogger(
+		&database.PostgreLoggerDecorater{
+			LoggerWrapper: logger,
+		},
+	)
+
+	// Create connection to redis
+	manager.RegisterInstances(&database.RedisDb{})
 }
 
 func main() {

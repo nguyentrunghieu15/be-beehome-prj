@@ -9,13 +9,31 @@ import (
 )
 
 type IJsonWebTokenizer interface {
-	GenerateToken(interface{}) (string, error)
+	GenerateToken(interface{}, TokenConfigure) (string, error)
 	ParseToken(string) (interface{}, error)
+}
+
+type TokenConfigure struct {
+	ExpiresTime time.Duration
+	IssuedAt    time.Time
+	NotBefore   time.Time
+}
+
+var DefaultAccessTokenConfigure = TokenConfigure{
+	ExpiresTime: 3 * time.Hour,
+	IssuedAt:    time.Now(),
+	NotBefore:   time.Now(),
+}
+
+var DefaultRefreshTokenConfigure = TokenConfigure{
+	ExpiresTime: 24 * time.Hour,
+	IssuedAt:    time.Now(),
+	NotBefore:   time.Now(),
 }
 
 type CustomJWTTokenizer struct{}
 
-func (*CustomJWTTokenizer) GenerateToken(data interface{}) (string, error) {
+func (*CustomJWTTokenizer) GenerateToken(data interface{}, config TokenConfigure) (string, error) {
 	type TempClaims struct {
 		data interface{}
 		jwt3rdlib.RegisteredClaims
@@ -25,9 +43,9 @@ func (*CustomJWTTokenizer) GenerateToken(data interface{}) (string, error) {
 		data,
 		jwt3rdlib.RegisteredClaims{
 			// A usual scenario is to set the expiration time relative to the current time
-			ExpiresAt: jwt3rdlib.NewNumericDate(time.Now().Add(24 * time.Hour)),
-			IssuedAt:  jwt3rdlib.NewNumericDate(time.Now()),
-			NotBefore: jwt3rdlib.NewNumericDate(time.Now()),
+			ExpiresAt: jwt3rdlib.NewNumericDate(time.Now().Add(config.ExpiresTime)),
+			IssuedAt:  jwt3rdlib.NewNumericDate(config.IssuedAt),
+			NotBefore: jwt3rdlib.NewNumericDate(config.NotBefore),
 		},
 	}
 	token := jwt3rdlib.NewWithClaims(jwt3rdlib.SigningMethodHS256, claim)

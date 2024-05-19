@@ -28,7 +28,7 @@
   "paths": {
     "/api/v1/auth/forgot-password": {
       "post": {
-        "operationId": "LoginService_ForgotPassword",
+        "operationId": "AuthService_ForgotPassword",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -55,13 +55,13 @@
           }
         ],
         "tags": [
-          "LoginService"
+          "AuthService"
         ]
       }
     },
     "/api/v1/auth/login": {
       "post": {
-        "operationId": "LoginService_Login",
+        "operationId": "AuthService_Login",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -87,13 +87,13 @@
           }
         ],
         "tags": [
-          "LoginService"
+          "AuthService"
         ]
       }
     },
     "/api/v1/auth/refresh-token": {
       "post": {
-        "operationId": "LoginService_RefreshToken",
+        "operationId": "AuthService_RefreshToken",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -119,13 +119,13 @@
           }
         ],
         "tags": [
-          "LoginService"
+          "AuthService"
         ]
       }
     },
     "/api/v1/auth/reset-password": {
       "post": {
-        "operationId": "LoginService_ResetPassword",
+        "operationId": "AuthService_ResetPassword",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -152,13 +152,13 @@
           }
         ],
         "tags": [
-          "LoginService"
+          "AuthService"
         ]
       }
     },
     "/api/v1/auth/sign-up": {
       "post": {
-        "operationId": "LoginService_SignUp",
+        "operationId": "AuthService_SignUp",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -185,7 +185,7 @@
           }
         ],
         "tags": [
-          "LoginService"
+          "AuthService"
         ]
       }
     }
@@ -226,7 +226,7 @@
         "refreshToken": {
           "type": "string"
         },
-        "typeToken": {
+        "tokenType": {
           "type": "string"
         }
       }
@@ -242,7 +242,7 @@
     "RefreshTokenResponse": {
       "type": "object",
       "properties": {
-        "acessToken": {
+        "accessToken": {
           "type": "string"
         }
       }

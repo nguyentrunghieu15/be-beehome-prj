@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AuthService_Login_0(ctx context.Context, marshaler runtime.Marshaler, client AuthServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LoginRequest
 	var metadata runtime.ServerMetadata
 
@@ -44,7 +44,7 @@ func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AuthService_Login_0(ctx context.Context, marshaler runtime.Marshaler, server AuthServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LoginRequest
 	var metadata runtime.ServerMetadata
 
@@ -57,7 +57,7 @@ func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_LoginService_RefreshToken_0(ctx context.Context, marshaler runtime.Marshaler, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AuthService_RefreshToken_0(ctx context.Context, marshaler runtime.Marshaler, client AuthServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RefreshTokenRequest
 	var metadata runtime.ServerMetadata
 
@@ -70,7 +70,7 @@ func request_LoginService_RefreshToken_0(ctx context.Context, marshaler runtime.
 
 }
 
-func local_request_LoginService_RefreshToken_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AuthService_RefreshToken_0(ctx context.Context, marshaler runtime.Marshaler, server AuthServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RefreshTokenRequest
 	var metadata runtime.ServerMetadata
 
@@ -83,7 +83,7 @@ func local_request_LoginService_RefreshToken_0(ctx context.Context, marshaler ru
 
 }
 
-func request_LoginService_ForgotPassword_0(ctx context.Context, marshaler runtime.Marshaler, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AuthService_ForgotPassword_0(ctx context.Context, marshaler runtime.Marshaler, client AuthServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ForgotPasswordRequest
 	var metadata runtime.ServerMetadata
 
@@ -96,7 +96,7 @@ func request_LoginService_ForgotPassword_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_LoginService_ForgotPassword_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AuthService_ForgotPassword_0(ctx context.Context, marshaler runtime.Marshaler, server AuthServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ForgotPasswordRequest
 	var metadata runtime.ServerMetadata
 
@@ -109,7 +109,7 @@ func local_request_LoginService_ForgotPassword_0(ctx context.Context, marshaler 
 
 }
 
-func request_LoginService_ResetPassword_0(ctx context.Context, marshaler runtime.Marshaler, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AuthService_ResetPassword_0(ctx context.Context, marshaler runtime.Marshaler, client AuthServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResetPasswordRequest
 	var metadata runtime.ServerMetadata
 
@@ -122,7 +122,7 @@ func request_LoginService_ResetPassword_0(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_LoginService_ResetPassword_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AuthService_ResetPassword_0(ctx context.Context, marshaler runtime.Marshaler, server AuthServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResetPasswordRequest
 	var metadata runtime.ServerMetadata
 
@@ -135,7 +135,7 @@ func local_request_LoginService_ResetPassword_0(ctx context.Context, marshaler r
 
 }
 
-func request_LoginService_SignUp_0(ctx context.Context, marshaler runtime.Marshaler, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AuthService_SignUp_0(ctx context.Context, marshaler runtime.Marshaler, client AuthServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SignUpRequest
 	var metadata runtime.ServerMetadata
 
@@ -148,7 +148,7 @@ func request_LoginService_SignUp_0(ctx context.Context, marshaler runtime.Marsha
 
 }
 
-func local_request_LoginService_SignUp_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AuthService_SignUp_0(ctx context.Context, marshaler runtime.Marshaler, server AuthServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SignUpRequest
 	var metadata runtime.ServerMetadata
 
@@ -161,13 +161,13 @@ func local_request_LoginService_SignUp_0(ctx context.Context, marshaler runtime.
 
 }
 
-// RegisterLoginServiceHandlerServer registers the http handlers for service LoginService to "mux".
-// UnaryRPC     :call LoginServiceServer directly.
+// RegisterAuthServiceHandlerServer registers the http handlers for service AuthService to "mux".
+// UnaryRPC     :call AuthServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterLoginServiceHandlerFromEndpoint instead.
-func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server LoginServiceServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAuthServiceHandlerFromEndpoint instead.
+func RegisterAuthServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AuthServiceServer) error {
 
-	mux.Handle("POST", pattern_LoginService_Login_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_Login_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -175,12 +175,12 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.LoginService/Login", runtime.WithHTTPPathPattern("/api/v1/auth/login"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.AuthService/Login", runtime.WithHTTPPathPattern("/api/v1/auth/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LoginService_Login_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AuthService_Login_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -188,11 +188,11 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_LoginService_Login_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_Login_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_LoginService_RefreshToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_RefreshToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -200,12 +200,12 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.LoginService/RefreshToken", runtime.WithHTTPPathPattern("/api/v1/auth/refresh-token"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.AuthService/RefreshToken", runtime.WithHTTPPathPattern("/api/v1/auth/refresh-token"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LoginService_RefreshToken_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AuthService_RefreshToken_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -213,11 +213,11 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_LoginService_RefreshToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_RefreshToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_LoginService_ForgotPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_ForgotPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -225,12 +225,12 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.LoginService/ForgotPassword", runtime.WithHTTPPathPattern("/api/v1/auth/forgot-password"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.AuthService/ForgotPassword", runtime.WithHTTPPathPattern("/api/v1/auth/forgot-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LoginService_ForgotPassword_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AuthService_ForgotPassword_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -238,11 +238,11 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_LoginService_ForgotPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_ForgotPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_LoginService_ResetPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_ResetPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -250,12 +250,12 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.LoginService/ResetPassword", runtime.WithHTTPPathPattern("/api/v1/auth/reset-password"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.AuthService/ResetPassword", runtime.WithHTTPPathPattern("/api/v1/auth/reset-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LoginService_ResetPassword_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AuthService_ResetPassword_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -263,11 +263,11 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_LoginService_ResetPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_ResetPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_LoginService_SignUp_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_SignUp_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -275,12 +275,12 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.LoginService/SignUp", runtime.WithHTTPPathPattern("/api/v1/auth/sign-up"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.AuthService/SignUp", runtime.WithHTTPPathPattern("/api/v1/auth/sign-up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LoginService_SignUp_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AuthService_SignUp_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -288,16 +288,16 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_LoginService_SignUp_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_SignUp_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterLoginServiceHandlerFromEndpoint is same as RegisterLoginServiceHandler but
+// RegisterAuthServiceHandlerFromEndpoint is same as RegisterAuthServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterLoginServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterAuthServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
@@ -317,129 +317,129 @@ func RegisterLoginServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.S
 		}()
 	}()
 
-	return RegisterLoginServiceHandler(ctx, mux, conn)
+	return RegisterAuthServiceHandler(ctx, mux, conn)
 }
 
-// RegisterLoginServiceHandler registers the http handlers for service LoginService to "mux".
+// RegisterAuthServiceHandler registers the http handlers for service AuthService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterLoginServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterLoginServiceHandlerClient(ctx, mux, NewLoginServiceClient(conn))
+func RegisterAuthServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterAuthServiceHandlerClient(ctx, mux, NewAuthServiceClient(conn))
 }
 
-// RegisterLoginServiceHandlerClient registers the http handlers for service LoginService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "LoginServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "LoginServiceClient"
+// RegisterAuthServiceHandlerClient registers the http handlers for service AuthService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "AuthServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "AuthServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "LoginServiceClient" to call the correct interceptors.
-func RegisterLoginServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client LoginServiceClient) error {
+// "AuthServiceClient" to call the correct interceptors.
+func RegisterAuthServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AuthServiceClient) error {
 
-	mux.Handle("POST", pattern_LoginService_Login_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_Login_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.LoginService/Login", runtime.WithHTTPPathPattern("/api/v1/auth/login"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.AuthService/Login", runtime.WithHTTPPathPattern("/api/v1/auth/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LoginService_Login_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AuthService_Login_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_LoginService_Login_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_Login_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_LoginService_RefreshToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_RefreshToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.LoginService/RefreshToken", runtime.WithHTTPPathPattern("/api/v1/auth/refresh-token"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.AuthService/RefreshToken", runtime.WithHTTPPathPattern("/api/v1/auth/refresh-token"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LoginService_RefreshToken_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AuthService_RefreshToken_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_LoginService_RefreshToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_RefreshToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_LoginService_ForgotPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_ForgotPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.LoginService/ForgotPassword", runtime.WithHTTPPathPattern("/api/v1/auth/forgot-password"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.AuthService/ForgotPassword", runtime.WithHTTPPathPattern("/api/v1/auth/forgot-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LoginService_ForgotPassword_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AuthService_ForgotPassword_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_LoginService_ForgotPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_ForgotPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_LoginService_ResetPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_ResetPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.LoginService/ResetPassword", runtime.WithHTTPPathPattern("/api/v1/auth/reset-password"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.AuthService/ResetPassword", runtime.WithHTTPPathPattern("/api/v1/auth/reset-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LoginService_ResetPassword_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AuthService_ResetPassword_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_LoginService_ResetPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_ResetPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_LoginService_SignUp_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AuthService_SignUp_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.LoginService/SignUp", runtime.WithHTTPPathPattern("/api/v1/auth/sign-up"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.AuthService/SignUp", runtime.WithHTTPPathPattern("/api/v1/auth/sign-up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LoginService_SignUp_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AuthService_SignUp_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_LoginService_SignUp_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AuthService_SignUp_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -447,25 +447,25 @@ func RegisterLoginServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_LoginService_Login_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "login"}, ""))
+	pattern_AuthService_Login_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "login"}, ""))
 
-	pattern_LoginService_RefreshToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "refresh-token"}, ""))
+	pattern_AuthService_RefreshToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "refresh-token"}, ""))
 
-	pattern_LoginService_ForgotPassword_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "forgot-password"}, ""))
+	pattern_AuthService_ForgotPassword_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "forgot-password"}, ""))
 
-	pattern_LoginService_ResetPassword_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "reset-password"}, ""))
+	pattern_AuthService_ResetPassword_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "reset-password"}, ""))
 
-	pattern_LoginService_SignUp_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "sign-up"}, ""))
+	pattern_AuthService_SignUp_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "sign-up"}, ""))
 )
 
 var (
-	forward_LoginService_Login_0 = runtime.ForwardResponseMessage
+	forward_AuthService_Login_0 = runtime.ForwardResponseMessage
 
-	forward_LoginService_RefreshToken_0 = runtime.ForwardResponseMessage
+	forward_AuthService_RefreshToken_0 = runtime.ForwardResponseMessage
 
-	forward_LoginService_ForgotPassword_0 = runtime.ForwardResponseMessage
+	forward_AuthService_ForgotPassword_0 = runtime.ForwardResponseMessage
 
-	forward_LoginService_ResetPassword_0 = runtime.ForwardResponseMessage
+	forward_AuthService_ResetPassword_0 = runtime.ForwardResponseMessage
 
-	forward_LoginService_SignUp_0 = runtime.ForwardResponseMessage
+	forward_AuthService_SignUp_0 = runtime.ForwardResponseMessage
 )
