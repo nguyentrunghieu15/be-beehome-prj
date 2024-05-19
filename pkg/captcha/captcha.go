@@ -18,7 +18,7 @@ type GGRecaptchaService struct {
 }
 
 // NewRecaptchaService creates a new RecaptchaService instance
-func (*GGRecaptchaService) Init() *GGRecaptchaService {
+func (*GGRecaptchaService) Init() interface{} {
 	return &GGRecaptchaService{
 		secretKey: os.Getenv("GOOGLE_RECAPTCHA_SECRET_KEY"),
 	}

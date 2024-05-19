@@ -57,6 +57,10 @@ type IMailBox interface {
 }
 type MailBox struct{}
 
+func (*MailBox) Init() interface{} {
+	return &MailBox{}
+}
+
 func (*MailBox) SendMail(auth AuthStmp, letter Letter) error {
 	return sendMail(auth, letter)
 }

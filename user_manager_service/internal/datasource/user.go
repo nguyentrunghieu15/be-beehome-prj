@@ -1,6 +1,7 @@
 package datasource
 
 import (
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,22 +29,12 @@ func (ur *UserRepo) FindOneById(id uuid.UUID) (*User, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	var err error
-	user.Email, err = aes.Decrypt(user.Email)
-	if err != nil {
-		return nil, err
-	}
 	return user, nil
 }
 
 func (ur *UserRepo) FindOneByEmail(email string) (*User, error) {
-	encryptedEmail, err := aes.Encrypt(email)
-	if err != nil {
-		return nil, err
-	}
-
 	user := &User{}
-	result := ur.db.First(user, "email = ?", encryptedEmail)
+	result := ur.db.First(user, "email = ?", email)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -71,13 +62,11 @@ func (ur *UserRepo) UpdateOneById(id uuid.UUID, updateParams map[string]interfac
 }
 
 func (ur *UserRepo) CreateUser(data map[string]interface{}) (*User, error) {
-	var err error
-	if email, ok := data["email"].(string); ok {
-		data["email"], err = aes.Encrypt(email)
-		if err != nil {
-			return nil, err
-		}
+	if _, err := ur.FindOneByEmail(data["email"].(string)); err == nil {
+		return nil, errors.New("exist email")
 	}
+
+	var err error
 	if password, ok := data["password"].(string); ok {
 		data["password"], err = argon.EncodePassword(password)
 		if err != nil {
@@ -94,11 +83,6 @@ func (ur *UserRepo) CreateUser(data map[string]interface{}) (*User, error) {
 	}
 
 	user, err := ur.FindOneById(uuid.MustParse(data["id"].(string)))
-	if err != nil {
-		return nil, err
-	}
-
-	user.Email, err = aes.Decrypt(user.Email)
 	if err != nil {
 		return nil, err
 	}

@@ -25,7 +25,9 @@ func (v *ValidatorStuctMap) Validate(e interface{}) error {
 }
 
 func (*ValidatorStuctMap) Init() interface{} {
-	return &ValidatorStuctMap{}
+	return &ValidatorStuctMap{
+		validate: validator.New(),
+	}
 }
 
 func ValidateMap(rules map[string]interface{}, data map[string]interface{}) error {

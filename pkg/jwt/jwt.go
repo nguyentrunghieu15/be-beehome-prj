@@ -33,6 +33,10 @@ var DefaultRefreshTokenConfigure = TokenConfigure{
 
 type CustomJWTTokenizer struct{}
 
+func (*CustomJWTTokenizer) Init() interface{} {
+	return &CustomJWTTokenizer{}
+}
+
 func (*CustomJWTTokenizer) GenerateToken(data interface{}, config TokenConfigure) (string, error) {
 	type TempClaims struct {
 		data interface{}

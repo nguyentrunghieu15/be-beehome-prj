@@ -60,11 +60,15 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 	accessToken, err := s.jwtGenerator.GenerateToken(&AuthJWTClaims{
 		userId: user.ID.String(),
 	}, jwt.DefaultAccessTokenConfigure)
-	errs = append(errs, err)
+	if err != nil {
+		errs = append(errs, err)
+	}
 	refresToken, err := s.jwtGenerator.GenerateToken(&AuthJWTClaims{
 		userId: user.ID.String(),
 	}, jwt.DefaultRefreshTokenConfigure)
-	errs = append(errs, err)
+	if err != nil {
+		errs = append(errs, err)
+	}
 
 	if len(errs) > 0 {
 		s.logError(ctx, err)
@@ -83,7 +87,7 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 	}
 
 	if err := s.sessionStorage.SaveSession(
-		fmt.Sprintf("%v:%v", prefixAccsessTokenSessionStorage, user.ID),
+		fmt.Sprintf("%v:%v", prefixRefreshTokenSessionStorage, user.ID),
 		refresToken,
 		datasource.SessionKeyConfig{
 			ExpireTime: jwt.DefaultRefreshTokenConfigure.ExpiresTime,
