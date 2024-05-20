@@ -12,6 +12,7 @@ import (
 )
 
 type IUserRepo interface {
+	FindUsers(interface{}) ([]*User, error)
 	FindOneById(uuid.UUID) (*User, error)
 	FindOneByEmail(email string) (*User, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*User, error)
@@ -96,6 +97,10 @@ func (ur *UserRepo) DeleteOneById(id uuid.UUID) error {
 		return result.Error
 	}
 	return nil
+}
+
+func (ur *UserRepo) FindUsers(req interface{}) ([]*User, error) {
+	return nil, nil
 }
 
 func NewUserRepo(db *database.PostgreDb) *UserRepo {

@@ -45,6 +45,12 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 		return nil, status.Error(codes.Unauthenticated, "fail validate credentials")
 	}
 
+	banned, _ := s.bannedAccountRepo.FindOneByUserId(user.ID)
+	if banned != nil {
+		s.logger.Warn(common.StandardMsgWarn(ctx, "login", "user email:"+req.Email))
+		return nil, status.Error(codes.Aborted, "your email was blocked")
+	}
+
 	if ok, err := argon.Compare(user.Password, req.Password); !ok {
 		if err != nil {
 			s.logger.Error(common.StandardMsgError(ctx, "login", err))
@@ -170,7 +176,7 @@ func (s *AuthService) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 
 	_, err := s.userRepo.FindOneByEmail(req.Email)
 	if err != nil {
-		s.logger.Error(common.StandardMsgError(ctx, "forgot password", errors.New("not found email")))
+		s.logger.Error(common.StandardMsgError(ctx, "forgot password", errors.New("not found email:"+req.Email)))
 		return &emptypb.Empty{}, nil
 	}
 
@@ -213,7 +219,9 @@ func (s *AuthService) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 	}
 
 	if req.NewPassword != req.ConfirmPassword {
-		s.logger.Error(common.StandardMsgError(ctx, "reset password", errors.New("new password not match confirm password")))
+		s.logger.Error(
+			common.StandardMsgError(ctx, "reset password", errors.New("new password not match confirm password")),
+		)
 		return nil, status.Error(codes.InvalidArgument, "new password not match confirm password")
 	}
 
@@ -262,12 +270,21 @@ func (s *AuthService) SignUp(ctx context.Context, req *pb.SignUpRequest) (*empty
 		return nil, status.Error(codes.InvalidArgument, "sign up fail by invalid data")
 	}
 
+	// get user
+
+	user, _ := s.userRepo.FindOneByEmail(req.Email)
+	if user != nil {
+		s.logger.Error(common.StandardMsgError(ctx, "sign up", errors.New("exsit email:"+req.Email)))
+		return nil, status.Error(codes.Internal, "internal server")
+	}
+
 	// parse to map
 	mapUser, err := convert.StructProtoToMap(req)
 	if err != nil {
 		s.logger.Error(common.StandardMsgError(ctx, "sign up", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
+	mapUser["status"] = "active"
 
 	if _, err := s.userRepo.CreateUser(mapUser); err != nil {
 		s.logger.Error(common.StandardMsgError(ctx, "sign up", err))

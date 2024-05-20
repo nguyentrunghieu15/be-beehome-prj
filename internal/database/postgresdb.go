@@ -45,8 +45,8 @@ func (p *PostgreDb) Init() interface{} {
 func (p *PostgreDb) UseLogger(newLogger logger.Writer) {
 	p.Config.Logger = logger.New(newLogger, logger.Config{
 		SlowThreshold:        time.Millisecond * 300,
-		LogLevel:             logger.Error,
-		ParameterizedQueries: true,
+		LogLevel:             logger.Info,
+		ParameterizedQueries: false,
 		Colorful:             false,
 	})
 }

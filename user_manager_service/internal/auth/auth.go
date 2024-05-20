@@ -12,24 +12,26 @@ import (
 
 type AuthService struct {
 	pb.AuthServiceServer
-	validator       validator.IValidator
-	userRepo        datasource.IUserRepo
-	logger          logwrapper.ILoggerWrapper
-	jwtGenerator    jwt.IJsonWebTokenizer
-	captcharService captcha.ICaptchaService
-	sessionStorage  datasource.ISessionStorage
-	mailService     mail.IMailBox
+	validator         validator.IValidator
+	userRepo          datasource.IUserRepo
+	bannedAccountRepo datasource.IBannedAccountsRepo
+	logger            logwrapper.ILoggerWrapper
+	jwtGenerator      jwt.IJsonWebTokenizer
+	captcharService   captcha.ICaptchaService
+	sessionStorage    datasource.ISessionStorage
+	mailService       mail.IMailBox
 }
 
 // AuthServiceBuilder is a builder for AuthService
 type AuthServiceBuilder struct {
-	validator       validator.IValidator
-	userRepo        datasource.IUserRepo
-	logger          logwrapper.ILoggerWrapper
-	jwtGenerator    jwt.IJsonWebTokenizer
-	captcharService captcha.ICaptchaService
-	sessionStorage  datasource.ISessionStorage
-	mailService     mail.IMailBox
+	validator         validator.IValidator
+	userRepo          datasource.IUserRepo
+	bannedAccountRepo datasource.IBannedAccountsRepo
+	logger            logwrapper.ILoggerWrapper
+	jwtGenerator      jwt.IJsonWebTokenizer
+	captcharService   captcha.ICaptchaService
+	sessionStorage    datasource.ISessionStorage
+	mailService       mail.IMailBox
 }
 
 // NewAuthServiceBuilder creates a new AuthServiceBuilder instance
@@ -47,6 +49,12 @@ func (b *AuthServiceBuilder) SetValidator(v validator.IValidator) *AuthServiceBu
 // SetUserRepository sets the user repository to be used by AuthService
 func (b *AuthServiceBuilder) SetUserRepository(ur datasource.IUserRepo) *AuthServiceBuilder {
 	b.userRepo = ur
+	return b
+}
+
+// SetBannedAccount sets the banned account repository to be used by AuthService
+func (b *AuthServiceBuilder) SetBannedAccount(bn datasource.IBannedAccountsRepo) *AuthServiceBuilder {
+	b.bannedAccountRepo = bn
 	return b
 }
 
@@ -86,12 +94,13 @@ func (b *AuthServiceBuilder) Build() (*AuthService, error) {
 
 	// Create and return AuthService instance
 	return &AuthService{
-		validator:       b.validator,
-		userRepo:        b.userRepo,
-		logger:          b.logger,
-		jwtGenerator:    b.jwtGenerator,
-		captcharService: b.captcharService,
-		sessionStorage:  b.sessionStorage,
-		mailService:     b.mailService,
+		validator:         b.validator,
+		userRepo:          b.userRepo,
+		logger:            b.logger,
+		jwtGenerator:      b.jwtGenerator,
+		captcharService:   b.captcharService,
+		sessionStorage:    b.sessionStorage,
+		bannedAccountRepo: b.bannedAccountRepo,
+		mailService:       b.mailService,
 	}, nil
 }

@@ -12,11 +12,11 @@ func StandardMsgError(ctx context.Context, req string, err error) string {
 }
 
 func StandardMsgInfor(ctx context.Context, req string, info string) string {
-	return fmt.Sprintf("from IP :%v invoke request:%v by error: %v", GetClientIp(ctx), req, info)
+	return fmt.Sprintf("from IP :%v invoke request:%v with infor: %v", GetClientIp(ctx), req, info)
 }
 
 func StandardMsgWarn(ctx context.Context, req string, warn string) string {
-	return fmt.Sprintf("from IP :%v invoke request:%v by error: %v", GetClientIp(ctx), req, warn)
+	return fmt.Sprintf("from IP :%v invoke request:%v cause warn: %v", GetClientIp(ctx), req, warn)
 }
 
 func GetClientIp(ctx context.Context) string {

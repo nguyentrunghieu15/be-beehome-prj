@@ -21,6 +21,16 @@ type User struct {
 	Cards     []Card
 }
 
+type BannedAccount struct {
+	ID          uuid.UUID      `json:"id,omitempty"         gorm:"type:uuid;default:uuid_generate_v4();primarykey;index"`
+	CreatedAt   time.Time      `json:"created_at,omitempty"`
+	UpdatedAt   time.Time      `json:"updated_at,omitempty"`
+	DeletedAt   gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	UserId      uuid.UUID      `json:"user_id,omitempty"    gorm:"type:uuid,index"`
+	Description string         `json:"reason,omitempty"`
+	User        User
+}
+
 type Card struct {
 	ID         uuid.UUID      `json:"id,omitempty"          gorm:"type:uuid;default:uuid_generate_v4();primarykey"`
 	CreatedAt  time.Time      `json:"created_at,omitempty"`

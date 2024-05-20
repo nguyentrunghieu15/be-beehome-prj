@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	authapi "github.com/nguyentrunghieu15/be-beehome-prj/api/auth-api"
+	userapi "github.com/nguyentrunghieu15/be-beehome-prj/api/user-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/envloader"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
@@ -24,6 +25,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource/migration"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/middleware"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -116,6 +118,15 @@ func main() {
 
 	authapi.RegisterAuthServiceServer(s, authServer)
 
+	userServer, err := user.NewUserServiceBuilder().
+		SetLogger(manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)).
+		SetValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
+		SetUserRepo(datasource.NewUserRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+		SetBannedAccount(datasource.NewBannedAccountsRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+		SetCardRepo(datasource.NewCardRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+		Build()
+	userapi.RegisterUserServiceServer(s, userServer)
+
 	go s.Serve(lis)
 
 	if err != nil {
@@ -149,13 +160,14 @@ func main() {
 	e.Use(echomiddleware.Recover())
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	err = authapi.RegisterAuthServiceHandlerFromEndpoint(context.Background(), mux, "localhost:3001", opts)
+	authapi.RegisterAuthServiceHandlerFromEndpoint(context.Background(), mux, "localhost:3001", opts)
+	userapi.RegisterUserServiceHandlerFromEndpoint(context.Background(), mux, "localhost:3001", opts)
 
 	if err != nil {
 		log.Panic(err)
 	}
 
-	e.Any("/api/v1/auth/*", echo.WrapHandler(mux))
+	e.Any("/api/v1/*", echo.WrapHandler(mux))
 	e.Static("/swagger", "./user_manager_service/static")
 
 	log.Fatal(e.Start(addr))
