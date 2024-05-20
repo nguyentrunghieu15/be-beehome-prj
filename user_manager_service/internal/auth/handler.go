@@ -13,9 +13,9 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mail"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/common"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -27,40 +27,29 @@ const (
 	expireTimeForgotPasswordSessionStorage = 2 * time.Minute
 )
 
-func (s *AuthService) logError(ctx context.Context, err error) {
-	s.logger.Error(
-		fmt.Sprintf("login fail from IP : %v by error: %v", getClientIp(ctx), err),
-	)
-}
-
-func getClientIp(ctx context.Context) string {
-	p, _ := peer.FromContext(ctx)
-	return p.Addr.String()
-}
-
 // Login implements the Login RPC method
 func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	s.logger.Infor(
-		fmt.Sprintf("from ip:%v invoke request login for email account:%v", getClientIp(ctx), req.Email),
+		common.StandardMsgInfor(ctx, "login", "email:"+req.Email),
 	)
 	// Implement validate infor
 	if err := s.validator.Validate(req); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "login", err))
 		return nil, status.Error(codes.InvalidArgument, "login fail by invalid data")
 	}
 
 	// This is a placeholder implementation
 	user, err := s.userRepo.FindOneByEmail(req.Email)
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "login", err))
 		return nil, status.Error(codes.Unauthenticated, "fail validate credentials")
 	}
 
 	if ok, err := argon.Compare(user.Password, req.Password); !ok {
 		if err != nil {
-			s.logError(ctx, err)
+			s.logger.Error(common.StandardMsgError(ctx, "login", err))
 		} else {
-			s.logError(ctx, errors.New("wrong password"))
+			s.logger.Error(common.StandardMsgError(ctx, "login", errors.New("wrong password")))
 		}
 		return nil, status.Error(codes.Unauthenticated, "fail validate credentials")
 	}
@@ -79,7 +68,7 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 	}
 
 	if len(errs) > 0 {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "login", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -90,7 +79,7 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 			ExpireTime: jwt.DefaultAccessTokenConfigure.ExpiresTime,
 		},
 	); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "login", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -101,7 +90,7 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 			ExpireTime: jwt.DefaultRefreshTokenConfigure.ExpiresTime,
 		},
 	); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "login", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -116,24 +105,24 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 // RefreshToken implements the RefreshToken RPC method
 func (s *AuthService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.RefreshTokenResponse, error) {
 	s.logger.Infor(
-		fmt.Sprintf("invoke refresh token form ip:%v", getClientIp(ctx)),
+		common.StandardMsgInfor(ctx, "refresh token", ""),
 	)
 	// Implement your refresh token logic here (e.g., validate refresh token, generate new access token)
 	// This is a placeholder implementation, replace with your actual logic
 	if err := s.validator.Validate(req); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "refresh token", err))
 		return nil, status.Error(codes.InvalidArgument, "refresh token fail by invalid data")
 	}
 
 	data, err := s.jwtGenerator.ParseToken(req.RefreshToken)
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "refresh token", err))
 		return nil, status.Error(codes.Internal, "refresh token fail get data")
 	}
 
 	userId, ok := data.(string)
 	if !ok {
-		s.logError(ctx, errors.New("cant get claims"))
+		s.logger.Error(common.StandardMsgError(ctx, "refresh token", errors.New("cant get claims")))
 		return nil, status.Error(codes.Internal, "refresh token fail get data")
 	}
 
@@ -141,13 +130,13 @@ func (s *AuthService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 	if value, err := s.sessionStorage.GetSession(
 		fmt.Sprintf("%v:%v", prefixRefreshTokenSessionStorage, userId),
 	); value != req.RefreshToken || err != nil {
-		s.logError(ctx, errors.New("token not exist"))
+		s.logger.Error(common.StandardMsgError(ctx, "refresh token", errors.New("token not exist")))
 		return nil, status.Error(codes.Internal, "refresh token fail get data")
 	}
 
 	newAccessToken, err := s.jwtGenerator.GenerateToken(userId, jwt.DefaultAccessTokenConfigure)
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "refresh token", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -158,7 +147,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 			ExpireTime: jwt.DefaultAccessTokenConfigure.ExpiresTime,
 		},
 	) != nil {
-		s.logError(ctx, errors.New("cant save session token"))
+		s.logger.Error(common.StandardMsgError(ctx, "refresh token", errors.New("cant save session token")))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -170,24 +159,24 @@ func (s *AuthService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 // ForgotPassword implements the ForgotPassword RPC method
 func (s *AuthService) ForgotPassword(ctx context.Context, req *pb.ForgotPasswordRequest) (*emptypb.Empty, error) {
 	s.logger.Infor(
-		fmt.Sprintf("invoke forgot password form ip:%v", getClientIp(ctx)),
+		common.StandardMsgInfor(ctx, "forgot password", "email:"+req.Email),
 	)
 	// Implement your forgot password logic here (e.g., send reset password email)
 	// This is a placeholder implementation, replace with your actual logic
 	if err := s.validator.Validate(req); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "forgot password", err))
 		return nil, status.Error(codes.InvalidArgument, "forgot password fail by invalid data")
 	}
 
 	_, err := s.userRepo.FindOneByEmail(req.Email)
 	if err != nil {
-		s.logError(ctx, errors.New("not found email"))
+		s.logger.Error(common.StandardMsgError(ctx, "forgot password", errors.New("not found email")))
 		return &emptypb.Empty{}, nil
 	}
 
 	randToken, err := random.GenerateRandomBytes(40)
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "forgot password", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -200,12 +189,12 @@ func (s *AuthService) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 			ExpireTime: expireTimeForgotPasswordSessionStorage,
 		},
 	); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "forgot password", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
 	if err := s.mailService.SendMail(mail.AuthStmp{}, mail.Letter{}); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "forgot password", err))
 		return nil, status.Error(codes.Internal, "can't send mail")
 	}
 	return &emptypb.Empty{}, nil
@@ -214,17 +203,17 @@ func (s *AuthService) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 // ResetPassword implements the ResetPassword RPC method
 func (s *AuthService) ResetPassword(ctx context.Context, req *pb.ResetPasswordRequest) (*emptypb.Empty, error) {
 	s.logger.Infor(
-		fmt.Sprintf("invoke reset password form ip:%v", getClientIp(ctx)),
+		common.StandardMsgInfor(ctx, "reset password", ""),
 	)
 	// Implement your reset password logic here (e.g., validate reset token, update password)
 	// This is a placeholder implementation, replace with your actual logic
 	if err := s.validator.Validate(req); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "reset password", err))
 		return nil, status.Error(codes.InvalidArgument, "reset password fail by invalid data")
 	}
 
 	if req.NewPassword != req.ConfirmPassword {
-		s.logError(ctx, errors.New("new password not match confirm password"))
+		s.logger.Error(common.StandardMsgError(ctx, "reset password", errors.New("new password not match confirm password")))
 		return nil, status.Error(codes.InvalidArgument, "new password not match confirm password")
 	}
 
@@ -233,7 +222,7 @@ func (s *AuthService) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 		fmt.Sprintf("%v:%v", prefixForgotPasswordSessionStorage, req.ResetToken),
 	)
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "reset password", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -241,13 +230,13 @@ func (s *AuthService) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 
 	user, err := s.userRepo.FindOneByEmail(email)
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "reset password", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
 	hashPw, err := argon.EncodePassword(req.NewPassword)
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "reset password", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -255,7 +244,7 @@ func (s *AuthService) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 		"password": hashPw,
 	})
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "reset password", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
@@ -266,27 +255,27 @@ func (s *AuthService) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 func (s *AuthService) SignUp(ctx context.Context, req *pb.SignUpRequest) (*emptypb.Empty, error) {
 	// Implement your signup logic here (e.g., create user account)
 	// This is a placeholder implementation, replace with your actual logic
-	s.logger.Infor("Signup request with email:" + req.GetEmail())
+	s.logger.Infor(common.StandardMsgInfor(ctx, "sign up", "email:"+req.Email))
 
 	if err := s.validator.Validate(req); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "sign up", err))
 		return nil, status.Error(codes.InvalidArgument, "sign up fail by invalid data")
 	}
 
 	// parse to map
 	mapUser, err := convert.StructProtoToMap(req)
 	if err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "sign up", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
 	if _, err := s.userRepo.CreateUser(mapUser); err != nil {
-		s.logError(ctx, err)
+		s.logger.Error(common.StandardMsgError(ctx, "sign up", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
 	s.logger.Infor(
-		fmt.Sprintf("from ip:%v  sign up success account for email :%v", getClientIp(ctx), req.Email),
+		common.StandardMsgInfor(ctx, "sign up", "success full email"+req.Email),
 	)
 
 	return &emptypb.Empty{}, nil

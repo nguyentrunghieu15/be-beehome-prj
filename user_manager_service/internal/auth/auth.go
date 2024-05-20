@@ -10,10 +10,6 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
 )
 
-type AuthJWTClaims struct {
-	userId string
-}
-
 type AuthService struct {
 	pb.AuthServiceServer
 	validator       validator.IValidator
