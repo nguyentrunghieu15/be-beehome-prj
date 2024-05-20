@@ -15,6 +15,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -28,12 +29,20 @@ const (
 
 func (s *AuthService) logError(ctx context.Context, err error) {
 	s.logger.Error(
-		fmt.Sprintf("login fail from IP : %v by error: %v", ctx.Value("IP"), err),
+		fmt.Sprintf("login fail from IP : %v by error: %v", getClientIp(ctx), err),
 	)
+}
+
+func getClientIp(ctx context.Context) string {
+	p, _ := peer.FromContext(ctx)
+	return p.Addr.String()
 }
 
 // Login implements the Login RPC method
 func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+	s.logger.Infor(
+		fmt.Sprintf("from ip:%v invoke request login for email account:%v", getClientIp(ctx), req.Email),
+	)
 	// Implement validate infor
 	if err := s.validator.Validate(req); err != nil {
 		s.logError(ctx, err)
@@ -57,15 +66,14 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 	}
 
 	var errs []error
-	accessToken, err := s.jwtGenerator.GenerateToken(&AuthJWTClaims{
-		userId: user.ID.String(),
-	}, jwt.DefaultAccessTokenConfigure)
+	accessToken, err := s.jwtGenerator.GenerateToken(user.ID.String(),
+		jwt.DefaultAccessTokenConfigure)
 	if err != nil {
 		errs = append(errs, err)
 	}
-	refresToken, err := s.jwtGenerator.GenerateToken(&AuthJWTClaims{
-		userId: user.ID.String(),
-	}, jwt.DefaultRefreshTokenConfigure)
+
+	refresToken, err := s.jwtGenerator.GenerateToken(user.ID.String(),
+		jwt.DefaultRefreshTokenConfigure)
 	if err != nil {
 		errs = append(errs, err)
 	}
@@ -107,6 +115,9 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 
 // RefreshToken implements the RefreshToken RPC method
 func (s *AuthService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.RefreshTokenResponse, error) {
+	s.logger.Infor(
+		fmt.Sprintf("invoke refresh token form ip:%v", getClientIp(ctx)),
+	)
 	// Implement your refresh token logic here (e.g., validate refresh token, generate new access token)
 	// This is a placeholder implementation, replace with your actual logic
 	if err := s.validator.Validate(req); err != nil {
@@ -120,7 +131,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 		return nil, status.Error(codes.Internal, "refresh token fail get data")
 	}
 
-	claims, ok := data.(*AuthJWTClaims)
+	userId, ok := data.(string)
 	if !ok {
 		s.logError(ctx, errors.New("cant get claims"))
 		return nil, status.Error(codes.Internal, "refresh token fail get data")
@@ -128,20 +139,20 @@ func (s *AuthService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 
 	//check exist refresh token
 	if value, err := s.sessionStorage.GetSession(
-		fmt.Sprintf("%v:%v", prefixRefreshTokenSessionStorage, claims.userId),
+		fmt.Sprintf("%v:%v", prefixRefreshTokenSessionStorage, userId),
 	); value != req.RefreshToken || err != nil {
 		s.logError(ctx, errors.New("token not exist"))
 		return nil, status.Error(codes.Internal, "refresh token fail get data")
 	}
 
-	newAccessToken, err := s.jwtGenerator.GenerateToken(claims, jwt.DefaultAccessTokenConfigure)
+	newAccessToken, err := s.jwtGenerator.GenerateToken(userId, jwt.DefaultAccessTokenConfigure)
 	if err != nil {
 		s.logError(ctx, err)
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
 	if s.sessionStorage.SaveSession(
-		fmt.Sprintf("%v:%v", prefixAccsessTokenSessionStorage, claims.userId),
+		fmt.Sprintf("%v:%v", prefixAccsessTokenSessionStorage, userId),
 		newAccessToken,
 		datasource.SessionKeyConfig{
 			ExpireTime: jwt.DefaultAccessTokenConfigure.ExpiresTime,
@@ -158,6 +169,9 @@ func (s *AuthService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 
 // ForgotPassword implements the ForgotPassword RPC method
 func (s *AuthService) ForgotPassword(ctx context.Context, req *pb.ForgotPasswordRequest) (*emptypb.Empty, error) {
+	s.logger.Infor(
+		fmt.Sprintf("invoke forgot password form ip:%v", getClientIp(ctx)),
+	)
 	// Implement your forgot password logic here (e.g., send reset password email)
 	// This is a placeholder implementation, replace with your actual logic
 	if err := s.validator.Validate(req); err != nil {
@@ -199,6 +213,9 @@ func (s *AuthService) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 
 // ResetPassword implements the ResetPassword RPC method
 func (s *AuthService) ResetPassword(ctx context.Context, req *pb.ResetPasswordRequest) (*emptypb.Empty, error) {
+	s.logger.Infor(
+		fmt.Sprintf("invoke reset password form ip:%v", getClientIp(ctx)),
+	)
 	// Implement your reset password logic here (e.g., validate reset token, update password)
 	// This is a placeholder implementation, replace with your actual logic
 	if err := s.validator.Validate(req); err != nil {
@@ -267,6 +284,10 @@ func (s *AuthService) SignUp(ctx context.Context, req *pb.SignUpRequest) (*empty
 		s.logError(ctx, err)
 		return nil, status.Error(codes.Internal, "internal server")
 	}
+
+	s.logger.Infor(
+		fmt.Sprintf("from ip:%v  sign up success account for email :%v", getClientIp(ctx), req.Email),
+	)
 
 	return &emptypb.Empty{}, nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -9,7 +10,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	echomiddleware "github.com/labstack/echo/v4/middleware"
 	authapi "github.com/nguyentrunghieu15/be-beehome-prj/api/auth-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/envloader"
@@ -22,6 +23,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/auth"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource/migration"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/middleware"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -120,9 +122,31 @@ func main() {
 		log.Panic(err)
 	}
 
+	logger, _ := manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)
 	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	e.Use(echomiddleware.RequestLoggerWithConfig(echomiddleware.RequestLoggerConfig{
+		LogURI:      true,
+		LogStatus:   true,
+		LogRemoteIP: true,
+		LogProtocol: true,
+		LogLatency:  true,
+		LogError:    true,
+		LogValuesFunc: func(c echo.Context, v echomiddleware.RequestLoggerValues) error {
+			logger.Infor(
+				fmt.Sprintf("uri:%v status:%v remoteip:%v protocol:%v latency:%v error:%v",
+					v.URI,
+					v.Status,
+					v.RemoteIP,
+					v.Protocol,
+					v.Latency,
+					v.Error,
+				),
+			)
+			return nil
+		},
+	}))
+	e.Use(middleware.SecureHeaders())
+	e.Use(echomiddleware.Recover())
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	err = authapi.RegisterAuthServiceHandlerFromEndpoint(context.Background(), mux, "localhost:3001", opts)

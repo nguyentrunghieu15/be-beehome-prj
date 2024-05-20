@@ -9,7 +9,7 @@ import (
 )
 
 type IJsonWebTokenizer interface {
-	GenerateToken(interface{}, TokenConfigure) (string, error)
+	GenerateToken(string, TokenConfigure) (string, error)
 	ParseToken(string) (interface{}, error)
 }
 
@@ -37,14 +37,15 @@ func (*CustomJWTTokenizer) Init() interface{} {
 	return &CustomJWTTokenizer{}
 }
 
-func (*CustomJWTTokenizer) GenerateToken(data interface{}, config TokenConfigure) (string, error) {
-	type TempClaims struct {
-		data interface{}
-		jwt3rdlib.RegisteredClaims
-	}
+type TempClaims struct {
+	UserId string
+	jwt3rdlib.RegisteredClaims
+}
 
-	claim := TempClaims{
-		data,
+func (*CustomJWTTokenizer) GenerateToken(userId string, config TokenConfigure) (string, error) {
+
+	claim := &TempClaims{
+		userId,
 		jwt3rdlib.RegisteredClaims{
 			// A usual scenario is to set the expiration time relative to the current time
 			ExpiresAt: jwt3rdlib.NewNumericDate(time.Now().Add(config.ExpiresTime)),
@@ -52,16 +53,13 @@ func (*CustomJWTTokenizer) GenerateToken(data interface{}, config TokenConfigure
 			NotBefore: jwt3rdlib.NewNumericDate(config.NotBefore),
 		},
 	}
+
 	token := jwt3rdlib.NewWithClaims(jwt3rdlib.SigningMethodHS256, claim)
 	ss, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 	return ss, err
 }
 
 func (*CustomJWTTokenizer) ParseToken(token string) (interface{}, error) {
-	type TempClaims struct {
-		data interface{}
-		jwt3rdlib.RegisteredClaims
-	}
 	jwttoken, err := jwt3rdlib.ParseWithClaims(token, &TempClaims{}, func(token *jwt3rdlib.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
 	})
@@ -69,7 +67,7 @@ func (*CustomJWTTokenizer) ParseToken(token string) (interface{}, error) {
 		return nil, err
 	}
 	if claim, ok := jwttoken.Claims.(*TempClaims); ok {
-		return claim.data, nil
+		return claim.UserId, nil
 	}
 	return nil, errors.New("error get claim from token")
 }
