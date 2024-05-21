@@ -34,9 +34,12 @@ func SetRulesOfCreateUserRequest(v validator.IValidator) {
 
 func SetRulesOfListUsersRequest(v validator.IValidator) {
 	// You might not need validation for ListUsersRequest
-	SetRulesOfPagination(v)
-	SetRulesOfSort(v)
+	validationRules := map[string]string{
+		"Pagination": "omitempty",
+		"Sort":       "omitempty",
+	}
 	// But you can add rules for pagination or sort fields if required
+	v.RegisterRules(validationRules, &userapi.ListUsersRequest{})
 }
 
 func SetRulesOfGetUserRequest(v validator.IValidator) {

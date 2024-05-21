@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	authapi "github.com/nguyentrunghieu15/be-beehome-prj/api/auth-api"
@@ -25,6 +26,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource/migration"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/middleware"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/profiles"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -104,7 +106,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	s := grpc.NewServer()
+	s := grpc.NewServer(grpc.UnaryInterceptor(middleware.UnaryInterceptor))
 
 	authServer, err := auth.NewAuthServiceBuilder().
 		SetLogger(manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)).
@@ -125,7 +127,21 @@ func main() {
 		SetBannedAccount(datasource.NewBannedAccountsRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		SetCardRepo(datasource.NewCardRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		Build()
+	if err != nil {
+		log.Panic(err)
+	}
 	userapi.RegisterUserServiceServer(s, userServer)
+
+	profileServer, err := profiles.NewProfileServiceBuilder().
+		WithLogger(manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)).
+		WithValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
+		WithUserRepo(datasource.NewUserRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+		WithCardRepo(datasource.NewCardRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+		Build()
+	if err != nil {
+		log.Panic(err)
+	}
+	userapi.RegisterProfileServiceServer(s, profileServer)
 
 	go s.Serve(lis)
 
@@ -158,16 +174,30 @@ func main() {
 	}))
 	e.Use(middleware.SecureHeaders())
 	e.Use(echomiddleware.Recover())
-	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	authapi.RegisterAuthServiceHandlerFromEndpoint(context.Background(), mux, "localhost:3001", opts)
-	userapi.RegisterUserServiceHandlerFromEndpoint(context.Background(), mux, "localhost:3001", opts)
+	authmux := runtime.NewServeMux()
+	authapi.RegisterAuthServiceHandlerFromEndpoint(context.Background(), authmux, "localhost:3001", opts)
+	usermux := runtime.NewServeMux()
+	userapi.RegisterUserServiceHandlerFromEndpoint(context.Background(), usermux, "localhost:3001", opts)
+	userapi.RegisterProfileServiceHandlerFromEndpoint(context.Background(), usermux, "localhost:3001", opts)
 
 	if err != nil {
 		log.Panic(err)
 	}
 
-	e.Any("/api/v1/*", echo.WrapHandler(mux))
+	e.Any("/api/v1/auth*", echo.WrapHandler(authmux))
+	e.Any("/api/v1/user*", echo.WrapHandler(usermux),
+		echojwt.WithConfig(echojwt.Config{
+			SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
+		}),
+		middleware.WrapperJwtFunc(),
+	)
+	e.Any("/api/v1/profile*", echo.WrapHandler(usermux),
+		echojwt.WithConfig(echojwt.Config{
+			SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
+		}),
+		middleware.WrapperJwtFunc(),
+	)
 	e.Static("/swagger", "./user_manager_service/static")
 
 	log.Fatal(e.Start(addr))

@@ -45,8 +45,7 @@ func (s *AuthService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 		return nil, status.Error(codes.Unauthenticated, "fail validate credentials")
 	}
 
-	banned, _ := s.bannedAccountRepo.FindOneByUserId(user.ID)
-	if banned != nil {
+	if user.Status == "banned" || user.Status == "deactive" {
 		s.logger.Warn(common.StandardMsgWarn(ctx, "login", "user email:"+req.Email))
 		return nil, status.Error(codes.Aborted, "your email was blocked")
 	}
@@ -292,7 +291,7 @@ func (s *AuthService) SignUp(ctx context.Context, req *pb.SignUpRequest) (*empty
 	}
 
 	s.logger.Infor(
-		common.StandardMsgInfor(ctx, "sign up", "success full email"+req.Email),
+		common.StandardMsgInfor(ctx, "sign up", "success full email:"+req.Email),
 	)
 
 	return &emptypb.Empty{}, nil

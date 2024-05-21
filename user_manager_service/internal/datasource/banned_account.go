@@ -15,7 +15,7 @@ type IBannedAccountsRepo interface {
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*BannedAccount, error)
 	UpdateOneByUserId(uuid.UUID, map[string]interface{}) (*BannedAccount, error)
 	CreateBannedAccount(map[string]interface{}) (*BannedAccount, error)
-	// DeleteOneById(uuid.UUID) error
+	DeleteOneById(uuid.UUID) error
 }
 
 type BannedAccountsRepo struct {
@@ -98,4 +98,8 @@ func (repo *BannedAccountsRepo) CreateBannedAccount(
 		return nil, err
 	}
 	return repo.FindOneById(data["id"].(uuid.UUID))
+}
+
+func (repo *BannedAccountsRepo) DeleteOneById(id uuid.UUID) error {
+	return repo.db.Delete(&BannedAccount{}, id).Error
 }

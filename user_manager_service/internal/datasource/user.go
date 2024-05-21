@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/nguyentrunghieu15/be-beehome-prj/internal/crypto/aes"
 	argon "github.com/nguyentrunghieu15/be-beehome-prj/internal/crypto/argon2"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
@@ -18,6 +17,7 @@ type IUserRepo interface {
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*User, error)
 	CreateUser(map[string]interface{}) (*User, error)
 	DeleteOneById(uuid.UUID) error
+	FindOneProfileById(uuid.UUID) (*User, error)
 }
 
 type UserRepo struct {
@@ -27,6 +27,15 @@ type UserRepo struct {
 func (ur *UserRepo) FindOneById(id uuid.UUID) (*User, error) {
 	user := &User{}
 	result := ur.db.First(user, "id = ?", id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user, nil
+}
+
+func (ur *UserRepo) FindOneProfileById(id uuid.UUID) (*User, error) {
+	user := &User{}
+	result := ur.db.Preload("Cards").First(user, "id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -44,7 +53,7 @@ func (ur *UserRepo) FindOneByEmail(email string) (*User, error) {
 }
 
 func (ur *UserRepo) UpdateOneById(id uuid.UUID, updateParams map[string]interface{}) (*User, error) {
-	user, err := ur.FindOneById(id)
+	_, err := ur.FindOneById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -53,13 +62,7 @@ func (ur *UserRepo) UpdateOneById(id uuid.UUID, updateParams map[string]interfac
 	if result.Error != nil {
 		return nil, result.Error
 	}
-
-	user.Email, err = aes.Decrypt(user.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return ur.FindOneById(id)
 }
 
 func (ur *UserRepo) CreateUser(data map[string]interface{}) (*User, error) {
