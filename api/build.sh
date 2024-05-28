@@ -13,3 +13,7 @@ protoc -I . \
     --openapiv2_out . \
     --openapiv2_opt use_go_templates=true \
     ./api/user-api/user_api.proto
+
+protoc -I . \
+    --go_out . --go_opt paths=source_relative \
+    ./api/pro-api/message.proto
