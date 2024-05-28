@@ -22,19 +22,19 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/captcha"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/auth"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource/migration"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/middleware"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/profiles"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/user"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/auth"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/datasource"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/datasource/migration"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/middleware"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/profiles"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 const (
-	envfile string = "./user_manager_service/.env"
-	logDir  string = "./user_manager_service/logs/user-service.log"
+	envfile string = "./user-manager-service/.env"
+	logDir  string = "./user-manager-service/logs/user-service.log"
 )
 
 var rotateWriterConfig = logwrapper.ConfigRollbackWriter{
@@ -198,7 +198,7 @@ func main() {
 		}),
 		middleware.WrapperJwtFunc(),
 	)
-	e.Static("/swagger", "./user_manager_service/static")
+	e.Static("/swagger", "./user-manager-service/static")
 
 	log.Fatal(e.Start(addr))
 }

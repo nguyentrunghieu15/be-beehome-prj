@@ -6,7 +6,7 @@ import (
 	userapi "github.com/nguyentrunghieu15/be-beehome-prj/api/user-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/datasource"
 )
 
 type UserService struct {

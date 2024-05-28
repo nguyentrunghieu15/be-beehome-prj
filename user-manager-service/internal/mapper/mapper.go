@@ -4,7 +4,7 @@ import (
 	"time"
 
 	userapi "github.com/nguyentrunghieu15/be-beehome-prj/api/user-api"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/datasource"
 )
 
 func ConvertUserToUserInfor(user *datasource.User) (*userapi.UserInfor, error) {

@@ -7,7 +7,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/captcha"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
-	"github.com/nguyentrunghieu15/be-beehome-prj/user_manager_service/internal/datasource"
+	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/datasource"
 )
 
 type AuthService struct {
