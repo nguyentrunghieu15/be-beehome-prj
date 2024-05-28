@@ -45,3 +45,17 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   }
 
 };
+
+
+service ProService {
+  rpc FindPros (FindProsRequest) returns (FindProsResponse);
+  rpc SignUpPro (SignUpProRequest) returns (SignUpProResponse);
+  rpc ChangeNamePro (ChangeNameProRequest) returns (ChangeNameProResponse);
+  rpc EditIntroductionPro (EditIntroductionProRequest) returns (EditIntroductionProResponse);
+  rpc UpdatePro (UpdateProRequest) returns (UpdateProResponse);
+  rpc AddPaymentMethodPro (AddPaymentMethodProRequest) returns (AddPaymentMethodProResponse);
+  rpc ReplyReviewPro (ReplyReviewProRequest) returns (ReplyReviewProResponse);
+  rpc ReviewPro (ReviewProRequest) returns (ReviewProResponse);
+  rpc AddServicePro (AddServiceProRequest) returns (AddServiceProResponse);
+  rpc AddSocialMediaPro (AddSocialMediaProRequest) returns (AddSocialMediaProResponse);
+}
