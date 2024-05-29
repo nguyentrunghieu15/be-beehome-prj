@@ -3,9 +3,10 @@ syntax = "proto3";
 option go_package="github.com/nguyentrunghieu15/be-beehome-prj/proto/proapi";
 
 
-// import "google/api/annotations.proto";
+import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-// import "google/protobuf/empty.proto";
+import "api/pro-api/message.proto";
+import "google/protobuf/empty.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
@@ -48,14 +49,166 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 
 service ProService {
-  rpc FindPros (FindProsRequest) returns (FindProsResponse);
-  rpc SignUpPro (SignUpProRequest) returns (SignUpProResponse);
-  rpc ChangeNamePro (ChangeNameProRequest) returns (ChangeNameProResponse);
-  rpc EditIntroductionPro (EditIntroductionProRequest) returns (EditIntroductionProResponse);
-  rpc UpdatePro (UpdateProRequest) returns (UpdateProResponse);
-  rpc AddPaymentMethodPro (AddPaymentMethodProRequest) returns (AddPaymentMethodProResponse);
-  rpc ReplyReviewPro (ReplyReviewProRequest) returns (ReplyReviewProResponse);
-  rpc ReviewPro (ReviewProRequest) returns (ReviewProResponse);
-  rpc AddServicePro (AddServiceProRequest) returns (AddServiceProResponse);
-  rpc AddSocialMediaPro (AddSocialMediaProRequest) returns (AddSocialMediaProResponse);
+  // Find providers based on search criteria
+  rpc FindPros (FindProsRequest) returns (FindProsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/providers"
+    };
+  }
+
+  rpc FindProById (FindProByIdRequest) returns (FindProByIdResponse){
+    option (google.api.http) = {
+      get: "/api/v1/providers/{id}"
+    };
+  }
+
+  // Sign up as a professional
+  rpc SignUpPro (SignUpProRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/providers/signup"
+      body: "*"
+    };
+  }
+
+  // Update information of a professional
+  rpc UpdatePro (UpdateProRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/api/v1/providers/{id}"
+      body: "*"
+    };
+  }
+
+  // Add a payment method for a professional
+  rpc AddPaymentMethodPro (AddPaymentMethodProRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/providers/add-payment-method"
+      body: "*"
+    };
+  }
+
+  // Reply to a review as a professional
+  rpc ReplyReviewPro (ReplyReviewProRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/providers/reply-review"
+      body: "*"
+    };
+  }
+
+  // Review a professional as a user
+  rpc ReviewPro (ReviewProRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/providers/review"
+      body: "*"
+    };
+  }
+
+  // Add a service offered by a professional
+  rpc AddServicePro (AddServiceProRequest) returns (AddServiceProResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/providers/add-service"
+      body: "*"
+    };
+  }
+
+  // Add social media information for a professional
+  rpc AddSocialMediaPro (AddSocialMediaProRequest) returns (AddSocialMediaProResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/providers/add-social-media"
+      body: "*"
+    };
+  }
+}
+
+message ProviderInfo {
+  string id = 1;
+  string created_at = 2;
+  string created_by = 3;
+  string updated_at = 4;
+  string updated_by = 5;
+  string deleted_by = 6;
+  string deleted_at = 7;
+  string name = 8;
+  string introduction = 9;
+  int32 years = 11;
+  PostalCode postal_code = 12;
+}
+
+// Request message for finding providers
+message FindProsRequest {
+  // Define your request fields here
+}
+
+// Response message for finding providers
+message FindProsResponse {
+  repeated ProviderInfo providers = 1;
+}
+
+// Request message for signing up as a professional
+message SignUpProRequest {
+  string name = 1;
+  string introduction = 2;
+  int32 years = 3;
+  string postal_code = 4;
+  repeated string service_ids = 5;
+}
+
+// Request message for updating information of a professional
+message UpdateProRequest {
+  string id = 5;
+  string name = 1;
+  string introduction = 2;
+  int32 years = 3;
+  string postal_code = 4;
+}
+
+
+// Request message for adding a payment method for a professional
+message AddPaymentMethodProRequest {
+  string name = 9;
+}
+
+
+// Request message for replying to a review as a professional
+message ReplyReviewProRequest {
+  string review_id = 1;
+  string comment = 2;
+}
+
+
+// Request message for reviewing a professional as a user
+message ReviewProRequest {
+  string provider_id = 1;
+  int32  rating = 2;
+  string comment = 3;
+}
+
+// Request message for adding a service offered by a professional
+message AddServiceProRequest {
+  // Define your request fields here
+}
+
+// Response message for adding a service offered by a professional
+message AddServiceProResponse {
+  // Define your response fields here
+}
+
+// Request message for adding social media information for a professional
+message AddSocialMediaProRequest {
+  // Define your request fields here
+}
+
+// Response message for adding social media information for a professional
+message AddSocialMediaProResponse {
+  // Define your response fields here
+}
+
+
+// Request message for finding professional by ID
+message FindProByIdRequest {
+  string id = 1;
+}
+
+// Response message for finding professional by ID
+message FindProByIdResponse {
+  ProviderInfo provider = 1;
 }

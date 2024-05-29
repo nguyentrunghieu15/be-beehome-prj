@@ -70,8 +70,8 @@ message Service {
     string deleted_at = 7;
     string name = 8;
     string detail = 9;
-    double price = 10;
-    string unit_price = 11;
+    // double price = 10;
+    // string unit_price = 11;
 }
 
 message PaymentMethod {
