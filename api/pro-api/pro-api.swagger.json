@@ -462,8 +462,7 @@
           "type": "string"
         },
         "serviceId": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "workTimeFrom": {
           "type": "string"
@@ -475,8 +474,7 @@
           "type": "string"
         },
         "paymentMethodId": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -537,7 +535,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCodeId": {
+        "postalCode": {
           "type": "string"
         }
       },
@@ -623,7 +621,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCodeId": {
+        "postalCode": {
           "type": "string"
         }
       },

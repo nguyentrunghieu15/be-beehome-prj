@@ -154,7 +154,7 @@ message SignUpProRequest {
   string name = 1;
   string introduction = 2;
   int32 years = 3;
-  string postal_code_id = 4;
+  string postal_code = 4;
 }
 
 // Request message for updating information of a professional
@@ -163,7 +163,7 @@ message UpdateProRequest {
   optional string name = 1;
   optional string introduction = 2;
   optional int32 years = 3;
-  optional string postal_code_id = 4;
+  optional string postal_code = 4;
 }
 
 

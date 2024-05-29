@@ -16,6 +16,7 @@ type ProviderService struct {
 	hireRepo        datasource.IHireRepo
 	reviewRepo      datasource.IReviewRepo
 	socialMediaRepo datasource.ISocialMediaRepo
+	postalCodeRepo  datasource.IPostalCodeRepo
 }
 
 type ProviderServiceBuilder struct {
@@ -26,6 +27,7 @@ type ProviderServiceBuilder struct {
 	hireRepo        datasource.IHireRepo
 	reviewRepo      datasource.IReviewRepo
 	socialMediaRepo datasource.ISocialMediaRepo
+	postalCodeRepo  datasource.IPostalCodeRepo
 }
 
 func (b *ProviderServiceBuilder) SetLogger(l logwrapper.ILoggerWrapper) *ProviderServiceBuilder {
@@ -34,6 +36,7 @@ func (b *ProviderServiceBuilder) SetLogger(l logwrapper.ILoggerWrapper) *Provide
 }
 
 func (b *ProviderServiceBuilder) SetValidator(v validator.IValidator) *ProviderServiceBuilder {
+	SetRules(v)
 	b.validator = v
 	return b
 }
@@ -63,6 +66,11 @@ func (b *ProviderServiceBuilder) SetSocialMediaRepo(r datasource.ISocialMediaRep
 	return b
 }
 
+func (b *ProviderServiceBuilder) SetPostalCodeRepo(r datasource.IPostalCodeRepo) *ProviderServiceBuilder {
+	b.postalCodeRepo = r
+	return b
+}
+
 // Build function to create the ProviderService instance
 func (b *ProviderServiceBuilder) Build() (*ProviderService, error) {
 	// Validate required fields (optional)
@@ -76,5 +84,6 @@ func (b *ProviderServiceBuilder) Build() (*ProviderService, error) {
 		hireRepo:        b.hireRepo,
 		reviewRepo:      b.reviewRepo,
 		socialMediaRepo: b.socialMediaRepo,
+		postalCodeRepo:  b.postalCodeRepo,
 	}, nil
 }

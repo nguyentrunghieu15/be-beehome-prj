@@ -19,7 +19,10 @@ func (s *ProviderService) FindPros(ctx context.Context, req *proapi.FindProsRequ
 }
 
 // Find pro by ID
-func (s *ProviderService) FindProById(ctx context.Context, req *proapi.FindProByIdRequest) (*proapi.FindProByIdResponse, error) {
+func (s *ProviderService) FindProById(
+	ctx context.Context,
+	req *proapi.FindProByIdRequest,
+) (*proapi.FindProByIdResponse, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -69,6 +72,13 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 	if err != nil {
 		return nil, err
 	}
+	delete(data, "postal_code")
+
+	postalCode, err := s.postalCodeRepo.FindPostalCodesByZipcode(req.PostalCode)
+	if err != nil {
+		return nil, err
+	}
+	data["postal_code_id"] = postalCode[0].ID
 
 	// Create a new provider record
 	_, err = s.proRepo.CreateProvider(data)
@@ -107,14 +117,19 @@ func (s *ProviderService) UpdatePro(ctx context.Context, req *proapi.UpdateProRe
 }
 
 // Add a payment method for a provider
-func (s *ProviderService) AddPaymentMethodPro(ctx context.Context, req *proapi.AddPaymentMethodProRequest) (*emptypb.Empty, error) {
+func (s *ProviderService) AddPaymentMethodPro(
+	ctx context.Context,
+	req *proapi.AddPaymentMethodProRequest,
+) (*emptypb.Empty, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
 	}
 
 	// Extract provider ID from context (assuming context carries provider ID)
-	providerID := uuid.MustParse(ctx.Value("provider_id").(string)) // Implement this function based on your context usage
+	providerID := uuid.MustParse(
+		ctx.Value("provider_id").(string),
+	) // Implement this function based on your context usage
 
 	// Create payment method data
 	paymentMethodData := map[string]interface{}{
@@ -133,7 +148,10 @@ func (s *ProviderService) AddPaymentMethodPro(ctx context.Context, req *proapi.A
 }
 
 // Reply to a review as a professional
-func (s *ProviderService) ReplyReviewPro(ctx context.Context, req *proapi.ReplyReviewProRequest) (*emptypb.Empty, error) {
+func (s *ProviderService) ReplyReviewPro(
+	ctx context.Context,
+	req *proapi.ReplyReviewProRequest,
+) (*emptypb.Empty, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -222,7 +240,10 @@ func (s *ProviderService) AddServicePro(ctx context.Context, req *proapi.AddServ
 }
 
 // Add social media information for a provider
-func (s *ProviderService) AddSocialMediaPro(ctx context.Context, req *proapi.AddSocialMediaProRequest) (*emptypb.Empty, error) {
+func (s *ProviderService) AddSocialMediaPro(
+	ctx context.Context,
+	req *proapi.AddSocialMediaProRequest,
+) (*emptypb.Empty, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
