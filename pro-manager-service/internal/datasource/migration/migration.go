@@ -15,5 +15,6 @@ func MigrationDatasource(db *database.PostgreDb) error {
 		&datasource.Provider{},
 		&datasource.Review{},
 		&datasource.SocialMedia{},
+		&datasource.Hire{},
 	)
 }

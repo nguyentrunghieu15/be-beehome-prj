@@ -97,3 +97,21 @@ message SocialMedia {
     string link = 9;
     string provider_id = 10;
 }
+
+
+message Hire {
+    string id = 1;
+    string created_at = 2;
+    string created_by = 3;
+    string updated_at = 4;
+    string updated_by = 5;
+    string deleted_by = 6;
+    string deleted_at = 7;
+    string user_id = 8;
+    string provider_id =9;
+    int32 service_id = 10;
+    string work_time_from = 11;
+    string work_time_to = 12;
+    string status = 13;
+    int32 payment_method_id = 14;
+}

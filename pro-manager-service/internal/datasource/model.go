@@ -17,33 +17,36 @@ type SocialMedia struct {
 	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 	Name       string         `json:"name,omitempty"`
 	Link       string         `json:"link,omitempty"`
-	ProviderId string         `json:"provider_id,omitempty"`
+	ProviderId uuid.UUID      `json:"provider_id,omitempty"`
 	Provider   Provider       `json:"provider,omitempty" gorm:"foreignKey:ProviderId"`
 }
 
 type PaymentMethod struct {
-	ID        uuid.UUID      `json:"id,omitempty" gorm:"type:uuid;default:uuid_generate_v4();primarykey;index"`
-	CreatedAt time.Time      `json:"created_at,omitempty"`
-	CreatedBy string         `json:"created_by,omitempty"`
-	UpdatedAt time.Time      `json:"updated_at,omitempty"`
-	UpdatedBy string         `json:"updated_by,omitempty"`
-	DeletedBy string         `json:"deleted_by,omitempty"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
-	Name      string         `json:"name,omitempty"`
+	ID         uuid.UUID      `json:"id,omitempty" gorm:"type:uuid;default:uuid_generate_v4();primarykey;index"`
+	CreatedAt  time.Time      `json:"created_at,omitempty"`
+	CreatedBy  string         `json:"created_by,omitempty"`
+	UpdatedAt  time.Time      `json:"updated_at,omitempty"`
+	UpdatedBy  string         `json:"updated_by,omitempty"`
+	DeletedBy  string         `json:"deleted_by,omitempty"`
+	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	Name       string         `json:"name,omitempty"`
+	ProviderId uuid.UUID      `json:"provider_id,omitempty"`
+	Provider   Provider       `json:"provider,omitempty" gorm:"foreignKey:ProviderId"`
 }
 
 type Service struct {
-	ID        uuid.UUID      `json:"id,omitempty" gorm:"type:uuid;default:uuid_generate_v4();primarykey;index"`
-	CreatedAt time.Time      `json:"created_at,omitempty"`
-	CreatedBy string         `json:"created_by,omitempty"`
-	UpdatedAt time.Time      `json:"updated_at,omitempty"`
-	UpdatedBy string         `json:"updated_by,omitempty"`
-	DeletedBy string         `json:"deleted_by,omitempty"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
-	Name      string         `json:"name,omitempty"`
-	Detail    string         `json:"detail,omitempty"`
-	Price     float64        `json:"price,omitempty"`
-	UnitPrice string         `json:"unit_price,omitempty"`
+	ID             uuid.UUID      `json:"id,omitempty" gorm:"type:uuid;default:uuid_generate_v4();primarykey;index"`
+	CreatedAt      time.Time      `json:"created_at,omitempty"`
+	CreatedBy      string         `json:"created_by,omitempty"`
+	UpdatedAt      time.Time      `json:"updated_at,omitempty"`
+	UpdatedBy      string         `json:"updated_by,omitempty"`
+	DeletedBy      string         `json:"deleted_by,omitempty"`
+	DeletedAt      gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	Name           string         `json:"name,omitempty"`
+	Detail         string         `json:"detail,omitempty"`
+	Price          float64        `json:"price,omitempty"`
+	UnitPrice      string         `json:"unit_price,omitempty"`
+	GroupServiceId uuid.UUID
 }
 
 type GroupService struct {
@@ -56,7 +59,7 @@ type GroupService struct {
 	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 	Name      string         `json:"name,omitempty"`
 	Detail    string         `json:"detail,omitempty"`
-	Services  []*Service     `gorm:"many2many:groupservice_service;"`
+	Services  []*Service     `gorm:"foreignKey:GroupServiceId"`
 }
 
 type Review struct {
@@ -67,13 +70,13 @@ type Review struct {
 	UpdatedBy  string         `json:"updated_by,omitempty"`
 	DeletedBy  string         `json:"deleted_by,omitempty"`
 	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
-	UserId     string         `json:"user_id,omitempty"`
-	ProviderId string         `json:"provider_id,omitempty"`
+	UserId     uuid.UUID      `json:"user_id,omitempty"`
+	ProviderId uuid.UUID      `json:"provider_id,omitempty"`
 	Provider   Provider       `json:"provider,omitempty" gorm:"foreignKey:ProviderId"`
 	Rating     int32          `json:"rating,omitempty"`
 	Comment    string         `json:"comment,omitempty"`
 	Reply      string         `json:"reply,omitempty"`
-	ServiceId  int32          `json:"service_id,omitempty"`
+	ServiceId  uuid.UUID      `json:"service_id,omitempty"`
 	Service    Service        `json:"service,omitempty" gorm:"foreignKey:ServiceId"`
 }
 
@@ -105,7 +108,28 @@ type Provider struct {
 	Years          int32            `json:"years,omitempty"`
 	PostalCodeId   int32            `json:"postal_code_id,omitempty"`
 	PostalCode     PostalCode       `json:"postal_code,omitempty" gorm:"foreignKey:PostalCodeId"`
-	UserId         string           `json:"user_id,omitempty"`
-	PaymentMethods []*PaymentMethod `gorm:"many2many:provider_paymentmethod;"`
+	UserId         uuid.UUID        `json:"user_id,omitempty"`
+	PaymentMethods []*PaymentMethod `gorm:"foreignKey:ProviderId"`
 	SocialMedias   []*SocialMedia   `gorm:"foreignKey:ProviderId"`
+	Services       []*Service       `gorm:"many2many:provider_service;"`
+}
+
+type Hire struct {
+	ID              uuid.UUID      `json:"id,omitempty" gorm:"type:uuid;default:uuid_generate_v4();primarykey;index"`
+	CreatedAt       time.Time      `json:"created_at,omitempty"`
+	CreatedBy       string         `json:"created_by,omitempty"`
+	UpdatedAt       time.Time      `json:"updated_at,omitempty"`
+	UpdatedBy       string         `json:"updated_by,omitempty"`
+	DeletedBy       string         `json:"deleted_by,omitempty"`
+	DeletedAt       gorm.DeletedAt `json:"deleted_at,omitempty"`
+	UserId          string         `json:"user_id,omitempty"`
+	ProviderId      uuid.UUID      `json:"provider_id,omitempty"`
+	Provider        Provider       `json:"provider,omitempty" gorm:"foreignKey:ProviderId"`
+	ServiceId       uuid.UUID      `json:"service_id,omitempty"`
+	Service         Service        `json:"service,omitempty" gorm:"foreignKey:ServiceId"`
+	WorkTimeFrom    string         `json:"work_time_from,omitempty"`
+	WorkTimeTo      string         `json:"work_time_to,omitempty"`
+	Status          string         `json:"status,omitempty"`
+	PaymentMethodId uuid.UUID      `json:"payment_method_id,omitempty"`
+	PaymentMethod   PaymentMethod  `json:"payment_method,omitempty" gorm:"foreignKey:PaymentMethodId"`
 }

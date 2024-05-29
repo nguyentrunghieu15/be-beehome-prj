@@ -1,0 +1,686 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Pro Api For BeeHome",
+    "version": "2.0",
+    "contact": {
+      "name": "Author",
+      "url": "github.com/nguyentrunghieu15",
+      "email": "thanime.15112002@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "ProService"
+    },
+    {
+      "name": "HireService"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/providers": {
+      "get": {
+        "summary": "Find providers based on search criteria",
+        "operationId": "ProService_FindPros",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/FindProsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/add-payment-method": {
+      "post": {
+        "summary": "Add a payment method for a professional",
+        "operationId": "ProService_AddPaymentMethodPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddPaymentMethodProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/add-service": {
+      "post": {
+        "summary": "Add a service offered by a professional",
+        "operationId": "ProService_AddServicePro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddServiceProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/add-social-media": {
+      "post": {
+        "summary": "Add social media information for a professional",
+        "operationId": "ProService_AddSocialMediaPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddSocialMediaProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/reply-review": {
+      "post": {
+        "summary": "Reply to a review as a professional",
+        "operationId": "ProService_ReplyReviewPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReplyReviewProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/review": {
+      "post": {
+        "summary": "Review a professional as a user",
+        "operationId": "ProService_ReviewPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReviewProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/signup": {
+      "post": {
+        "summary": "Sign up as a professional",
+        "operationId": "ProService_SignUpPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SignUpProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/{id}": {
+      "get": {
+        "operationId": "ProService_FindProById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/FindProByIdResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      },
+      "delete": {
+        "operationId": "ProService_DeleteProById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      },
+      "put": {
+        "summary": "Update information of a professional",
+        "operationId": "ProService_UpdatePro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProServiceUpdateProBody"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AddPaymentMethodProRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for adding a payment method for a professional"
+    },
+    "AddServiceProRequest": {
+      "type": "object",
+      "properties": {
+        "serviceId": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for adding a service offered by a professional"
+    },
+    "AddSocialMediaProRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "providerId": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for adding social media information for a professional"
+    },
+    "CreateHireResponse": {
+      "type": "object",
+      "properties": {
+        "hire": {
+          "$ref": "#/definitions/Hire",
+          "title": "Created Hire object with generated ID"
+        }
+      }
+    },
+    "FindAllHireResponse": {
+      "type": "object",
+      "properties": {
+        "hires": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Hire"
+          },
+          "title": "List of Hire objects"
+        }
+      }
+    },
+    "FindProByIdResponse": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "$ref": "#/definitions/ProviderInfo"
+        }
+      },
+      "title": "Response message for finding professional by ID"
+    },
+    "FindProsResponse": {
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/ProviderInfo"
+          }
+        }
+      },
+      "title": "Response message for finding providers"
+    },
+    "Hire": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "providerId": {
+          "type": "string"
+        },
+        "serviceId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "workTimeFrom": {
+          "type": "string"
+        },
+        "workTimeTo": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "paymentMethodId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "PostalCode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "zipcode": {
+          "type": "string"
+        },
+        "place": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "stateCode": {
+          "type": "string"
+        },
+        "province": {
+          "type": "string"
+        },
+        "provinceCode": {
+          "type": "string"
+        },
+        "community": {
+          "type": "string"
+        },
+        "communityCode": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "ProServiceUpdateProBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "years": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "postalCodeId": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for updating information of a professional"
+    },
+    "ProviderInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "years": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "postalCode": {
+          "$ref": "#/definitions/PostalCode"
+        }
+      }
+    },
+    "ReplyReviewProRequest": {
+      "type": "object",
+      "properties": {
+        "reviewId": {
+          "type": "string"
+        },
+        "reply": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for replying to a review as a professional"
+    },
+    "ReviewProRequest": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for reviewing a professional as a user"
+    },
+    "SignUpProRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "years": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "postalCodeId": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for signing up as a professional"
+    },
+    "UpdateStatusHireResponse": {
+      "type": "object",
+      "properties": {
+        "hire": {
+          "$ref": "#/definitions/Hire",
+          "title": "Updated Hire object reflecting the new status"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "externalDocs": {
+    "description": "More about gRPC-Gateway",
+    "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+  }
+}

@@ -62,6 +62,12 @@ service ProService {
     };
   }
 
+  rpc DeleteProById (DeleteProByIdRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      delete: "/api/v1/providers/{id}"
+    };
+  }
+
   // Sign up as a professional
   rpc SignUpPro (SignUpProRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
@@ -103,7 +109,7 @@ service ProService {
   }
 
   // Add a service offered by a professional
-  rpc AddServicePro (AddServiceProRequest) returns (AddServiceProResponse) {
+  rpc AddServicePro (AddServiceProRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/providers/add-service"
       body: "*"
@@ -111,7 +117,7 @@ service ProService {
   }
 
   // Add social media information for a professional
-  rpc AddSocialMediaPro (AddSocialMediaProRequest) returns (AddSocialMediaProResponse) {
+  rpc AddSocialMediaPro (AddSocialMediaProRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/providers/add-social-media"
       body: "*"
@@ -148,17 +154,16 @@ message SignUpProRequest {
   string name = 1;
   string introduction = 2;
   int32 years = 3;
-  string postal_code = 4;
-  repeated string service_ids = 5;
+  string postal_code_id = 4;
 }
 
 // Request message for updating information of a professional
 message UpdateProRequest {
   string id = 5;
-  string name = 1;
-  string introduction = 2;
-  int32 years = 3;
-  string postal_code = 4;
+  optional string name = 1;
+  optional string introduction = 2;
+  optional int32 years = 3;
+  optional string postal_code_id = 4;
 }
 
 
@@ -171,7 +176,7 @@ message AddPaymentMethodProRequest {
 // Request message for replying to a review as a professional
 message ReplyReviewProRequest {
   string review_id = 1;
-  string comment = 2;
+  string reply = 2;
 }
 
 
@@ -184,22 +189,14 @@ message ReviewProRequest {
 
 // Request message for adding a service offered by a professional
 message AddServiceProRequest {
-  // Define your request fields here
-}
-
-// Response message for adding a service offered by a professional
-message AddServiceProResponse {
-  // Define your response fields here
+  string service_id = 1;
 }
 
 // Request message for adding social media information for a professional
 message AddSocialMediaProRequest {
-  // Define your request fields here
-}
-
-// Response message for adding social media information for a professional
-message AddSocialMediaProResponse {
-  // Define your response fields here
+  string name = 8;
+  string link = 9;
+  string provider_id = 10;
 }
 
 
@@ -211,4 +208,59 @@ message FindProByIdRequest {
 // Response message for finding professional by ID
 message FindProByIdResponse {
   ProviderInfo provider = 1;
+}
+
+message DeleteProByIdRequest {
+  string id = 1;
+}
+
+service HireService {
+  rpc FindAllHire (FindAllHireRequest) returns (FindAllHireResponse);
+  rpc CreateHire (CreateHireRequest) returns (CreateHireResponse);
+  rpc UpdateStatusHire (UpdateStatusHireRequest) returns (UpdateStatusHireResponse);
+  rpc DeleteHire (DeleteHireRequest) returns (google.protobuf.Empty);
+}
+
+message FindAllHireRequest {
+  // Optional filter by user ID
+  optional string user_id = 1;
+
+  // Optional filter by provider ID
+  optional string provider_id = 2;
+
+  // Optional filter by status (can be omitted)
+  optional string status = 3;
+}
+
+
+message FindAllHireResponse {
+  repeated Hire hires = 1; // List of Hire objects
+}
+
+
+message CreateHireRequest {
+  string provider_id =9;
+  int32 service_id = 10;
+  string work_time_from = 11;
+  string work_time_to = 12;
+  string status = 13;
+  int32 payment_method_id = 14;
+}
+
+message CreateHireResponse {
+  Hire hire = 1; // Created Hire object with generated ID
+}
+
+message UpdateStatusHireRequest {
+  string hire_id = 1; // ID of the Hire to update
+  string new_status = 2; // Updated status value
+}
+
+message UpdateStatusHireResponse {
+  Hire hire = 1; // Updated Hire object reflecting the new status
+}
+
+
+message DeleteHireRequest {
+  string hire_id = 1; // ID of the Hire to delete
 }

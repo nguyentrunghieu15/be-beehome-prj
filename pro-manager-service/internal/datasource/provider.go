@@ -2,6 +2,7 @@ package datasource
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,6 +16,7 @@ type IProviderRepo interface {
 	FindOneByName(name string) (*Provider, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*Provider, error)
 	CreateProvider(map[string]interface{}) (*Provider, error)
+	AddServicesForPro(uuid.UUID, ...uuid.UUID) error
 	DeleteOneById(uuid.UUID) error
 }
 
@@ -83,6 +85,46 @@ func (pr *ProviderRepo) DeleteOneById(id uuid.UUID) error {
 	if result.Error != nil {
 		return result.Error
 	}
+	return nil
+}
+
+func (pr *ProviderRepo) AddServicesForPro(providerID uuid.UUID, serviceIDs ...uuid.UUID) error {
+	// Check if provider exists
+	if _, err := pr.FindOneById(providerID); err != nil {
+		return fmt.Errorf("failed to find provider: %v", err)
+	}
+
+	// Create a transaction to ensure data consistency
+	tx := pr.db.Begin()
+	defer func() {
+		if err := recover(); err != nil {
+			tx.Rollback()
+			panic(err)
+		}
+	}()
+
+	// Loop through each service ID
+	for _, serviceID := range serviceIDs {
+		// Check if service exists
+		var count int64
+		if err := pr.db.Model(&Service{}).Where("id = ?", serviceID).Count(&count); err.Error != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to find service: %v", err.Error)
+		}
+
+		// Create association between provider and service using GORM
+		err := tx.Model(&Provider{}).Where("id = ?", providerID).Association("Services").Append(&Service{ID: serviceID})
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to associate service: %v", err)
+		}
+	}
+
+	// Commit the transaction if all operations succeed
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("failed to commit transaction: %v", err)
+	}
+
 	return nil
 }
 
