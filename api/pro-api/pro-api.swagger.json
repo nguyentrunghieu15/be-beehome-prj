@@ -330,6 +330,28 @@
         ]
       }
     },
+    "/api/v1/providers/join/user": {
+      "get": {
+        "operationId": "ProService_JoinAsProvider",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/JoinAsProviderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
     "/api/v1/providers/reply-review": {
       "post": {
         "summary": "Reply to a review as a professional",
@@ -406,8 +428,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/ProviderInfo"
             }
           },
           "default": {
@@ -497,8 +518,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/ProviderInfo"
             }
           },
           "default": {
@@ -556,9 +576,6 @@
           "type": "string"
         },
         "link": {
-          "type": "string"
-        },
-        "providerId": {
           "type": "string"
         }
       },
@@ -651,6 +668,14 @@
           "type": "string"
         },
         "paymentMethodId": {
+          "type": "string"
+        }
+      }
+    },
+    "JoinAsProviderResponse": {
+      "type": "object",
+      "properties": {
+        "providerToken": {
           "type": "string"
         }
       }

@@ -62,6 +62,12 @@ service ProService {
     };
   }
 
+  rpc JoinAsProvider (JoinAsProviderRequest) returns (JoinAsProviderResponse){
+    option (google.api.http) = {
+      get: "/api/v1/providers/join/user"
+    };
+  }
+
   rpc DeleteProById (DeleteProByIdRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
       delete: "/api/v1/providers/{id}"
@@ -69,7 +75,7 @@ service ProService {
   }
 
   // Sign up as a professional
-  rpc SignUpPro (SignUpProRequest) returns (google.protobuf.Empty) {
+  rpc SignUpPro (SignUpProRequest) returns (ProviderInfo) {
     option (google.api.http) = {
       post: "/api/v1/providers/signup"
       body: "*"
@@ -77,7 +83,7 @@ service ProService {
   }
 
   // Update information of a professional
-  rpc UpdatePro (UpdateProRequest) returns (google.protobuf.Empty) {
+  rpc UpdatePro (UpdateProRequest) returns (ProviderInfo) {
     option (google.api.http) = {
       put: "/api/v1/providers/{id}"
       body: "*"
@@ -194,9 +200,8 @@ message AddServiceProRequest {
 
 // Request message for adding social media information for a professional
 message AddSocialMediaProRequest {
-  string name = 8;
-  string link = 9;
-  string provider_id = 10;
+  string name = 1;
+  string link = 2;
 }
 
 
@@ -287,4 +292,12 @@ message UpdateStatusHireResponse {
 
 message DeleteHireRequest {
   string hire_id = 1; // ID of the Hire to delete
+}
+
+
+message JoinAsProviderRequest {
+}
+
+message JoinAsProviderResponse {
+  string provider_token = 1;
 }

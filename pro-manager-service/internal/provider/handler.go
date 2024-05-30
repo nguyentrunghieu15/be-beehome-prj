@@ -62,7 +62,7 @@ func (s *ProviderService) DeleteProById(ctx context.Context, req *proapi.DeleteP
 }
 
 // Sign up as a professional
-func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRequest) (*emptypb.Empty, error) {
+func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRequest) (*proapi.ProviderInfo, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -84,8 +84,11 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 	}
 	data["postal_code_id"] = postalCode[0].ID
 
+	userId := uuid.MustParse(ctx.Value("user_id").(string))
+	data["user_id"] = userId
+
 	// Create a new provider record
-	_, err = s.proRepo.CreateProvider(data)
+	createdPro, err := s.proRepo.CreateProvider(data)
 	if err != nil {
 		return nil, err
 	}
@@ -94,11 +97,11 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 	// You might need to add logic to handle payment methods based on your requirements
 
 	// Return empty response (modify if needed)
-	return &emptypb.Empty{}, nil
+	return mapper.MapProviderToInfo(createdPro), nil
 }
 
 // Update information of a professional
-func (s *ProviderService) UpdatePro(ctx context.Context, req *proapi.UpdateProRequest) (*emptypb.Empty, error) {
+func (s *ProviderService) UpdatePro(ctx context.Context, req *proapi.UpdateProRequest) (*proapi.ProviderInfo, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -111,13 +114,13 @@ func (s *ProviderService) UpdatePro(ctx context.Context, req *proapi.UpdateProRe
 	}
 
 	// Update provider using GORM with associations (recommended)
-	_, err = s.proRepo.UpdateOneById(uuid.MustParse(req.Id), updateData)
+	updatedPro, err := s.proRepo.UpdateOneById(uuid.MustParse(req.Id), updateData)
 	if err != nil {
 		return nil, err
 	}
 
 	// Return empty response (modify if needed)
-	return &emptypb.Empty{}, nil
+	return mapper.MapProviderToInfo(updatedPro), nil
 }
 
 // Add a payment method for a provider

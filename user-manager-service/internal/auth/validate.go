@@ -48,7 +48,7 @@ func SetRulesOfSignUpRequest(v validator.IValidator) {
 	validationRules := map[string]string{
 		"Email":     "required,email",
 		"Password":  "required,min=8",
-		"Phone":     "required,min=9",
+		"Phone":     "omitempty,required,min=9",
 		"FirstName": "required",
 		"LastName":  "required",
 	}

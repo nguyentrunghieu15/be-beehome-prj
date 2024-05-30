@@ -174,6 +174,9 @@ func main() {
 	}))
 	e.Use(middleware.SecureHeaders())
 	e.Use(echomiddleware.Recover())
+	e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+	}))
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	authmux := runtime.NewServeMux()
 	authapi.RegisterAuthServiceHandlerFromEndpoint(context.Background(), authmux, "localhost:3001", opts)

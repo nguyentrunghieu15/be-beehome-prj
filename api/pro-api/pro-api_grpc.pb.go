@@ -26,11 +26,12 @@ type ProServiceClient interface {
 	// Find providers based on search criteria
 	FindPros(ctx context.Context, in *FindProsRequest, opts ...grpc.CallOption) (*FindProsResponse, error)
 	FindProById(ctx context.Context, in *FindProByIdRequest, opts ...grpc.CallOption) (*FindProByIdResponse, error)
+	JoinAsProvider(ctx context.Context, in *JoinAsProviderRequest, opts ...grpc.CallOption) (*JoinAsProviderResponse, error)
 	DeleteProById(ctx context.Context, in *DeleteProByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Sign up as a professional
-	SignUpPro(ctx context.Context, in *SignUpProRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	SignUpPro(ctx context.Context, in *SignUpProRequest, opts ...grpc.CallOption) (*ProviderInfo, error)
 	// Update information of a professional
-	UpdatePro(ctx context.Context, in *UpdateProRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdatePro(ctx context.Context, in *UpdateProRequest, opts ...grpc.CallOption) (*ProviderInfo, error)
 	// Add a payment method for a professional
 	AddPaymentMethodPro(ctx context.Context, in *AddPaymentMethodProRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Reply to a review as a professional
@@ -69,6 +70,15 @@ func (c *proServiceClient) FindProById(ctx context.Context, in *FindProByIdReque
 	return out, nil
 }
 
+func (c *proServiceClient) JoinAsProvider(ctx context.Context, in *JoinAsProviderRequest, opts ...grpc.CallOption) (*JoinAsProviderResponse, error) {
+	out := new(JoinAsProviderResponse)
+	err := c.cc.Invoke(ctx, "/ProService/JoinAsProvider", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *proServiceClient) DeleteProById(ctx context.Context, in *DeleteProByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/ProService/DeleteProById", in, out, opts...)
@@ -78,8 +88,8 @@ func (c *proServiceClient) DeleteProById(ctx context.Context, in *DeleteProByIdR
 	return out, nil
 }
 
-func (c *proServiceClient) SignUpPro(ctx context.Context, in *SignUpProRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *proServiceClient) SignUpPro(ctx context.Context, in *SignUpProRequest, opts ...grpc.CallOption) (*ProviderInfo, error) {
+	out := new(ProviderInfo)
 	err := c.cc.Invoke(ctx, "/ProService/SignUpPro", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -87,8 +97,8 @@ func (c *proServiceClient) SignUpPro(ctx context.Context, in *SignUpProRequest, 
 	return out, nil
 }
 
-func (c *proServiceClient) UpdatePro(ctx context.Context, in *UpdateProRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *proServiceClient) UpdatePro(ctx context.Context, in *UpdateProRequest, opts ...grpc.CallOption) (*ProviderInfo, error) {
+	out := new(ProviderInfo)
 	err := c.cc.Invoke(ctx, "/ProService/UpdatePro", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -148,11 +158,12 @@ type ProServiceServer interface {
 	// Find providers based on search criteria
 	FindPros(context.Context, *FindProsRequest) (*FindProsResponse, error)
 	FindProById(context.Context, *FindProByIdRequest) (*FindProByIdResponse, error)
+	JoinAsProvider(context.Context, *JoinAsProviderRequest) (*JoinAsProviderResponse, error)
 	DeleteProById(context.Context, *DeleteProByIdRequest) (*emptypb.Empty, error)
 	// Sign up as a professional
-	SignUpPro(context.Context, *SignUpProRequest) (*emptypb.Empty, error)
+	SignUpPro(context.Context, *SignUpProRequest) (*ProviderInfo, error)
 	// Update information of a professional
-	UpdatePro(context.Context, *UpdateProRequest) (*emptypb.Empty, error)
+	UpdatePro(context.Context, *UpdateProRequest) (*ProviderInfo, error)
 	// Add a payment method for a professional
 	AddPaymentMethodPro(context.Context, *AddPaymentMethodProRequest) (*emptypb.Empty, error)
 	// Reply to a review as a professional
@@ -176,13 +187,16 @@ func (UnimplementedProServiceServer) FindPros(context.Context, *FindProsRequest)
 func (UnimplementedProServiceServer) FindProById(context.Context, *FindProByIdRequest) (*FindProByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindProById not implemented")
 }
+func (UnimplementedProServiceServer) JoinAsProvider(context.Context, *JoinAsProviderRequest) (*JoinAsProviderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method JoinAsProvider not implemented")
+}
 func (UnimplementedProServiceServer) DeleteProById(context.Context, *DeleteProByIdRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProById not implemented")
 }
-func (UnimplementedProServiceServer) SignUpPro(context.Context, *SignUpProRequest) (*emptypb.Empty, error) {
+func (UnimplementedProServiceServer) SignUpPro(context.Context, *SignUpProRequest) (*ProviderInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignUpPro not implemented")
 }
-func (UnimplementedProServiceServer) UpdatePro(context.Context, *UpdateProRequest) (*emptypb.Empty, error) {
+func (UnimplementedProServiceServer) UpdatePro(context.Context, *UpdateProRequest) (*ProviderInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePro not implemented")
 }
 func (UnimplementedProServiceServer) AddPaymentMethodPro(context.Context, *AddPaymentMethodProRequest) (*emptypb.Empty, error) {
@@ -245,6 +259,24 @@ func _ProService_FindProById_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProServiceServer).FindProById(ctx, req.(*FindProByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProService_JoinAsProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JoinAsProviderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProServiceServer).JoinAsProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ProService/JoinAsProvider",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProServiceServer).JoinAsProvider(ctx, req.(*JoinAsProviderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -407,6 +439,10 @@ var ProService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindProById",
 			Handler:    _ProService_FindProById_Handler,
+		},
+		{
+			MethodName: "JoinAsProvider",
+			Handler:    _ProService_JoinAsProvider_Handler,
 		},
 		{
 			MethodName: "DeleteProById",

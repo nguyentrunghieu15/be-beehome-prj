@@ -1,7 +1,6 @@
 package datasource
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -67,13 +66,10 @@ func (pr *ProviderRepo) CreateProvider(data map[string]interface{}) (*Provider, 
 	provider := &Provider{}
 
 	// Check if the ID exists in the data map
-	id, ok := data["ID"].(uuid.UUID)
-	if !ok {
-		return nil, errors.New("failed to retrieve ID from the created data")
-	}
+	id := uuid.MustParse(data["id"].(string))
 
 	// Fetch the created record using the retrieved ID
-	if err := pr.db.First(provider, id).Error; err != nil {
+	if err := pr.db.Preload("PostalCode").First(provider, id).Error; err != nil {
 		return nil, err
 	}
 
