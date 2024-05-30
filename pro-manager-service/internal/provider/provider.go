@@ -87,3 +87,7 @@ func (b *ProviderServiceBuilder) Build() (*ProviderService, error) {
 		postalCodeRepo:  b.postalCodeRepo,
 	}, nil
 }
+
+func NewProviderServiceBuilder() *ProviderServiceBuilder {
+	return &ProviderServiceBuilder{}
+}

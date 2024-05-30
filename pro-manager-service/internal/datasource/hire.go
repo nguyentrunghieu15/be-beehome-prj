@@ -10,10 +10,10 @@ import (
 
 type IHireRepo interface {
 	CreateHire(map[string]interface{}) (*Hire, error)
-	FindOneById(id uint) (*Hire, error)
+	FindOneById(id uuid.UUID) (*Hire, error)
 	FindAll(map[string]interface{}) ([]*Hire, error)
 	UpdateHireById(uuid.UUID, map[string]interface{}) (*Hire, error)
-	DeleteHire(id uint) error
+	DeleteHire(id uuid.UUID) error
 }
 
 type HireRepo struct {

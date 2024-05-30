@@ -1,5 +1,7 @@
 import psycopg2
 import json
+import os
+
 
 def insert_json_data_from_file(data_file, db_name, db_user, db_password, db_host, db_port):
     """Inserts JSON data from a file into a PostgreSQL database.
@@ -31,21 +33,23 @@ def insert_json_data_from_file(data_file, db_name, db_user, db_password, db_host
 
         # Prepare the SQL statement with parameter placeholder
         sql = """
-            INSERT INTO your_table_name (country_code, zipcode, place, state, state_code, province, province_code, community, community_code, latitude, longitude)
+            INSERT INTO postal_codes (country_code, zipcode, place, state, state_code, province, province_code, community, community_code, latitude, longitude)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         # Open the JSON file
         with open(data_file, 'r') as file:
+            data = file.read()
+            data_dict = json.loads(data)
             # Loop through each JSON object in the file
-            for line in file:
-                data_dict = json.loads(line.strip())
+            for item in data_dict:
+                print(item)
 
                 # Execute the insertion with parameter values
-                cursor.execute(sql, (data_dict['country_code'], data_dict['zipcode'], data_dict['place'],
-                                     data_dict['state'], data_dict['state_code'], data_dict['province'],
-                                     data_dict['province_code'], data_dict['community'], data_dict['community_code'],
-                                     data_dict['latitude'], data_dict['longitude']))
+                cursor.execute(sql, (item['country_code'], item['zipcode'], item['place'],
+                                     item['state'], item['state_code'], item['province'],
+                                     item['province_code'], item['community'], item['community_code'],
+                                     item['latitude'], item['longitude']))
 
         # Commit the changes to the database
         connection.commit()
@@ -62,12 +66,42 @@ def insert_json_data_from_file(data_file, db_name, db_user, db_password, db_host
         if connection:
             connection.close()
 
-# Replace placeholders with your actual database credentials and table name
-data_file = "zip_code.json"  # Path to your JSON file
-db_name = "your_database_name"
-db_user = "your_username"
-db_password = "your_password"
-db_host = "your_database_host"
-db_port = 5432  # Default PostgreSQL port
 
-insert_json_data_from_file(data_file, db_name, db_user, db_password, db_host, db_port)
+def get_json_files(folder_path):
+  """
+  This function retrieves all filenames with the .json extension within a directory.
+
+  Args:
+      folder_path: The path to the directory containing the JSON files.
+
+  Returns:
+      A list of filenames (including extension) that are JSON files.
+  """
+  json_files = []
+  for filename in os.listdir(folder_path):
+    if filename.endswith(".json"):
+      json_files.append(f'{folder_path}/{filename}')
+  return json_files
+
+def main():
+    # Example usage
+    folder_path = "./postal-codes-json-xml-csv/data"  # Replace with your actual folder path
+    json_files = get_json_files(folder_path)
+
+    if json_files:
+      print("Found JSON files:")
+    if len(json_files):
+        print(json_files)
+    else:
+        print("No JSON files found in the specified folder.")
+#    Replace placeholders with your actual database credentials and table name
+    db_name = "beehome"
+    db_user = "hiro"
+    db_password = "1"
+    db_host = "localhost"
+    db_port = 5432  # Default PostgreSQL port
+
+    for file in json_files:
+       insert_json_data_from_file(file, db_name, db_user, db_password, db_host, db_port)
+
+main()

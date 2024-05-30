@@ -8,7 +8,7 @@ type IPostalCodeRepo interface {
 	FindPostalCodesByCountryCode(string) ([]*PostalCode, error)
 	FindPostalCodesByZipcode(string) ([]*PostalCode, error)
 	UpdateOneById(int32, map[string]interface{}) (*PostalCode, error)
-	CreatePostalCode(map[string]interface{}) (*PostalCode, error)
+	// CreatePostalCode(map[string]interface{}) (*PostalCode, error)
 	DeleteOneById(int32) error
 }
 

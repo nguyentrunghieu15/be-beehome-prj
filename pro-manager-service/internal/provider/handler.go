@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -77,6 +78,9 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 	postalCode, err := s.postalCodeRepo.FindPostalCodesByZipcode(req.PostalCode)
 	if err != nil {
 		return nil, err
+	}
+	if len(postalCode) == 0 {
+		return nil, errors.New("not found zip code")
 	}
 	data["postal_code_id"] = postalCode[0].ID
 

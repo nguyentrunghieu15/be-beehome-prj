@@ -214,11 +214,35 @@ message DeleteProByIdRequest {
   string id = 1;
 }
 
+// Service definition for managing hires
 service HireService {
-  rpc FindAllHire (FindAllHireRequest) returns (FindAllHireResponse);
-  rpc CreateHire (CreateHireRequest) returns (CreateHireResponse);
-  rpc UpdateStatusHire (UpdateStatusHireRequest) returns (UpdateStatusHireResponse);
-  rpc DeleteHire (DeleteHireRequest) returns (google.protobuf.Empty);
+  // Retrieves all hires
+  rpc FindAllHire (FindAllHireRequest) returns (FindAllHireResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/hires" // Customize the HTTP path as needed
+    };
+  }
+
+  // Creates a new hire
+  rpc CreateHire (CreateHireRequest) returns (CreateHireResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/hires"
+    };
+  }
+
+  // Updates the status of a hire
+  rpc UpdateStatusHire (UpdateStatusHireRequest) returns (UpdateStatusHireResponse) {
+    option (google.api.http) = {
+      patch: "/api/v1/hires/{hire_id}" // Use path variable for hire ID
+    };
+  }
+
+  // Deletes a hire (assuming it's idempotent)
+  rpc DeleteHire (DeleteHireRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/hires/{hire_id}"
+    };
+  }
 }
 
 message FindAllHireRequest {
