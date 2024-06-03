@@ -50,6 +50,27 @@
         "tags": [
           "ProfileService"
         ]
+      },
+      "delete": {
+        "operationId": "ProfileService_DeactiveAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProfileService"
+        ]
       }
     },
     "/api/v1/profile/add-card": {
@@ -492,10 +513,13 @@
         "phone": {
           "type": "string"
         },
-        "name": {
+        "status": {
           "type": "string"
         },
-        "status": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
           "type": "string"
         }
       }

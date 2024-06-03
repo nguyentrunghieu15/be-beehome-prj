@@ -21,9 +21,6 @@ func ConvertUserToUserInfor(user *datasource.User) (*userapi.UserInfor, error) {
 		deletedAt = user.DeletedAt.Time.Format(time.RFC3339Nano)
 	}
 
-	// Combine first and last name for UserInfor.Name
-	name := user.FirstName + " " + user.LastName
-
 	return &userapi.UserInfor{
 		Id:        user.ID.String(),
 		CreatedAt: createdAt,
@@ -31,8 +28,9 @@ func ConvertUserToUserInfor(user *datasource.User) (*userapi.UserInfor, error) {
 		DeletedAt: deletedAt,
 		Email:     user.Email,
 		Phone:     user.Phone,
-		Name:      name,
 		Status:    user.Status,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
 	}, nil
 }
 

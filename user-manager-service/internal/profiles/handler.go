@@ -43,7 +43,10 @@ func (ps *ProfileService) AddCard(ctx context.Context, req *userapi.AddCardReque
 	return &emptypb.Empty{}, nil
 }
 
-func (ps *ProfileService) ChangeEmail(ctx context.Context, req *userapi.ChangeEmailRequest) (*userapi.UserInfor, error) {
+func (ps *ProfileService) ChangeEmail(
+	ctx context.Context,
+	req *userapi.ChangeEmailRequest,
+) (*userapi.UserInfor, error) {
 	ps.logger.Infor(common.StandardMsgInfor(ctx, "change email", "user id:"+ctx.Value("user_id").(string)))
 	// Validate the request using the validator
 	if err := ps.validator.Validate(req); err != nil {
@@ -129,4 +132,24 @@ func (ps *ProfileService) GetProfile(ctx context.Context, req *emptypb.Empty) (*
 	}
 	// Return the user information
 	return userInfo, nil
+}
+
+func (ps *ProfileService) DeactiveAccount(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	userId, err := uuid.Parse(ctx.Value("user_id").(string))
+	if err != nil {
+		ps.logger.Error(common.StandardMsgError(ctx, "deactive account", err))
+		return nil, status.Error(codes.Internal, "internal server")
+	}
+
+	_, err = ps.userRepo.UpdateOneById(userId, map[string]interface{}{"status": "deactive"})
+	if err != nil {
+		ps.logger.Error(common.StandardMsgError(ctx, "deactive account", err))
+		return nil, status.Error(codes.Internal, "internal server")
+	}
+	err = ps.userRepo.DeleteOneById(userId)
+	if err != nil {
+		ps.logger.Error(common.StandardMsgError(ctx, "deactive account", err))
+		return nil, status.Error(codes.Internal, "internal server")
+	}
+	return &emptypb.Empty{}, nil
 }

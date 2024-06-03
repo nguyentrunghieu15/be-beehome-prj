@@ -129,8 +129,9 @@ message UserInfor {
   string deleted_at = 7;
   string email = 8;
   string phone = 10;
-  string name = 11;
   string status = 12;
+  string first_name = 11;
+  string last_name = 13;
 }
 
 message ListUsersRequest {
@@ -207,6 +208,12 @@ service ProfileService {
     option (google.api.http) = {
       post: "/api/v1/profile/add-card"
       body:"*"
+    };
+  };
+
+  rpc DeactiveAccount (google.protobuf.Empty) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      delete: "/api/v1/profile"
     };
   };
 }

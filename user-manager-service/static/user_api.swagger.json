@@ -492,10 +492,13 @@
         "phone": {
           "type": "string"
         },
-        "name": {
+        "status": {
           "type": "string"
         },
-        "status": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
           "type": "string"
         }
       }
