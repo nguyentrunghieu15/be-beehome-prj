@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+option go_package="github.com/nguyentrunghieu15/be-beehome-prj/proto/proapi";
+
+
+import "google/api/annotations.proto";
+// import "protoc-gen-openapiv2/options/annotations.proto";
+import "api/pro-api/message.proto";
+import "google/protobuf/empty.proto";
+
+// Request message for listing services
+message ListServicesRequest {
+    // Optional filter criteria (e.g., page number, limit)
+    // ...
+    string name = 1;
+  }
+  
+// Response message for listing services
+message ListServicesResponse {
+repeated Service services = 1;
+}
+
+// Request message for getting a service by name
+message GetServiceRequest {
+    string id = 1;
+}
+
+// Request message for creating a service
+message CreateServiceRequest {
+    string name = 1;
+    string detail = 2;
+    string group_service_id = 3;
+}
+
+// Request message for updating a service
+message UpdateServiceRequest {
+    string id = 1;
+    string name = 2;
+    string detail = 3;
+}
+
+// Request message for deleting a service
+message DeleteServiceRequest {
+    string id = 1;
+}
+
+// Service definition for managing services
+service ServiceManagerService {
+    rpc ListServices(ListServicesRequest) returns (ListServicesResponse) {
+        option (google.api.http) = {
+        get: "/api/v1/services"
+        };
+    }
+
+    rpc GetService(GetServiceRequest) returns (Service) {
+        option (google.api.http) = {
+        get: "/api/v1/services/{id}"
+        };
+    }
+
+    rpc CreateService(CreateServiceRequest) returns (Service) {
+        option (google.api.http) = {
+        post: "/api/v1/services"
+        body: "*"
+        };
+    }
+
+    rpc UpdateService(UpdateServiceRequest) returns (Service) {
+        option (google.api.http) = {
+        patch: "/api/v1/services/{id}"
+        body: "*"
+        };
+    }
+
+    rpc DeleteService(DeleteServiceRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+        delete: "/api/v1/services/{id}"
+        };
+    }
+}

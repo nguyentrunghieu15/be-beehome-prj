@@ -12,7 +12,7 @@ func WrapperJwtFunc() echo.MiddlewareFunc {
 			// Access request headers
 			user := c.Get("user").(*jwt.Token)
 			if claim, ok := user.Claims.(jwt.MapClaims); ok {
-				c.Request().Header.Set("Grpc-Metadata-user-id", claim["UserId"].(string))
+				c.Request().Header.Set("Grpc-Metadata-user-id", claim["ID"].(string))
 			}
 			// Call the next handler in the chain
 			return next(c)

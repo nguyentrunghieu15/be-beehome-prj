@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
+	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper.go"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -87,6 +88,11 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 	userId := uuid.MustParse(ctx.Value("user_id").(string))
 	data["user_id"] = userId
 
+	providerAlready, _ := s.proRepo.FindOneByUserId(userId)
+	if providerAlready != nil {
+		return nil, errors.New("Provider exist")
+	}
+
 	// Create a new provider record
 	createdPro, err := s.proRepo.CreateProvider(data)
 	if err != nil {
@@ -111,6 +117,18 @@ func (s *ProviderService) UpdatePro(ctx context.Context, req *proapi.UpdateProRe
 	updateData, err := convert.StructProtoToMap(req)
 	if err != nil {
 		return nil, err
+	}
+
+	if _, ok := updateData["postal_code"]; ok {
+		postalCode, err := s.postalCodeRepo.FindPostalCodesByZipcode(req.GetPostalCode())
+		if err != nil {
+			return nil, err
+		}
+		if len(postalCode) == 0 {
+			return nil, errors.New("not found zip code")
+		}
+		delete(updateData, "postal_code")
+		updateData["postal_code_id"] = postalCode[0].ID
 	}
 
 	// Update provider using GORM with associations (recommended)
@@ -276,4 +294,41 @@ func (s *ProviderService) AddSocialMediaPro(
 
 	// Return empty response (modify if needed)
 	return &emptypb.Empty{}, nil
+}
+
+func (s *ProviderService) JoinAsProvider(ctx context.Context, req *proapi.JoinAsProviderRequest) (*proapi.JoinAsProviderResponse, error) {
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	// Extract user ID from context (assuming context carries user ID)
+	userID := uuid.MustParse(ctx.Value("user_id").(string))
+
+	pro, err := s.proRepo.FindOneByUserId(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	proToken, err := s.jwtTokenizer.GenerateToken(pro.ID.String(), jwt.DefaultAccessTokenConfigure)
+	if err != nil {
+		return nil, err
+	}
+	return &proapi.JoinAsProviderResponse{ProviderToken: proToken}, nil
+}
+
+func (s *ProviderService) GetProviderProfile(ctx context.Context, req *emptypb.Empty) (*proapi.ProviderProfileResponse, error) {
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	// Extract provider ID from context (assuming context carries provider ID)
+	providerID := uuid.MustParse(ctx.Value("provider_id").(string))
+
+	provider, err := s.proRepo.FindOneById(providerID)
+	if err != nil {
+		return nil, err
+	}
+	return &proapi.ProviderProfileResponse{Provider: mapper.MapProviderToInfo(provider)}, nil
 }

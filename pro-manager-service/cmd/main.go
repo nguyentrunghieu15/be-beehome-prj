@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
@@ -17,11 +18,13 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	singletonmanager "github.com/nguyentrunghieu15/be-beehome-prj/internal/singleton_manager"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
+	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource/migration"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/hireservice"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/middleware"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/provider"
+	servicemanager "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/service-manager"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -74,14 +77,14 @@ func initObject(manager *singletonmanager.SingletonManager) {
 	// Create connection to redis
 	// manager.RegisterInstances(&database.RedisDb{})
 
-	// manager.RegisterInstances(&jwt.CustomJWTTokenizer{})
+	manager.RegisterInstances(&jwt.CustomJWTTokenizer{})
 
 	// manager.RegisterInstances(&captcha.GGRecaptchaService{})
 
 	// manager.RegisterInstances(&mail.MailBox{})
 }
 
-const addr = ":3000"
+const addr = ":3003"
 
 func main() {
 	if err := validateEnverionment(); err != nil {
@@ -96,7 +99,7 @@ func main() {
 	// Auto migration data
 	migration.MigrationDatasource(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))
 
-	lis, err := net.Listen("tcp", ":3001")
+	lis, err := net.Listen("tcp", ":3002")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -111,6 +114,7 @@ func main() {
 		SetValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
 		SetSocialMediaRepo(datasource.NewSocialMediaRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		SetReviewRepo(datasource.NewReviewRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+		SetJwtTokenizer(manager.GetInstance(&jwt.CustomJWTTokenizer{}).(*jwt.CustomJWTTokenizer)).
 		Build()
 	proapi.RegisterProServiceServer(s, proService)
 
@@ -121,6 +125,14 @@ func main() {
 		WithValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
 		Build()
 	proapi.RegisterHireServiceServer(s, hireService)
+
+	serviceServer, err := servicemanager.NewServiceManagerServerBuilder().
+		WithServiceRepo(datasource.NewServiceRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).           // Provide the appropriate parameters
+		WithGroupServiceRepo(datasource.NewGroupServiceRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))). // Provide the appropriate parameters
+		WithLogger(manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)).
+		WithValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
+		Build()
+	proapi.RegisterServiceManagerServiceServer(s, serviceServer)
 
 	go s.Serve(lis)
 
@@ -149,15 +161,40 @@ func main() {
 	}))
 	e.Use(middleware.SecureHeaders())
 	e.Use(echomiddleware.Recover())
+	e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+	}))
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
 	proMux := runtime.NewServeMux()
-	proapi.RegisterProServiceHandlerFromEndpoint(context.Background(), proMux, "localhost:3001", opts)
-	e.Any("/api/v1/providers*", echo.WrapHandler(proMux))
+	proapi.RegisterProServiceHandlerFromEndpoint(context.Background(), proMux, "localhost:3002", opts)
+	e.Any("/api/v1/providers*", echo.WrapHandler(proMux),
+		echojwt.WithConfig(echojwt.Config{
+			SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
+		}),
+		middleware.WrapperJwtFunc(),
+		middleware.AttachProviderFunc(),
+	)
 
 	hireMux := runtime.NewServeMux()
-	proapi.RegisterHireServiceHandlerFromEndpoint(context.Background(), proMux, "localhost:3001", opts)
-	e.Any("/api/v1/hires*", echo.WrapHandler(hireMux))
+	proapi.RegisterHireServiceHandlerFromEndpoint(context.Background(), proMux, "localhost:3002", opts)
+	e.Any("/api/v1/hires*", echo.WrapHandler(hireMux),
+		echojwt.WithConfig(echojwt.Config{
+			SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
+		}),
+		middleware.WrapperJwtFunc(),
+		middleware.AttachProviderFunc(),
+	)
+
+	serviceMux := runtime.NewServeMux()
+	proapi.RegisterServiceManagerServiceHandlerFromEndpoint(context.Background(), proMux, "localhost:3002", opts)
+	e.Any("/api/v1/services*", echo.WrapHandler(serviceMux),
+		echojwt.WithConfig(echojwt.Config{
+			SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
+		}),
+		middleware.WrapperJwtFunc(),
+		middleware.AttachProviderFunc(),
+	)
 
 	e.Static("/swagger", "./pro-manager-service/static")
 

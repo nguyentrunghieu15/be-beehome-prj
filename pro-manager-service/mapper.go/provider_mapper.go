@@ -11,9 +11,10 @@ func MapProviderToInfo(provider *datasource.Provider) *proapi.ProviderInfo {
 	// Handle potential conversion errors (e.g., time format)
 	createdAt := provider.CreatedAt.Format(time.RFC3339Nano)
 	deletedAt := ""
+	updatedAt := ""
 
 	if !provider.UpdatedAt.IsZero() {
-		deletedAt = provider.UpdatedAt.Format(time.RFC3339Nano)
+		updatedAt = provider.UpdatedAt.Format(time.RFC3339Nano)
 	}
 
 	if !provider.DeletedAt.Time.IsZero() {
@@ -23,7 +24,7 @@ func MapProviderToInfo(provider *datasource.Provider) *proapi.ProviderInfo {
 		Id:           provider.ID.String(),
 		CreatedAt:    createdAt, // Assuming time format
 		CreatedBy:    provider.CreatedBy,
-		UpdatedAt:    provider.UpdatedAt.Format(time.RFC3339Nano), // Assuming time format
+		UpdatedAt:    updatedAt, // Assuming time format
 		UpdatedBy:    provider.UpdatedBy,
 		DeletedBy:    provider.DeletedBy,
 		DeletedAt:    deletedAt, // Assuming time format (if applicable)

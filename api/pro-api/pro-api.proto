@@ -36,11 +36,23 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         in: IN_HEADER;
         name: "Authorization";
       }
+    },
+    security: {
+      key: "ProviderIdHeader";
+      value: {
+        type: TYPE_API_KEY;
+        in: IN_HEADER;
+        name: "Provider-Id";
+      }
     }
-  }
+  },
   security: {
     security_requirement: {
       key: "ApiKeyAuth";
+      value: {};
+    },
+    security_requirement: {
+      key: "ProviderIdHeader";
       value: {};
     }
   }
@@ -56,29 +68,39 @@ service ProService {
     };
   }
 
+  // Find providers based on search by id
   rpc FindProById (FindProByIdRequest) returns (FindProByIdResponse){
     option (google.api.http) = {
       get: "/api/v1/providers/{id}"
     };
   }
 
-  rpc JoinAsProvider (JoinAsProviderRequest) returns (JoinAsProviderResponse){
+  // get provider profile of user logined
+  rpc GetProviderProfile (google.protobuf.Empty) returns (ProviderProfileResponse){
     option (google.api.http) = {
-      get: "/api/v1/providers/join/user"
+      get: "/api/v1/providers/owner/profile"
     };
   }
 
+  //delete pro by id
   rpc DeleteProById (DeleteProByIdRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
       delete: "/api/v1/providers/{id}"
     };
   }
 
-  // Sign up as a professional
+  // Sign up as a provider
   rpc SignUpPro (SignUpProRequest) returns (ProviderInfo) {
     option (google.api.http) = {
       post: "/api/v1/providers/signup"
       body: "*"
+    };
+  }
+
+  // get token of provider
+  rpc JoinAsProvider (JoinAsProviderRequest) returns (JoinAsProviderResponse){
+    option (google.api.http) = {
+      post: "/api/v1/providers"
     };
   }
 
@@ -212,6 +234,10 @@ message FindProByIdRequest {
 
 // Response message for finding professional by ID
 message FindProByIdResponse {
+  ProviderInfo provider = 1;
+}
+
+message ProviderProfileResponse {
   ProviderInfo provider = 1;
 }
 

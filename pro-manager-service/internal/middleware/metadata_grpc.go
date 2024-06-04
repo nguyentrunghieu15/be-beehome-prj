@@ -19,6 +19,10 @@ func UnaryInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo, 
 	if userId, ok := md["user-id"]; ok {
 		newctx = context.WithValue(ctx, "user_id", userId[0])
 	}
+	if providerId, ok := md["provider-id"]; ok {
+		newctx = context.WithValue(ctx, "provider_id", providerId[0])
+	}
+
 	m, err := handler(newctx, req)
 	return m, err
 }

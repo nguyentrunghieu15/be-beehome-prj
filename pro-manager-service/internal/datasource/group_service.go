@@ -9,12 +9,12 @@ import (
 )
 
 type IGroupServiceRepo interface {
-	FindGroupServices(interface{}) ([]*GroupService, error)
 	FindOneById(uuid.UUID) (*GroupService, error)
 	FindOneByName(name string) (*GroupService, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*GroupService, error)
 	CreateGroupService(map[string]interface{}) (*GroupService, error)
 	DeleteOneById(uuid.UUID) error
+	FulltextSearchGroupServiceByName(string) ([]*GroupService, error)
 }
 
 type GroupServiceRepo struct {
@@ -79,8 +79,24 @@ func (gr *GroupServiceRepo) DeleteOneById(id uuid.UUID) error {
 	return nil
 }
 
-func (gr *GroupServiceRepo) FindGroupServices(req interface{}) ([]*GroupService, error) {
-	return nil, nil
+func (gr *GroupServiceRepo) FulltextSearchGroupServiceByName(name string) ([]*GroupService, error) {
+	// Build the query with full-text search on Name
+	query := gr.db.Debug().Where("to_tsvector('simple', name) @@ plainto_tsvector('simple', ?)", name)
+
+	// Apply soft delete filter (if applicable)
+	if gr.db.Dialector.Name() == "postgres" {
+		query = query.Where("deleted_at IS NULL")
+	}
+
+	// Execute the query and scan the results
+	var groups []*GroupService
+	err := query.Find(&groups)
+	if err.Error != nil {
+		return nil, err.Error
+	}
+
+	// Return the results and any errors
+	return groups, nil
 }
 
 func NewGroupServiceRepo(db *database.PostgreDb) *GroupServiceRepo {

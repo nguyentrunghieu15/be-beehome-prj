@@ -15,6 +15,9 @@
     },
     {
       "name": "HireService"
+    },
+    {
+      "name": "ServiceManagerService"
     }
   ],
   "schemes": [
@@ -226,6 +229,27 @@
         "tags": [
           "ProService"
         ]
+      },
+      "post": {
+        "summary": "get token of provider",
+        "operationId": "ProService_JoinAsProvider",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/JoinAsProviderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProService"
+        ]
       }
     },
     "/api/v1/providers/add-payment-method": {
@@ -330,14 +354,15 @@
         ]
       }
     },
-    "/api/v1/providers/join/user": {
+    "/api/v1/providers/owner/profile": {
       "get": {
-        "operationId": "ProService_JoinAsProvider",
+        "summary": "get provider profile of user logined",
+        "operationId": "ProService_GetProviderProfile",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/JoinAsProviderResponse"
+              "$ref": "#/definitions/ProviderProfileResponse"
             }
           },
           "default": {
@@ -422,7 +447,7 @@
     },
     "/api/v1/providers/signup": {
       "post": {
-        "summary": "Sign up as a professional",
+        "summary": "Sign up as a provider",
         "operationId": "ProService_SignUpPro",
         "responses": {
           "200": {
@@ -455,6 +480,7 @@
     },
     "/api/v1/providers/{id}": {
       "get": {
+        "summary": "Find providers based on search by id",
         "operationId": "ProService_FindProById",
         "responses": {
           "200": {
@@ -483,6 +509,7 @@
         ]
       },
       "delete": {
+        "summary": "delete pro by id",
         "operationId": "ProService_DeleteProById",
         "responses": {
           "200": {
@@ -548,6 +575,162 @@
           "ProService"
         ]
       }
+    },
+    "/api/v1/services": {
+      "get": {
+        "operationId": "ServiceManagerService_ListServices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListServicesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "Optional filter criteria (e.g., page number, limit)\n...",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ServiceManagerService"
+        ]
+      },
+      "post": {
+        "operationId": "ServiceManagerService_CreateService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Service"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateServiceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ServiceManagerService"
+        ]
+      }
+    },
+    "/api/v1/services/{id}": {
+      "get": {
+        "operationId": "ServiceManagerService_GetService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Service"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ServiceManagerService"
+        ]
+      },
+      "delete": {
+        "operationId": "ServiceManagerService_DeleteService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ServiceManagerService"
+        ]
+      },
+      "patch": {
+        "operationId": "ServiceManagerService_UpdateService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Service"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceManagerServiceUpdateServiceBody"
+            }
+          }
+        ],
+        "tags": [
+          "ServiceManagerService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -589,6 +772,21 @@
           "title": "Created Hire object with generated ID"
         }
       }
+    },
+    "CreateServiceRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "groupServiceId": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for creating a service"
     },
     "FindAllHireResponse": {
       "type": "object",
@@ -679,6 +877,19 @@
           "type": "string"
         }
       }
+    },
+    "ListServicesResponse": {
+      "type": "object",
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Service"
+          }
+        }
+      },
+      "title": "Response message for listing services"
     },
     "PostalCode": {
       "type": "object",
@@ -782,6 +993,14 @@
         }
       }
     },
+    "ProviderProfileResponse": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "$ref": "#/definitions/ProviderInfo"
+        }
+      }
+    },
     "ReplyReviewProRequest": {
       "type": "object",
       "properties": {
@@ -809,6 +1028,54 @@
         }
       },
       "title": "Request message for reviewing a professional as a user"
+    },
+    "Service": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "groupId": {
+          "type": "string",
+          "title": "double price = 10;\nstring unit_price = 11;"
+        }
+      }
+    },
+    "ServiceManagerServiceUpdateServiceBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for updating a service"
     },
     "SignUpProRequest": {
       "type": "object",
@@ -872,11 +1139,17 @@
       "type": "apiKey",
       "name": "Authorization",
       "in": "header"
+    },
+    "ProviderIdHeader": {
+      "type": "apiKey",
+      "name": "Provider-Id",
+      "in": "header"
     }
   },
   "security": [
     {
-      "ApiKeyAuth": []
+      "ApiKeyAuth": [],
+      "ProviderIdHeader": []
     }
   ],
   "externalDocs": {

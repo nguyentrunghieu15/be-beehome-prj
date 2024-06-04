@@ -38,14 +38,14 @@ func (*CustomJWTTokenizer) Init() interface{} {
 }
 
 type TempClaims struct {
-	UserId string
+	ID string
 	jwt3rdlib.RegisteredClaims
 }
 
-func (*CustomJWTTokenizer) GenerateToken(userId string, config TokenConfigure) (string, error) {
+func (*CustomJWTTokenizer) GenerateToken(id string, config TokenConfigure) (string, error) {
 
 	claim := &TempClaims{
-		userId,
+		id,
 		jwt3rdlib.RegisteredClaims{
 			// A usual scenario is to set the expiration time relative to the current time
 			ExpiresAt: jwt3rdlib.NewNumericDate(time.Now().Add(config.ExpiresTime)),
@@ -67,7 +67,7 @@ func (*CustomJWTTokenizer) ParseToken(token string) (interface{}, error) {
 		return nil, err
 	}
 	if claim, ok := jwttoken.Claims.(*TempClaims); ok {
-		return claim.UserId, nil
+		return claim.ID, nil
 	}
 	return nil, errors.New("error get claim from token")
 }

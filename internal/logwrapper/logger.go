@@ -30,6 +30,7 @@ type ILoggerWrapper interface {
 	Debug(string)
 	Printf(string, ...interface{})
 	SetWriter(io.Writer)
+	Errorf(string, ...interface{})
 }
 
 // LoggerWrapper struct implements the ILoggerWrapper interface
@@ -65,6 +66,10 @@ func (l *LoggerWrapper) Warn(msg string) {
 // Debug logs a message with DEBUG level
 func (l *LoggerWrapper) Debug(msg string) {
 	l.log(" [debug] " + msg)
+}
+
+func (l *LoggerWrapper) Errorf(format string, v ...interface{}) {
+	l.Printf(" [error] "+format, v...)
 }
 
 // Printf logs a formatted message with any level based on the log package flags

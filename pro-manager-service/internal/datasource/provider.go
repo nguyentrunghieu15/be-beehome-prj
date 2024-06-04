@@ -12,6 +12,7 @@ import (
 type IProviderRepo interface {
 	FindProviders(interface{}) ([]*Provider, error)
 	FindOneById(uuid.UUID) (*Provider, error)
+	FindOneByUserId(uuid.UUID) (*Provider, error)
 	FindOneByName(name string) (*Provider, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*Provider, error)
 	CreateProvider(map[string]interface{}) (*Provider, error)
@@ -26,6 +27,15 @@ type ProviderRepo struct {
 func (pr *ProviderRepo) FindOneById(id uuid.UUID) (*Provider, error) {
 	provider := &Provider{}
 	result := pr.db.Preload("PostalCode").Preload("PaymentMethods").Preload("SocialMedias").First(provider, "id = ?", id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return provider, nil
+}
+
+func (pr *ProviderRepo) FindOneByUserId(id uuid.UUID) (*Provider, error) {
+	provider := &Provider{}
+	result := pr.db.Preload("PostalCode").Preload("PaymentMethods").Preload("SocialMedias").First(provider, "user_id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}

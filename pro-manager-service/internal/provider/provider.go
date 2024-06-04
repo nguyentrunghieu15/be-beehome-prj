@@ -4,6 +4,7 @@ import (
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
+	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource"
 )
 
@@ -17,6 +18,7 @@ type ProviderService struct {
 	reviewRepo      datasource.IReviewRepo
 	socialMediaRepo datasource.ISocialMediaRepo
 	postalCodeRepo  datasource.IPostalCodeRepo
+	jwtTokenizer    jwt.IJsonWebTokenizer
 }
 
 type ProviderServiceBuilder struct {
@@ -28,6 +30,7 @@ type ProviderServiceBuilder struct {
 	reviewRepo      datasource.IReviewRepo
 	socialMediaRepo datasource.ISocialMediaRepo
 	postalCodeRepo  datasource.IPostalCodeRepo
+	jwtTokenizer    jwt.IJsonWebTokenizer
 }
 
 func (b *ProviderServiceBuilder) SetLogger(l logwrapper.ILoggerWrapper) *ProviderServiceBuilder {
@@ -71,6 +74,11 @@ func (b *ProviderServiceBuilder) SetPostalCodeRepo(r datasource.IPostalCodeRepo)
 	return b
 }
 
+func (b *ProviderServiceBuilder) SetJwtTokenizer(j jwt.IJsonWebTokenizer) *ProviderServiceBuilder {
+	b.jwtTokenizer = j
+	return b
+}
+
 // Build function to create the ProviderService instance
 func (b *ProviderServiceBuilder) Build() (*ProviderService, error) {
 	// Validate required fields (optional)
@@ -85,6 +93,7 @@ func (b *ProviderServiceBuilder) Build() (*ProviderService, error) {
 		reviewRepo:      b.reviewRepo,
 		socialMediaRepo: b.socialMediaRepo,
 		postalCodeRepo:  b.postalCodeRepo,
+		jwtTokenizer:    b.jwtTokenizer,
 	}, nil
 }
 

@@ -9,9 +9,10 @@ import (
 )
 
 type IServiceRepo interface {
-	FindServices(interface{}) ([]*Service, error)
 	FindOneById(uuid.UUID) (*Service, error)
-	FindOneByName(name string) (*Service, error)
+	FindOneByName(string) (*Service, error)
+	FulltextSearchServiceByName(string) ([]*Service, error)
+	FulltextSearchServiceByNameOrInGroup(string, ...string) ([]*Service, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*Service, error)
 	CreateService(map[string]interface{}) (*Service, error)
 	DeleteOneById(uuid.UUID) error
@@ -79,8 +80,43 @@ func (sr *ServiceRepo) DeleteOneById(id uuid.UUID) error {
 	return nil
 }
 
-func (sr *ServiceRepo) FindServices(req interface{}) ([]*Service, error) {
-	return nil, nil
+func (sr *ServiceRepo) FulltextSearchServiceByName(name string) ([]*Service, error) {
+	// Build the query with full-text search on Name
+	query := sr.db.Debug().Where("to_tsvector('simple', name) @@ plainto_tsvector('simple', ?)", name)
+
+	// Apply soft delete filter (if applicable)
+	if sr.db.Dialector.Name() == "postgres" {
+		query = query.Where("deleted_at IS NULL")
+	}
+
+	// Execute the query and scan the results
+	var services []*Service
+	err := query.Find(&services)
+	if err.Error != nil {
+		return nil, err.Error
+	}
+	// Return the results and any errors
+	return services, nil
+}
+
+func (sr *ServiceRepo) FulltextSearchServiceByNameOrInGroup(name string, groupIds ...string) ([]*Service, error) {
+	// Build the query with full-text search on Name
+	query := sr.db.Debug().Where("to_tsvector('simple', name) @@ plainto_tsvector('simple', ?)", name).
+		Or("group_service_id IN (?)", groupIds)
+
+	// Apply soft delete filter (if applicable)
+	if sr.db.Dialector.Name() == "postgres" {
+		query = query.Where("deleted_at IS NULL")
+	}
+
+	// Execute the query and scan the results
+	var services []*Service
+	err := query.Find(&services)
+	if err.Error != nil {
+		return nil, err.Error
+	}
+	// Return the results and any errors
+	return services, nil
 }
 
 func NewServiceRepo(db *database.PostgreDb) *ServiceRepo {
