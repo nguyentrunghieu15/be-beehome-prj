@@ -127,8 +127,11 @@ func main() {
 	proapi.RegisterHireServiceServer(s, hireService)
 
 	serviceServer, err := servicemanager.NewServiceManagerServerBuilder().
-		WithServiceRepo(datasource.NewServiceRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).           // Provide the appropriate parameters
-		WithGroupServiceRepo(datasource.NewGroupServiceRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))). // Provide the appropriate parameters
+		WithServiceRepo(datasource.NewServiceRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+		// Provide the appropriate parameters
+		WithGroupServiceRepo(datasource.NewGroupServiceRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+
+		// Provide the appropriate parameters
 		WithLogger(manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)).
 		WithValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
 		Build()
@@ -187,14 +190,8 @@ func main() {
 	)
 
 	serviceMux := runtime.NewServeMux()
-	proapi.RegisterServiceManagerServiceHandlerFromEndpoint(context.Background(), proMux, "localhost:3002", opts)
-	e.Any("/api/v1/services*", echo.WrapHandler(serviceMux),
-		echojwt.WithConfig(echojwt.Config{
-			SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
-		}),
-		middleware.WrapperJwtFunc(),
-		middleware.AttachProviderFunc(),
-	)
+	proapi.RegisterServiceManagerServiceHandlerFromEndpoint(context.Background(), serviceMux, "localhost:3002", opts)
+	e.Any("/api/v1/services*", echo.WrapHandler(serviceMux))
 
 	e.Static("/swagger", "./pro-manager-service/static")
 

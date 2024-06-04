@@ -82,12 +82,7 @@ func (sr *ServiceRepo) DeleteOneById(id uuid.UUID) error {
 
 func (sr *ServiceRepo) FulltextSearchServiceByName(name string) ([]*Service, error) {
 	// Build the query with full-text search on Name
-	query := sr.db.Debug().Where("to_tsvector('simple', name) @@ plainto_tsvector('simple', ?)", name)
-
-	// Apply soft delete filter (if applicable)
-	if sr.db.Dialector.Name() == "postgres" {
-		query = query.Where("deleted_at IS NULL")
-	}
+	query := sr.db.Debug().Where("to_tsvector(name) @@ phraseto_tsquery(?)", name)
 
 	// Execute the query and scan the results
 	var services []*Service
@@ -101,13 +96,8 @@ func (sr *ServiceRepo) FulltextSearchServiceByName(name string) ([]*Service, err
 
 func (sr *ServiceRepo) FulltextSearchServiceByNameOrInGroup(name string, groupIds ...string) ([]*Service, error) {
 	// Build the query with full-text search on Name
-	query := sr.db.Debug().Where("to_tsvector('simple', name) @@ plainto_tsvector('simple', ?)", name).
+	query := sr.db.Debug().Where("to_tsvector(name) @@ phraseto_tsquery(?)", name).
 		Or("group_service_id IN (?)", groupIds)
-
-	// Apply soft delete filter (if applicable)
-	if sr.db.Dialector.Name() == "postgres" {
-		query = query.Where("deleted_at IS NULL")
-	}
 
 	// Execute the query and scan the results
 	var services []*Service

@@ -81,12 +81,7 @@ func (gr *GroupServiceRepo) DeleteOneById(id uuid.UUID) error {
 
 func (gr *GroupServiceRepo) FulltextSearchGroupServiceByName(name string) ([]*GroupService, error) {
 	// Build the query with full-text search on Name
-	query := gr.db.Debug().Where("to_tsvector('simple', name) @@ plainto_tsvector('simple', ?)", name)
-
-	// Apply soft delete filter (if applicable)
-	if gr.db.Dialector.Name() == "postgres" {
-		query = query.Where("deleted_at IS NULL")
-	}
+	query := gr.db.Debug().Where("to_tsvector(name) @@ phraseto_tsquery(?)", name)
 
 	// Execute the query and scan the results
 	var groups []*GroupService
