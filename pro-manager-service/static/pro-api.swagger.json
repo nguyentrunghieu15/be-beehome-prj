@@ -576,6 +576,36 @@
         ]
       }
     },
+    "/api/v1/providers/{id}/services": {
+      "get": {
+        "operationId": "ProService_GetAllServiceOfProvider",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetAllServiceOfProviderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
     "/api/v1/services": {
       "get": {
         "operationId": "ServiceManagerService_ListServices",
@@ -746,8 +776,11 @@
     "AddServiceProRequest": {
       "type": "object",
       "properties": {
-        "serviceId": {
-          "type": "string"
+        "servicesId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "title": "Request message for adding a service offered by a professional"
@@ -782,7 +815,7 @@
         "detail": {
           "type": "string"
         },
-        "groupId": {
+        "groupServiceId": {
           "type": "string"
         }
       },
@@ -822,6 +855,18 @@
         }
       },
       "title": "Response message for finding providers"
+    },
+    "GetAllServiceOfProviderResponse": {
+      "type": "object",
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Service"
+          }
+        }
+      }
     },
     "Hire": {
       "type": "object",
@@ -886,8 +931,7 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/Service"
-          },
-          "description": "Additional information (e.g., total count)\n ..."
+          }
         }
       },
       "title": "Response message for listing services"

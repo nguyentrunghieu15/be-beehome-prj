@@ -75,6 +75,12 @@ service ProService {
     };
   }
 
+  rpc GetAllServiceOfProvider (GetAllServiceOfProviderRequest) returns (GetAllServiceOfProviderResponse){
+    option (google.api.http) = {
+      get: "/api/v1/providers/{id}/services"
+    };
+  };
+
   // get provider profile of user logined
   rpc GetProviderProfile (google.protobuf.Empty) returns (ProviderProfileResponse){
     option (google.api.http) = {
@@ -151,6 +157,14 @@ service ProService {
       body: "*"
     };
   }
+
+  // Delete a service offered by a professional
+  rpc DeleteServicePro (DeleteServiceProRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/providers/delete-service"
+      body: "*"
+    };
+  }
 }
 
 message ProviderInfo {
@@ -217,7 +231,12 @@ message ReviewProRequest {
 
 // Request message for adding a service offered by a professional
 message AddServiceProRequest {
-  string service_id = 1;
+  repeated string services_id = 1;
+}
+
+// Request message for deleting a service offered by a professional
+message DeleteServiceProRequest {
+  repeated string services_id = 1;
 }
 
 // Request message for adding social media information for a professional
@@ -243,6 +262,14 @@ message ProviderProfileResponse {
 
 message DeleteProByIdRequest {
   string id = 1;
+}
+
+message GetAllServiceOfProviderRequest {
+  string id = 1;
+}
+
+message GetAllServiceOfProviderResponse {
+  repeated Service services = 1;
 }
 
 // Service definition for managing hires

@@ -11,7 +11,10 @@ import (
 )
 
 // ListServices implements the ListServices RPC method.
-func (s *ServiceManagerServer) ListServices(ctx context.Context, req *proapi.ListServicesRequest) (*proapi.ListServicesResponse, error) {
+func (s *ServiceManagerServer) ListServices(
+	ctx context.Context,
+	req *proapi.ListServicesRequest,
+) (*proapi.ListServicesResponse, error) {
 	// Validate GetServiceRequest (e.g., check if ID is empty)
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -54,7 +57,10 @@ func (s *ServiceManagerServer) GetService(ctx context.Context, req *proapi.GetSe
 }
 
 // CreateService implements the CreateService RPC method.
-func (s *ServiceManagerServer) CreateService(ctx context.Context, req *proapi.CreateServiceRequest) (*proapi.Service, error) {
+func (s *ServiceManagerServer) CreateService(
+	ctx context.Context,
+	req *proapi.CreateServiceRequest,
+) (*proapi.Service, error) {
 	// Validate CreateServiceRequest (e.g., check if name and group_id are empty)
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -76,7 +82,10 @@ func (s *ServiceManagerServer) CreateService(ctx context.Context, req *proapi.Cr
 }
 
 // UpdateService implements the UpdateService RPC method.
-func (s *ServiceManagerServer) UpdateService(ctx context.Context, req *proapi.UpdateServiceRequest) (*proapi.Service, error) {
+func (s *ServiceManagerServer) UpdateService(
+	ctx context.Context,
+	req *proapi.UpdateServiceRequest,
+) (*proapi.Service, error) {
 	// Validate UpdateServiceRequest (e.g., check if ID and potentially other fields are empty)
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -100,7 +109,10 @@ func (s *ServiceManagerServer) UpdateService(ctx context.Context, req *proapi.Up
 }
 
 // DeleteService implements the DeleteService RPC method.
-func (s *ServiceManagerServer) DeleteService(ctx context.Context, req *proapi.DeleteServiceRequest) (*emptypb.Empty, error) {
+func (s *ServiceManagerServer) DeleteService(
+	ctx context.Context,
+	req *proapi.DeleteServiceRequest,
+) (*emptypb.Empty, error) {
 	// Validate DeleteServiceRequest (e.g., check if ID is empty)
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err

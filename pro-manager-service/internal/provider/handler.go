@@ -109,6 +109,7 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 // Update information of a professional
 func (s *ProviderService) UpdatePro(ctx context.Context, req *proapi.UpdateProRequest) (*proapi.ProviderInfo, error) {
 	// Validate the request
+	fmt.Println(req.Years)
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
 	}
@@ -250,12 +251,15 @@ func (s *ProviderService) AddServicePro(ctx context.Context, req *proapi.AddServ
 
 	// Extract provider ID from context (assuming context carries provider ID)
 	providerID := uuid.MustParse(ctx.Value("provider_id").(string))
+	fmt.Println(providerID)
 
 	// Convert service ID from string to uuid.UUID
-	serviceID := uuid.MustParse(req.GetServiceId())
-
+	servicesID := make([]uuid.UUID, 0)
+	for _, id := range req.GetServicesId() {
+		servicesID = append(servicesID, uuid.MustParse(id))
+	}
 	// Add service to provider using providerRepo
-	err := s.proRepo.AddServicesForPro(providerID, serviceID)
+	err := s.proRepo.AddServicesForPro(providerID, servicesID...)
 	if err != nil {
 		return nil, err
 	}
@@ -296,7 +300,10 @@ func (s *ProviderService) AddSocialMediaPro(
 	return &emptypb.Empty{}, nil
 }
 
-func (s *ProviderService) JoinAsProvider(ctx context.Context, req *proapi.JoinAsProviderRequest) (*proapi.JoinAsProviderResponse, error) {
+func (s *ProviderService) JoinAsProvider(
+	ctx context.Context,
+	req *proapi.JoinAsProviderRequest,
+) (*proapi.JoinAsProviderResponse, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -317,7 +324,10 @@ func (s *ProviderService) JoinAsProvider(ctx context.Context, req *proapi.JoinAs
 	return &proapi.JoinAsProviderResponse{ProviderToken: proToken}, nil
 }
 
-func (s *ProviderService) GetProviderProfile(ctx context.Context, req *emptypb.Empty) (*proapi.ProviderProfileResponse, error) {
+func (s *ProviderService) GetProviderProfile(
+	ctx context.Context,
+	req *emptypb.Empty,
+) (*proapi.ProviderProfileResponse, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -331,4 +341,50 @@ func (s *ProviderService) GetProviderProfile(ctx context.Context, req *emptypb.E
 		return nil, err
 	}
 	return &proapi.ProviderProfileResponse{Provider: mapper.MapProviderToInfo(provider)}, nil
+}
+
+func (s *ProviderService) GetAllServiceOfProvider(
+	ctx context.Context,
+	req *proapi.GetAllServiceOfProviderRequest,
+) (*proapi.GetAllServiceOfProviderResponse, error) {
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	id := uuid.MustParse(req.GetId())
+	services, err := s.proRepo.GetAllServicesOfProvider(id)
+	if err != nil {
+		return nil, err
+	}
+	return &proapi.GetAllServiceOfProviderResponse{Services: mapper.MapToServices(services)}, nil
+}
+
+// Add a service offered by a provider
+func (s *ProviderService) DeleteServicePro(
+	ctx context.Context,
+	req *proapi.DeleteServiceProRequest,
+) (*emptypb.Empty, error) {
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	// Extract provider ID from context (assuming context carries provider ID)
+	providerID := uuid.MustParse(ctx.Value("provider_id").(string))
+	fmt.Println(providerID)
+
+	// Convert service ID from string to uuid.UUID
+	servicesID := make([]uuid.UUID, 0)
+	for _, id := range req.GetServicesId() {
+		servicesID = append(servicesID, uuid.MustParse(id))
+	}
+	// Add service to provider using providerRepo
+	err := s.proRepo.RemoveServicesOfPro(providerID, servicesID...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return empty response (modify if needed)
+	return &emptypb.Empty{}, nil
 }

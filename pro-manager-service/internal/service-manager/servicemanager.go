@@ -30,13 +30,17 @@ func NewServiceManagerServerBuilder() *ServiceManagerServerBuilder {
 }
 
 // WithServiceRepo sets the serviceRepo for the builder.
-func (b *ServiceManagerServerBuilder) WithServiceRepo(serviceRepo datasource.IServiceRepo) *ServiceManagerServerBuilder {
+func (b *ServiceManagerServerBuilder) WithServiceRepo(
+	serviceRepo datasource.IServiceRepo,
+) *ServiceManagerServerBuilder {
 	b.serviceRepo = serviceRepo
 	return b
 }
 
 // WithGroupServiceRepo sets the groupServiceRepo for the builder.
-func (b *ServiceManagerServerBuilder) WithGroupServiceRepo(groupServiceRepo datasource.IGroupServiceRepo) *ServiceManagerServerBuilder {
+func (b *ServiceManagerServerBuilder) WithGroupServiceRepo(
+	groupServiceRepo datasource.IGroupServiceRepo,
+) *ServiceManagerServerBuilder {
 	b.groupServiceRepo = groupServiceRepo
 	return b
 }

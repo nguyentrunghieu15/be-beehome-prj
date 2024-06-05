@@ -46,7 +46,10 @@ func AttachProviderFunc() echo.MiddlewareFunc {
 }
 
 func skipAttachProviderJwt(c echo.Context) bool {
-	if strings.HasSuffix(c.Request().URL.Path, "owner/profile") {
+	if strings.HasSuffix(c.Request().URL.Path, "owner/profile") ||
+		strings.HasSuffix(c.Request().URL.Path, "add-service") ||
+		strings.HasSuffix(c.Request().URL.Path, "add-payment-method") ||
+		strings.HasSuffix(c.Request().URL.Path, "delete-service") {
 		return false
 	}
 	return true
