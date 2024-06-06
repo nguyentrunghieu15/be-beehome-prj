@@ -181,9 +181,20 @@ message ProviderInfo {
   PostalCode postal_code = 12;
 }
 
+
+message FilterProRequest {
+  optional string name = 1;
+  optional string introduction = 2;
+  optional int32 years = 3;
+  optional string postal_code = 4;
+  optional string service_name = 5;
+}
+
 // Request message for finding providers
 message FindProsRequest {
   // Define your request fields here
+  optional FilterProRequest filter = 1;
+  optional Pagination pagination = 2;
 }
 
 // Response message for finding providers

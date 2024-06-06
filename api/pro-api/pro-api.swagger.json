@@ -478,6 +478,78 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "filter.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.introduction",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.years",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter.postalCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.serviceName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.page",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.pageSize",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.sort",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "ASC",
+              "DESC"
+            ],
+            "default": "NONE"
+          },
+          {
+            "name": "pagination.sortBy",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ProService"
         ]
@@ -1239,6 +1311,27 @@
           "type": "string"
         },
         "updatedAtTo": {
+          "type": "string"
+        }
+      }
+    },
+    "FilterProRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "years": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "serviceName": {
           "type": "string"
         }
       }

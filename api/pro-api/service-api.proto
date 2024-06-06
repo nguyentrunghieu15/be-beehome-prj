@@ -34,7 +34,7 @@ message ListServicesRequest {
   
 // Response message for listing services
 message ListServicesResponse {
-repeated Service services = 1;
+    repeated Service services = 1;
 }
 
 // Request message for getting a service by name
