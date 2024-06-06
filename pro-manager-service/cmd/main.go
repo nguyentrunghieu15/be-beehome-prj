@@ -21,6 +21,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource/migration"
+	groupservicemanager "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/groupservice-manager"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/hireservice"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/middleware"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/provider"
@@ -137,6 +138,17 @@ func main() {
 		Build()
 	proapi.RegisterServiceManagerServiceServer(s, serviceServer)
 
+	groupServiceServer, err := groupservicemanager.NewGroupServiceManagerServerBuilder().
+		WithServiceRepo(datasource.NewServiceRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+		// Provide the appropriate parameters
+		WithGroupServiceRepo(datasource.NewGroupServiceRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
+
+		// Provide the appropriate parameters
+		WithLogger(manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)).
+		WithValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
+		Build()
+	proapi.RegisterGroupServiceManagerServer(s, groupServiceServer)
+
 	go s.Serve(lis)
 
 	logger, _ := manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)
@@ -192,6 +204,10 @@ func main() {
 	serviceMux := runtime.NewServeMux()
 	proapi.RegisterServiceManagerServiceHandlerFromEndpoint(context.Background(), serviceMux, "localhost:3002", opts)
 	e.Any("/api/v1/services*", echo.WrapHandler(serviceMux))
+
+	gpServiceMux := runtime.NewServeMux()
+	proapi.RegisterGroupServiceManagerHandlerFromEndpoint(context.Background(), gpServiceMux, "localhost:3002", opts)
+	e.Any("/api/v1/group_services*", echo.WrapHandler(gpServiceMux))
 
 	e.Static("/swagger", "./pro-manager-service/static")
 

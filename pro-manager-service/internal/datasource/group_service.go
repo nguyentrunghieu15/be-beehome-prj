@@ -1,14 +1,19 @@
 package datasource
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
+	"gorm.io/gorm"
 )
 
 type IGroupServiceRepo interface {
+	FindServices(*proapi.ListGroupServicesRequest) ([]*GroupService, error)
 	FindOneById(uuid.UUID) (*GroupService, error)
 	FindOneByName(name string) (*GroupService, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*GroupService, error)
@@ -92,6 +97,84 @@ func (gr *GroupServiceRepo) FulltextSearchGroupServiceByName(name string) ([]*Gr
 
 	// Return the results and any errors
 	return groups, nil
+}
+
+func (gr *GroupServiceRepo) FindServices(req *proapi.ListGroupServicesRequest) ([]*GroupService, error) {
+	var gpServices []*GroupService
+	query := gr.db.Model(&GroupService{})
+
+	// Apply filters based on request parameters
+	if req.Filter != nil {
+		if req.Filter.Name != nil {
+			query = query.Where("name like %?%", *req.Filter.Name)
+		}
+
+		if req.Filter.CreatedAtFrom != nil {
+			from, err := time.Parse(time.RFC3339Nano, *req.Filter.CreatedAtFrom)
+			if err != nil {
+				return nil, fmt.Errorf("invalid created_at_from: %w", err)
+			}
+			query = query.Where("created_at >= ?", from)
+		}
+
+		if req.Filter.CreatedAtTo != nil {
+			to, err := time.Parse(time.RFC3339Nano, *req.Filter.CreatedAtTo)
+			if err != nil {
+				return nil, fmt.Errorf("invalid created_at_to: %w", err)
+			}
+			query = query.Where("created_at <= ?", to)
+		}
+
+		// Add similar filter logic for UpdatedAtFrom and UpdatedAtTo
+
+		if req.Filter.UpdatedAtFrom != nil {
+			from, err := time.Parse(time.RFC3339Nano, *req.Filter.UpdatedAtFrom)
+			if err != nil {
+				return nil, fmt.Errorf("invalid created_at_from: %w", err)
+			}
+			query = query.Where("created_at >= ?", from)
+		}
+
+		if req.Filter.UpdatedAtTo != nil {
+			to, err := time.Parse(time.RFC3339Nano, *req.Filter.UpdatedAtTo)
+			if err != nil {
+				return nil, fmt.Errorf("invalid created_at_to: %w", err)
+			}
+			query = query.Where("created_at <= ?", to)
+		}
+
+	}
+
+	// Apply pagination based on request parameters
+	if req.Pagination != nil {
+		if req.Pagination.Limit != nil {
+			query = query.Limit(int(*req.Pagination.Limit))
+		}
+
+		if req.Pagination.Page != nil && req.Pagination.PageSize != nil {
+			offset := int(*req.Pagination.Page) * int(*req.Pagination.PageSize)
+			query = query.Offset(offset)
+		}
+
+		// Add sorting logic based on req.Pagination.Sort and req.Pagination.SortBy
+		if req.Pagination.Sort != nil && req.Pagination.SortBy != nil {
+			sortField := *req.Pagination.SortBy
+			sortOrder := "ASC"
+			if *req.Pagination.Sort == proapi.TypeSort_DESC {
+				sortOrder = "DESC"
+			}
+			query = query.Order(fmt.Sprintf("%s %s", sortField, sortOrder))
+		}
+	}
+
+	if err := query.Find(&gpServices).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil // No services found, but not an error
+		}
+		return nil, fmt.Errorf("error finding services: %w", err)
+	}
+
+	return gpServices, nil
 }
 
 func NewGroupServiceRepo(db *database.PostgreDb) *GroupServiceRepo {

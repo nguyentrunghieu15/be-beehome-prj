@@ -17,6 +17,9 @@
       "name": "HireService"
     },
     {
+      "name": "GroupServiceManager"
+    },
+    {
       "name": "ServiceManagerService"
     }
   ],
@@ -31,6 +34,255 @@
     "application/json"
   ],
   "paths": {
+    "/api/v1/group_services": {
+      "get": {
+        "operationId": "GroupServiceManager_ListGroupServices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListGroupServicesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.createdAtFrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.createdAtTo",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.updatedAtFrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.updatedAtTo",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.page",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.pageSize",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.sort",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "ASC",
+              "DESC"
+            ],
+            "default": "NONE"
+          },
+          {
+            "name": "pagination.sortBy",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupServiceManager"
+        ]
+      },
+      "post": {
+        "operationId": "GroupServiceManager_CreateGroupService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GroupService"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateGroupServiceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupServiceManager"
+        ]
+      }
+    },
+    "/api/v1/group_services/fulltext/search": {
+      "get": {
+        "operationId": "GroupServiceManager_FulltextSearchGroupServices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListGroupServicesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "Optional filter criteria (e.g., page number, limit)\n...",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupServiceManager"
+        ]
+      }
+    },
+    "/api/v1/group_services/{id}": {
+      "get": {
+        "operationId": "GroupServiceManager_GetGroupService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GroupService"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupServiceManager"
+        ]
+      },
+      "delete": {
+        "operationId": "GroupServiceManager_DeleteGroupService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupServiceManager"
+        ]
+      },
+      "patch": {
+        "operationId": "GroupServiceManager_UpdateGroupService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GroupService"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GroupServiceManagerUpdateGroupServiceBody"
+            }
+          }
+        ],
+        "tags": [
+          "GroupServiceManager"
+        ]
+      }
+    },
     "/api/v1/hires": {
       "get": {
         "summary": "Retrieves all hires",
@@ -659,8 +911,70 @@
         },
         "parameters": [
           {
-            "name": "name",
-            "description": "Optional filter criteria (e.g., page number, limit)\n...",
+            "name": "filter.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.createdAtFrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.createdAtTo",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.updatedAtFrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.updatedAtTo",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.page",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.pageSize",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.sort",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "ASC",
+              "DESC"
+            ],
+            "default": "NONE"
+          },
+          {
+            "name": "pagination.sortBy",
             "in": "query",
             "required": false,
             "type": "string"
@@ -694,6 +1008,37 @@
             "schema": {
               "$ref": "#/definitions/CreateServiceRequest"
             }
+          }
+        ],
+        "tags": [
+          "ServiceManagerService"
+        ]
+      }
+    },
+    "/api/v1/services/fulltext/search": {
+      "get": {
+        "operationId": "ServiceManagerService_FulltextSearchServices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListServicesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "Optional filter criteria (e.g., page number, limit)\n...",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -831,6 +1176,17 @@
       },
       "title": "Request message for adding social media information for a professional"
     },
+    "CreateGroupServiceRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      }
+    },
     "CreateHireResponse": {
       "type": "object",
       "properties": {
@@ -866,6 +1222,46 @@
         }
       },
       "title": "Request message for deleting a service offered by a professional"
+    },
+    "FilterGroupServices": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "createdAtFrom": {
+          "type": "string"
+        },
+        "createdAtTo": {
+          "type": "string"
+        },
+        "updatedAtFrom": {
+          "type": "string"
+        },
+        "updatedAtTo": {
+          "type": "string"
+        }
+      }
+    },
+    "FilterServices": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "createdAtFrom": {
+          "type": "string"
+        },
+        "createdAtTo": {
+          "type": "string"
+        },
+        "updatedAtFrom": {
+          "type": "string"
+        },
+        "updatedAtTo": {
+          "type": "string"
+        }
+      }
     },
     "FindAllHireResponse": {
       "type": "object",
@@ -911,6 +1307,49 @@
             "type": "object",
             "$ref": "#/definitions/Service"
           }
+        }
+      }
+    },
+    "GroupService": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      }
+    },
+    "GroupServiceManagerUpdateGroupServiceBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
         }
       }
     },
@@ -969,6 +1408,18 @@
         }
       }
     },
+    "ListGroupServicesResponse": {
+      "type": "object",
+      "properties": {
+        "groupServices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/GroupService"
+          }
+        }
+      }
+    },
     "ListServicesResponse": {
       "type": "object",
       "properties": {
@@ -981,6 +1432,29 @@
         }
       },
       "title": "Response message for listing services"
+    },
+    "Pagination": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "string",
+          "format": "int64"
+        },
+        "page": {
+          "type": "string",
+          "format": "int64"
+        },
+        "pageSize": {
+          "type": "string",
+          "format": "int64"
+        },
+        "sort": {
+          "$ref": "#/definitions/TypeSort"
+        },
+        "sortBy": {
+          "type": "string"
+        }
+      }
     },
     "PostalCode": {
       "type": "object",
@@ -1186,6 +1660,15 @@
         }
       },
       "title": "Request message for signing up as a professional"
+    },
+    "TypeSort": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "ASC",
+        "DESC"
+      ],
+      "default": "NONE"
     },
     "UpdateStatusHireResponse": {
       "type": "object",

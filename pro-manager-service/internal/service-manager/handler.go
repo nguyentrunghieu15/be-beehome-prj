@@ -11,9 +11,9 @@ import (
 )
 
 // ListServices implements the ListServices RPC method.
-func (s *ServiceManagerServer) ListServices(
+func (s *ServiceManagerServer) FulltextSearchServices(
 	ctx context.Context,
-	req *proapi.ListServicesRequest,
+	req *proapi.FulltextSearchServicesRequest,
 ) (*proapi.ListServicesResponse, error) {
 	// Validate GetServiceRequest (e.g., check if ID is empty)
 	if err := s.validator.Validate(req); err != nil {
@@ -125,4 +125,17 @@ func (s *ServiceManagerServer) DeleteService(
 		return nil, err
 	}
 	return &emptypb.Empty{}, nil
+}
+
+func (s *ServiceManagerServer) ListServices(ctx context.Context, req *proapi.ListServicesRequest) (*proapi.ListServicesResponse, error) {
+	// Validate DeleteServiceRequest (e.g., check if ID is empty)
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	services, err := s.serviceRepo.FindServices(req)
+	if err != nil {
+		return nil, err
+	}
+	return &proapi.ListServicesResponse{Services: mapper.MapToServices(services)}, nil
 }

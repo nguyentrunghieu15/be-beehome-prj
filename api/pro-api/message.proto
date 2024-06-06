@@ -116,3 +116,17 @@ message Hire {
     string status = 13;
     string payment_method_id = 14;
 }
+
+enum TypeSort {
+    NONE =0;
+    ASC = 1;
+    DESC= 2;
+}
+
+message Pagination {
+    optional int64 limit = 2;
+    optional int64 page = 3;
+    optional int64 page_size = 4;
+    optional TypeSort sort = 5;
+    optional string sort_by = 6;
+}
