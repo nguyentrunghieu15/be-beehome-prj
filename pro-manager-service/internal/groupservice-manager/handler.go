@@ -123,7 +123,7 @@ func (gs *GroupServiceManagerServer) ListGroupServices(ctx context.Context, req 
 		return nil, err
 	}
 
-	gpServices, err := gs.groupServiceRepo.FindServices(req)
+	gpServices, err := gs.groupServiceRepo.FindGroupServices(req)
 	if err != nil {
 		return nil, err
 	}

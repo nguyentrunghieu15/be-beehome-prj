@@ -1385,7 +1385,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/ProviderInfo"
+            "$ref": "#/definitions/ProviderViewInfor"
           }
         }
       },
@@ -1432,6 +1432,13 @@
         },
         "detail": {
           "type": "string"
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Service"
+          }
         }
       }
     },
@@ -1549,6 +1556,35 @@
         }
       }
     },
+    "PaymentMethod": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "PostalCode": {
       "type": "object",
       "properties": {
@@ -1648,6 +1684,24 @@
         },
         "postalCode": {
           "$ref": "#/definitions/PostalCode"
+        },
+        "numHires": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "socialMedias": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/SocialMedia"
+          }
+        },
+        "paymentMethod": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/PaymentMethod"
+          }
         }
       }
     },
@@ -1656,6 +1710,65 @@
       "properties": {
         "provider": {
           "$ref": "#/definitions/ProviderInfo"
+        }
+      }
+    },
+    "ProviderViewInfor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "years": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "postalCode": {
+          "$ref": "#/definitions/PostalCode"
+        },
+        "numHires": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rating": {
+          "$ref": "#/definitions/ProviderViewInforOverviewRating"
+        }
+      }
+    },
+    "ProviderViewInforOverviewRating": {
+      "type": "object",
+      "properties": {
+        "numRating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "avgRating": {
+          "type": "number",
+          "format": "double"
         }
       }
     },
@@ -1753,6 +1866,41 @@
         }
       },
       "title": "Request message for signing up as a professional"
+    },
+    "SocialMedia": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "providerId": {
+          "type": "string"
+        }
+      }
     },
     "TypeSort": {
       "type": "string",

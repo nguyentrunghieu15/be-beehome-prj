@@ -58,6 +58,7 @@ message GroupService {
     string deleted_at = 7;
     string name = 8;
     string detail = 9;
+    repeated Service services = 10;
 }
 
 message Service {

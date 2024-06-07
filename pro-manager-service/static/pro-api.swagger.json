@@ -478,6 +478,78 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "filter.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.introduction",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.years",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter.postalCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter.serviceName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.page",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.pageSize",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.sort",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "ASC",
+              "DESC"
+            ],
+            "default": "NONE"
+          },
+          {
+            "name": "pagination.sortBy",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ProService"
         ]
@@ -1243,6 +1315,27 @@
         }
       }
     },
+    "FilterProRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "years": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "serviceName": {
+          "type": "string"
+        }
+      }
+    },
     "FilterServices": {
       "type": "object",
       "properties": {
@@ -1292,7 +1385,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/ProviderInfo"
+            "$ref": "#/definitions/ProviderViewInfor"
           }
         }
       },
@@ -1456,6 +1549,35 @@
         }
       }
     },
+    "PaymentMethod": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "PostalCode": {
       "type": "object",
       "properties": {
@@ -1555,6 +1677,24 @@
         },
         "postalCode": {
           "$ref": "#/definitions/PostalCode"
+        },
+        "numHires": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "socialMedias": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/SocialMedia"
+          }
+        },
+        "paymentMethod": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/PaymentMethod"
+          }
         }
       }
     },
@@ -1563,6 +1703,65 @@
       "properties": {
         "provider": {
           "$ref": "#/definitions/ProviderInfo"
+        }
+      }
+    },
+    "ProviderViewInfor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "years": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "postalCode": {
+          "$ref": "#/definitions/PostalCode"
+        },
+        "numHires": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rating": {
+          "$ref": "#/definitions/ProviderViewInforOverviewRating"
+        }
+      }
+    },
+    "ProviderViewInforOverviewRating": {
+      "type": "object",
+      "properties": {
+        "numRating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "avgRating": {
+          "type": "number",
+          "format": "double"
         }
       }
     },
@@ -1660,6 +1859,41 @@
         }
       },
       "title": "Request message for signing up as a professional"
+    },
+    "SocialMedia": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "providerId": {
+          "type": "string"
+        }
+      }
     },
     "TypeSort": {
       "type": "string",

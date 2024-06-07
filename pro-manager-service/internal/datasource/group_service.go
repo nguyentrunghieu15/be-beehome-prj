@@ -13,7 +13,7 @@ import (
 )
 
 type IGroupServiceRepo interface {
-	FindServices(*proapi.ListGroupServicesRequest) ([]*GroupService, error)
+	FindGroupServices(*proapi.ListGroupServicesRequest) ([]*GroupService, error)
 	FindOneById(uuid.UUID) (*GroupService, error)
 	FindOneByName(name string) (*GroupService, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*GroupService, error)
@@ -28,7 +28,7 @@ type GroupServiceRepo struct {
 
 func (gr *GroupServiceRepo) FindOneById(id uuid.UUID) (*GroupService, error) {
 	groupService := &GroupService{}
-	result := gr.db.First(groupService, "id = ?", id).Preload("Services")
+	result := gr.db.Preload("Services").First(groupService, "id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -99,7 +99,7 @@ func (gr *GroupServiceRepo) FulltextSearchGroupServiceByName(name string) ([]*Gr
 	return groups, nil
 }
 
-func (gr *GroupServiceRepo) FindServices(req *proapi.ListGroupServicesRequest) ([]*GroupService, error) {
+func (gr *GroupServiceRepo) FindGroupServices(req *proapi.ListGroupServicesRequest) ([]*GroupService, error) {
 	var gpServices []*GroupService
 	query := gr.db.Model(&GroupService{})
 

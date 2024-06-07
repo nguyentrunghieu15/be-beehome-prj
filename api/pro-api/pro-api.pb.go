@@ -28,17 +28,20 @@ type ProviderInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id           string      `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CreatedAt    string      `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	CreatedBy    string      `protobuf:"bytes,3,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
-	UpdatedAt    string      `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	UpdatedBy    string      `protobuf:"bytes,5,opt,name=updated_by,json=updatedBy,proto3" json:"updated_by,omitempty"`
-	DeletedBy    string      `protobuf:"bytes,6,opt,name=deleted_by,json=deletedBy,proto3" json:"deleted_by,omitempty"`
-	DeletedAt    string      `protobuf:"bytes,7,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
-	Name         string      `protobuf:"bytes,8,opt,name=name,proto3" json:"name,omitempty"`
-	Introduction string      `protobuf:"bytes,9,opt,name=introduction,proto3" json:"introduction,omitempty"`
-	Years        int32       `protobuf:"varint,11,opt,name=years,proto3" json:"years,omitempty"`
-	PostalCode   *PostalCode `protobuf:"bytes,12,opt,name=postal_code,json=postalCode,proto3" json:"postal_code,omitempty"`
+	Id            string           `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CreatedAt     string           `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	CreatedBy     string           `protobuf:"bytes,3,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
+	UpdatedAt     string           `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	UpdatedBy     string           `protobuf:"bytes,5,opt,name=updated_by,json=updatedBy,proto3" json:"updated_by,omitempty"`
+	DeletedBy     string           `protobuf:"bytes,6,opt,name=deleted_by,json=deletedBy,proto3" json:"deleted_by,omitempty"`
+	DeletedAt     string           `protobuf:"bytes,7,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
+	Name          string           `protobuf:"bytes,8,opt,name=name,proto3" json:"name,omitempty"`
+	Introduction  string           `protobuf:"bytes,9,opt,name=introduction,proto3" json:"introduction,omitempty"`
+	Years         int32            `protobuf:"varint,11,opt,name=years,proto3" json:"years,omitempty"`
+	PostalCode    *PostalCode      `protobuf:"bytes,12,opt,name=postal_code,json=postalCode,proto3" json:"postal_code,omitempty"`
+	NumHires      int32            `protobuf:"varint,13,opt,name=num_hires,json=numHires,proto3" json:"num_hires,omitempty"`
+	SocialMedias  []*SocialMedia   `protobuf:"bytes,14,rep,name=social_medias,json=socialMedias,proto3" json:"social_medias,omitempty"`
+	PaymentMethod []*PaymentMethod `protobuf:"bytes,15,rep,name=payment_method,json=paymentMethod,proto3" json:"payment_method,omitempty"`
 }
 
 func (x *ProviderInfo) Reset() {
@@ -146,6 +149,27 @@ func (x *ProviderInfo) GetYears() int32 {
 func (x *ProviderInfo) GetPostalCode() *PostalCode {
 	if x != nil {
 		return x.PostalCode
+	}
+	return nil
+}
+
+func (x *ProviderInfo) GetNumHires() int32 {
+	if x != nil {
+		return x.NumHires
+	}
+	return 0
+}
+
+func (x *ProviderInfo) GetSocialMedias() []*SocialMedia {
+	if x != nil {
+		return x.SocialMedias
+	}
+	return nil
+}
+
+func (x *ProviderInfo) GetPaymentMethod() []*PaymentMethod {
+	if x != nil {
+		return x.PaymentMethod
 	}
 	return nil
 }
@@ -286,19 +310,162 @@ func (x *FindProsRequest) GetPagination() *Pagination {
 	return nil
 }
 
+type ProviderViewInfor struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id           string                            `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CreatedAt    string                            `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	CreatedBy    string                            `protobuf:"bytes,3,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
+	UpdatedAt    string                            `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	UpdatedBy    string                            `protobuf:"bytes,5,opt,name=updated_by,json=updatedBy,proto3" json:"updated_by,omitempty"`
+	DeletedBy    string                            `protobuf:"bytes,6,opt,name=deleted_by,json=deletedBy,proto3" json:"deleted_by,omitempty"`
+	DeletedAt    string                            `protobuf:"bytes,7,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
+	Name         string                            `protobuf:"bytes,8,opt,name=name,proto3" json:"name,omitempty"`
+	Introduction string                            `protobuf:"bytes,9,opt,name=introduction,proto3" json:"introduction,omitempty"`
+	Years        int32                             `protobuf:"varint,11,opt,name=years,proto3" json:"years,omitempty"`
+	PostalCode   *PostalCode                       `protobuf:"bytes,12,opt,name=postal_code,json=postalCode,proto3" json:"postal_code,omitempty"`
+	NumHires     int32                             `protobuf:"varint,13,opt,name=num_hires,json=numHires,proto3" json:"num_hires,omitempty"`
+	Rating       *ProviderViewInfor_OverviewRating `protobuf:"bytes,14,opt,name=rating,proto3" json:"rating,omitempty"`
+}
+
+func (x *ProviderViewInfor) Reset() {
+	*x = ProviderViewInfor{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProviderViewInfor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProviderViewInfor) ProtoMessage() {}
+
+func (x *ProviderViewInfor) ProtoReflect() protoreflect.Message {
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProviderViewInfor.ProtoReflect.Descriptor instead.
+func (*ProviderViewInfor) Descriptor() ([]byte, []int) {
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ProviderViewInfor) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetCreatedBy() string {
+	if x != nil {
+		return x.CreatedBy
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetUpdatedBy() string {
+	if x != nil {
+		return x.UpdatedBy
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetDeletedBy() string {
+	if x != nil {
+		return x.DeletedBy
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetDeletedAt() string {
+	if x != nil {
+		return x.DeletedAt
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetIntroduction() string {
+	if x != nil {
+		return x.Introduction
+	}
+	return ""
+}
+
+func (x *ProviderViewInfor) GetYears() int32 {
+	if x != nil {
+		return x.Years
+	}
+	return 0
+}
+
+func (x *ProviderViewInfor) GetPostalCode() *PostalCode {
+	if x != nil {
+		return x.PostalCode
+	}
+	return nil
+}
+
+func (x *ProviderViewInfor) GetNumHires() int32 {
+	if x != nil {
+		return x.NumHires
+	}
+	return 0
+}
+
+func (x *ProviderViewInfor) GetRating() *ProviderViewInfor_OverviewRating {
+	if x != nil {
+		return x.Rating
+	}
+	return nil
+}
+
 // Response message for finding providers
 type FindProsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Providers []*ProviderInfo `protobuf:"bytes,1,rep,name=providers,proto3" json:"providers,omitempty"`
+	Providers []*ProviderViewInfor `protobuf:"bytes,1,rep,name=providers,proto3" json:"providers,omitempty"`
 }
 
 func (x *FindProsResponse) Reset() {
 	*x = FindProsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[3]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -311,7 +478,7 @@ func (x *FindProsResponse) String() string {
 func (*FindProsResponse) ProtoMessage() {}
 
 func (x *FindProsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[3]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -324,10 +491,10 @@ func (x *FindProsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindProsResponse.ProtoReflect.Descriptor instead.
 func (*FindProsResponse) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{3}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *FindProsResponse) GetProviders() []*ProviderInfo {
+func (x *FindProsResponse) GetProviders() []*ProviderViewInfor {
 	if x != nil {
 		return x.Providers
 	}
@@ -349,7 +516,7 @@ type SignUpProRequest struct {
 func (x *SignUpProRequest) Reset() {
 	*x = SignUpProRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[4]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -362,7 +529,7 @@ func (x *SignUpProRequest) String() string {
 func (*SignUpProRequest) ProtoMessage() {}
 
 func (x *SignUpProRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[4]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -375,7 +542,7 @@ func (x *SignUpProRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignUpProRequest.ProtoReflect.Descriptor instead.
 func (*SignUpProRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{4}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SignUpProRequest) GetName() string {
@@ -422,7 +589,7 @@ type UpdateProRequest struct {
 func (x *UpdateProRequest) Reset() {
 	*x = UpdateProRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[5]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -435,7 +602,7 @@ func (x *UpdateProRequest) String() string {
 func (*UpdateProRequest) ProtoMessage() {}
 
 func (x *UpdateProRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[5]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -448,7 +615,7 @@ func (x *UpdateProRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateProRequest.ProtoReflect.Descriptor instead.
 func (*UpdateProRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{5}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *UpdateProRequest) GetId() string {
@@ -498,7 +665,7 @@ type AddPaymentMethodProRequest struct {
 func (x *AddPaymentMethodProRequest) Reset() {
 	*x = AddPaymentMethodProRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[6]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -511,7 +678,7 @@ func (x *AddPaymentMethodProRequest) String() string {
 func (*AddPaymentMethodProRequest) ProtoMessage() {}
 
 func (x *AddPaymentMethodProRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[6]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -524,7 +691,7 @@ func (x *AddPaymentMethodProRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddPaymentMethodProRequest.ProtoReflect.Descriptor instead.
 func (*AddPaymentMethodProRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{6}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *AddPaymentMethodProRequest) GetName() string {
@@ -547,7 +714,7 @@ type ReplyReviewProRequest struct {
 func (x *ReplyReviewProRequest) Reset() {
 	*x = ReplyReviewProRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[7]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -560,7 +727,7 @@ func (x *ReplyReviewProRequest) String() string {
 func (*ReplyReviewProRequest) ProtoMessage() {}
 
 func (x *ReplyReviewProRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[7]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -573,7 +740,7 @@ func (x *ReplyReviewProRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReplyReviewProRequest.ProtoReflect.Descriptor instead.
 func (*ReplyReviewProRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{7}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ReplyReviewProRequest) GetReviewId() string {
@@ -604,7 +771,7 @@ type ReviewProRequest struct {
 func (x *ReviewProRequest) Reset() {
 	*x = ReviewProRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[8]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -617,7 +784,7 @@ func (x *ReviewProRequest) String() string {
 func (*ReviewProRequest) ProtoMessage() {}
 
 func (x *ReviewProRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[8]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -630,7 +797,7 @@ func (x *ReviewProRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReviewProRequest.ProtoReflect.Descriptor instead.
 func (*ReviewProRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{8}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ReviewProRequest) GetProviderId() string {
@@ -666,7 +833,7 @@ type AddServiceProRequest struct {
 func (x *AddServiceProRequest) Reset() {
 	*x = AddServiceProRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[9]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -679,7 +846,7 @@ func (x *AddServiceProRequest) String() string {
 func (*AddServiceProRequest) ProtoMessage() {}
 
 func (x *AddServiceProRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[9]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -692,7 +859,7 @@ func (x *AddServiceProRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddServiceProRequest.ProtoReflect.Descriptor instead.
 func (*AddServiceProRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{9}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *AddServiceProRequest) GetServicesId() []string {
@@ -714,7 +881,7 @@ type DeleteServiceProRequest struct {
 func (x *DeleteServiceProRequest) Reset() {
 	*x = DeleteServiceProRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[10]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -727,7 +894,7 @@ func (x *DeleteServiceProRequest) String() string {
 func (*DeleteServiceProRequest) ProtoMessage() {}
 
 func (x *DeleteServiceProRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[10]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -740,7 +907,7 @@ func (x *DeleteServiceProRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteServiceProRequest.ProtoReflect.Descriptor instead.
 func (*DeleteServiceProRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{10}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeleteServiceProRequest) GetServicesId() []string {
@@ -763,7 +930,7 @@ type AddSocialMediaProRequest struct {
 func (x *AddSocialMediaProRequest) Reset() {
 	*x = AddSocialMediaProRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[11]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -776,7 +943,7 @@ func (x *AddSocialMediaProRequest) String() string {
 func (*AddSocialMediaProRequest) ProtoMessage() {}
 
 func (x *AddSocialMediaProRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[11]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -789,7 +956,7 @@ func (x *AddSocialMediaProRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddSocialMediaProRequest.ProtoReflect.Descriptor instead.
 func (*AddSocialMediaProRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{11}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *AddSocialMediaProRequest) GetName() string {
@@ -818,7 +985,7 @@ type FindProByIdRequest struct {
 func (x *FindProByIdRequest) Reset() {
 	*x = FindProByIdRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[12]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -831,7 +998,7 @@ func (x *FindProByIdRequest) String() string {
 func (*FindProByIdRequest) ProtoMessage() {}
 
 func (x *FindProByIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[12]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -844,7 +1011,7 @@ func (x *FindProByIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindProByIdRequest.ProtoReflect.Descriptor instead.
 func (*FindProByIdRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{12}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *FindProByIdRequest) GetId() string {
@@ -866,7 +1033,7 @@ type FindProByIdResponse struct {
 func (x *FindProByIdResponse) Reset() {
 	*x = FindProByIdResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[13]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -879,7 +1046,7 @@ func (x *FindProByIdResponse) String() string {
 func (*FindProByIdResponse) ProtoMessage() {}
 
 func (x *FindProByIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[13]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -892,7 +1059,7 @@ func (x *FindProByIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindProByIdResponse.ProtoReflect.Descriptor instead.
 func (*FindProByIdResponse) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{13}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *FindProByIdResponse) GetProvider() *ProviderInfo {
@@ -913,7 +1080,7 @@ type ProviderProfileResponse struct {
 func (x *ProviderProfileResponse) Reset() {
 	*x = ProviderProfileResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[14]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -926,7 +1093,7 @@ func (x *ProviderProfileResponse) String() string {
 func (*ProviderProfileResponse) ProtoMessage() {}
 
 func (x *ProviderProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[14]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -939,7 +1106,7 @@ func (x *ProviderProfileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProviderProfileResponse.ProtoReflect.Descriptor instead.
 func (*ProviderProfileResponse) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{14}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *ProviderProfileResponse) GetProvider() *ProviderInfo {
@@ -960,7 +1127,7 @@ type DeleteProByIdRequest struct {
 func (x *DeleteProByIdRequest) Reset() {
 	*x = DeleteProByIdRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[15]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -973,7 +1140,7 @@ func (x *DeleteProByIdRequest) String() string {
 func (*DeleteProByIdRequest) ProtoMessage() {}
 
 func (x *DeleteProByIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[15]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -986,7 +1153,7 @@ func (x *DeleteProByIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteProByIdRequest.ProtoReflect.Descriptor instead.
 func (*DeleteProByIdRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{15}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *DeleteProByIdRequest) GetId() string {
@@ -1007,7 +1174,7 @@ type GetAllServiceOfProviderRequest struct {
 func (x *GetAllServiceOfProviderRequest) Reset() {
 	*x = GetAllServiceOfProviderRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[16]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1020,7 +1187,7 @@ func (x *GetAllServiceOfProviderRequest) String() string {
 func (*GetAllServiceOfProviderRequest) ProtoMessage() {}
 
 func (x *GetAllServiceOfProviderRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[16]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1033,7 +1200,7 @@ func (x *GetAllServiceOfProviderRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllServiceOfProviderRequest.ProtoReflect.Descriptor instead.
 func (*GetAllServiceOfProviderRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{16}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetAllServiceOfProviderRequest) GetId() string {
@@ -1054,7 +1221,7 @@ type GetAllServiceOfProviderResponse struct {
 func (x *GetAllServiceOfProviderResponse) Reset() {
 	*x = GetAllServiceOfProviderResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[17]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1067,7 +1234,7 @@ func (x *GetAllServiceOfProviderResponse) String() string {
 func (*GetAllServiceOfProviderResponse) ProtoMessage() {}
 
 func (x *GetAllServiceOfProviderResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[17]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1080,7 +1247,7 @@ func (x *GetAllServiceOfProviderResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllServiceOfProviderResponse.ProtoReflect.Descriptor instead.
 func (*GetAllServiceOfProviderResponse) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{17}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetAllServiceOfProviderResponse) GetServices() []*Service {
@@ -1106,7 +1273,7 @@ type FindAllHireRequest struct {
 func (x *FindAllHireRequest) Reset() {
 	*x = FindAllHireRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[18]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1119,7 +1286,7 @@ func (x *FindAllHireRequest) String() string {
 func (*FindAllHireRequest) ProtoMessage() {}
 
 func (x *FindAllHireRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[18]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1132,7 +1299,7 @@ func (x *FindAllHireRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindAllHireRequest.ProtoReflect.Descriptor instead.
 func (*FindAllHireRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{18}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *FindAllHireRequest) GetUserId() string {
@@ -1167,7 +1334,7 @@ type FindAllHireResponse struct {
 func (x *FindAllHireResponse) Reset() {
 	*x = FindAllHireResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[19]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1180,7 +1347,7 @@ func (x *FindAllHireResponse) String() string {
 func (*FindAllHireResponse) ProtoMessage() {}
 
 func (x *FindAllHireResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[19]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1193,7 +1360,7 @@ func (x *FindAllHireResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindAllHireResponse.ProtoReflect.Descriptor instead.
 func (*FindAllHireResponse) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{19}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *FindAllHireResponse) GetHires() []*Hire {
@@ -1219,7 +1386,7 @@ type CreateHireRequest struct {
 func (x *CreateHireRequest) Reset() {
 	*x = CreateHireRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[20]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1232,7 +1399,7 @@ func (x *CreateHireRequest) String() string {
 func (*CreateHireRequest) ProtoMessage() {}
 
 func (x *CreateHireRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[20]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1245,7 +1412,7 @@ func (x *CreateHireRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateHireRequest.ProtoReflect.Descriptor instead.
 func (*CreateHireRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{20}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *CreateHireRequest) GetProviderId() string {
@@ -1301,7 +1468,7 @@ type CreateHireResponse struct {
 func (x *CreateHireResponse) Reset() {
 	*x = CreateHireResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[21]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1314,7 +1481,7 @@ func (x *CreateHireResponse) String() string {
 func (*CreateHireResponse) ProtoMessage() {}
 
 func (x *CreateHireResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[21]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1327,7 +1494,7 @@ func (x *CreateHireResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateHireResponse.ProtoReflect.Descriptor instead.
 func (*CreateHireResponse) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{21}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *CreateHireResponse) GetHire() *Hire {
@@ -1349,7 +1516,7 @@ type UpdateStatusHireRequest struct {
 func (x *UpdateStatusHireRequest) Reset() {
 	*x = UpdateStatusHireRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[22]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1362,7 +1529,7 @@ func (x *UpdateStatusHireRequest) String() string {
 func (*UpdateStatusHireRequest) ProtoMessage() {}
 
 func (x *UpdateStatusHireRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[22]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1375,7 +1542,7 @@ func (x *UpdateStatusHireRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateStatusHireRequest.ProtoReflect.Descriptor instead.
 func (*UpdateStatusHireRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{22}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *UpdateStatusHireRequest) GetHireId() string {
@@ -1403,7 +1570,7 @@ type UpdateStatusHireResponse struct {
 func (x *UpdateStatusHireResponse) Reset() {
 	*x = UpdateStatusHireResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[23]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1416,7 +1583,7 @@ func (x *UpdateStatusHireResponse) String() string {
 func (*UpdateStatusHireResponse) ProtoMessage() {}
 
 func (x *UpdateStatusHireResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[23]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1429,7 +1596,7 @@ func (x *UpdateStatusHireResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateStatusHireResponse.ProtoReflect.Descriptor instead.
 func (*UpdateStatusHireResponse) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{23}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *UpdateStatusHireResponse) GetHire() *Hire {
@@ -1450,7 +1617,7 @@ type DeleteHireRequest struct {
 func (x *DeleteHireRequest) Reset() {
 	*x = DeleteHireRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[24]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1463,7 +1630,7 @@ func (x *DeleteHireRequest) String() string {
 func (*DeleteHireRequest) ProtoMessage() {}
 
 func (x *DeleteHireRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[24]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1476,7 +1643,7 @@ func (x *DeleteHireRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteHireRequest.ProtoReflect.Descriptor instead.
 func (*DeleteHireRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{24}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *DeleteHireRequest) GetHireId() string {
@@ -1495,7 +1662,7 @@ type JoinAsProviderRequest struct {
 func (x *JoinAsProviderRequest) Reset() {
 	*x = JoinAsProviderRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[25]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1508,7 +1675,7 @@ func (x *JoinAsProviderRequest) String() string {
 func (*JoinAsProviderRequest) ProtoMessage() {}
 
 func (x *JoinAsProviderRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[25]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1521,7 +1688,7 @@ func (x *JoinAsProviderRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinAsProviderRequest.ProtoReflect.Descriptor instead.
 func (*JoinAsProviderRequest) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{25}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{26}
 }
 
 type JoinAsProviderResponse struct {
@@ -1535,7 +1702,7 @@ type JoinAsProviderResponse struct {
 func (x *JoinAsProviderResponse) Reset() {
 	*x = JoinAsProviderResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_pro_api_pro_api_proto_msgTypes[26]
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1548,7 +1715,7 @@ func (x *JoinAsProviderResponse) String() string {
 func (*JoinAsProviderResponse) ProtoMessage() {}
 
 func (x *JoinAsProviderResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_pro_api_pro_api_proto_msgTypes[26]
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1561,7 +1728,7 @@ func (x *JoinAsProviderResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinAsProviderResponse.ProtoReflect.Descriptor instead.
 func (*JoinAsProviderResponse) Descriptor() ([]byte, []int) {
-	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{26}
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *JoinAsProviderResponse) GetProviderToken() string {
@@ -1569,6 +1736,61 @@ func (x *JoinAsProviderResponse) GetProviderToken() string {
 		return x.ProviderToken
 	}
 	return ""
+}
+
+type ProviderViewInfor_OverviewRating struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NumRating int32   `protobuf:"varint,1,opt,name=num_rating,json=numRating,proto3" json:"num_rating,omitempty"`
+	AvgRating float64 `protobuf:"fixed64,2,opt,name=avg_rating,json=avgRating,proto3" json:"avg_rating,omitempty"`
+}
+
+func (x *ProviderViewInfor_OverviewRating) Reset() {
+	*x = ProviderViewInfor_OverviewRating{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_pro_api_pro_api_proto_msgTypes[28]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProviderViewInfor_OverviewRating) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProviderViewInfor_OverviewRating) ProtoMessage() {}
+
+func (x *ProviderViewInfor_OverviewRating) ProtoReflect() protoreflect.Message {
+	mi := &file_api_pro_api_pro_api_proto_msgTypes[28]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProviderViewInfor_OverviewRating.ProtoReflect.Descriptor instead.
+func (*ProviderViewInfor_OverviewRating) Descriptor() ([]byte, []int) {
+	return file_api_pro_api_pro_api_proto_rawDescGZIP(), []int{3, 0}
+}
+
+func (x *ProviderViewInfor_OverviewRating) GetNumRating() int32 {
+	if x != nil {
+		return x.NumRating
+	}
+	return 0
+}
+
+func (x *ProviderViewInfor_OverviewRating) GetAvgRating() float64 {
+	if x != nil {
+		return x.AvgRating
+	}
+	return 0
 }
 
 var File_api_pro_api_pro_api_proto protoreflect.FileDescriptor
@@ -1584,7 +1806,7 @@ var file_api_pro_api_pro_api_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1b, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x22, 0xd4, 0x02, 0x0a, 0x0c, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x49, 0x6e,
+	0x6f, 0x22, 0xdb, 0x03, 0x0a, 0x0c, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x49, 0x6e,
 	0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
 	0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41,
@@ -1605,36 +1827,77 @@ var file_api_pro_api_pro_api_proto_rawDesc = []byte{
 	0x01, 0x28, 0x05, 0x52, 0x05, 0x79, 0x65, 0x61, 0x72, 0x73, 0x12, 0x2c, 0x0a, 0x0b, 0x70, 0x6f,
 	0x73, 0x74, 0x61, 0x6c, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32,
 	0x0b, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x61, 0x6c, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x0a, 0x70, 0x6f,
-	0x73, 0x74, 0x61, 0x6c, 0x43, 0x6f, 0x64, 0x65, 0x22, 0x82, 0x02, 0x0a, 0x10, 0x46, 0x69, 0x6c,
-	0x74, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a,
-	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x04, 0x6e,
-	0x61, 0x6d, 0x65, 0x88, 0x01, 0x01, 0x12, 0x27, 0x0a, 0x0c, 0x69, 0x6e, 0x74, 0x72, 0x6f, 0x64,
-	0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x48, 0x01, 0x52, 0x0c,
-	0x69, 0x6e, 0x74, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x88, 0x01, 0x01, 0x12,
-	0x19, 0x0a, 0x05, 0x79, 0x65, 0x61, 0x72, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x48, 0x02,
-	0x52, 0x05, 0x79, 0x65, 0x61, 0x72, 0x73, 0x88, 0x01, 0x01, 0x12, 0x24, 0x0a, 0x0b, 0x70, 0x6f,
-	0x73, 0x74, 0x61, 0x6c, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x48,
-	0x03, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x74, 0x61, 0x6c, 0x43, 0x6f, 0x64, 0x65, 0x88, 0x01, 0x01,
-	0x12, 0x26, 0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x48, 0x04, 0x52, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x4e, 0x61, 0x6d, 0x65, 0x88, 0x01, 0x01, 0x42, 0x07, 0x0a, 0x05, 0x5f, 0x6e, 0x61, 0x6d,
-	0x65, 0x42, 0x0f, 0x0a, 0x0d, 0x5f, 0x69, 0x6e, 0x74, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x79, 0x65, 0x61, 0x72, 0x73, 0x42, 0x0e, 0x0a, 0x0c,
-	0x5f, 0x70, 0x6f, 0x73, 0x74, 0x61, 0x6c, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x42, 0x0f, 0x0a, 0x0d,
-	0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x8d, 0x01,
-	0x0a, 0x0f, 0x46, 0x69, 0x6e, 0x64, 0x50, 0x72, 0x6f, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x2e, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x11, 0x2e, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x48, 0x00, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x88, 0x01,
-	0x01, 0x12, 0x30, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x50, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x48, 0x01, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x88, 0x01, 0x01, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x42, 0x0d,
-	0x0a, 0x0b, 0x5f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x3f, 0x0a,
-	0x10, 0x46, 0x69, 0x6e, 0x64, 0x50, 0x72, 0x6f, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x2b, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x73, 0x18, 0x01,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x49,
-	0x6e, 0x66, 0x6f, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x73, 0x22, 0x81,
+	0x73, 0x74, 0x61, 0x6c, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x6e, 0x75, 0x6d, 0x5f,
+	0x68, 0x69, 0x72, 0x65, 0x73, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x6e, 0x75, 0x6d,
+	0x48, 0x69, 0x72, 0x65, 0x73, 0x12, 0x31, 0x0a, 0x0d, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x5f,
+	0x6d, 0x65, 0x64, 0x69, 0x61, 0x73, 0x18, 0x0e, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x53,
+	0x6f, 0x63, 0x69, 0x61, 0x6c, 0x4d, 0x65, 0x64, 0x69, 0x61, 0x52, 0x0c, 0x73, 0x6f, 0x63, 0x69,
+	0x61, 0x6c, 0x4d, 0x65, 0x64, 0x69, 0x61, 0x73, 0x12, 0x35, 0x0a, 0x0e, 0x70, 0x61, 0x79, 0x6d,
+	0x65, 0x6e, 0x74, 0x5f, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x0e, 0x2e, 0x50, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64,
+	0x52, 0x0d, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x22,
+	0x82, 0x02, 0x0a, 0x10, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x48, 0x00, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x88, 0x01, 0x01, 0x12, 0x27, 0x0a,
+	0x0c, 0x69, 0x6e, 0x74, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x48, 0x01, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x88, 0x01, 0x01, 0x12, 0x19, 0x0a, 0x05, 0x79, 0x65, 0x61, 0x72, 0x73, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x05, 0x48, 0x02, 0x52, 0x05, 0x79, 0x65, 0x61, 0x72, 0x73, 0x88, 0x01,
+	0x01, 0x12, 0x24, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x74, 0x61, 0x6c, 0x5f, 0x63, 0x6f, 0x64, 0x65,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x48, 0x03, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x74, 0x61, 0x6c,
+	0x43, 0x6f, 0x64, 0x65, 0x88, 0x01, 0x01, 0x12, 0x26, 0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x48, 0x04, 0x52,
+	0x0b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x88, 0x01, 0x01, 0x42,
+	0x07, 0x0a, 0x05, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x42, 0x0f, 0x0a, 0x0d, 0x5f, 0x69, 0x6e, 0x74,
+	0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x79, 0x65,
+	0x61, 0x72, 0x73, 0x42, 0x0e, 0x0a, 0x0c, 0x5f, 0x70, 0x6f, 0x73, 0x74, 0x61, 0x6c, 0x5f, 0x63,
+	0x6f, 0x64, 0x65, 0x42, 0x0f, 0x0a, 0x0d, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f,
+	0x6e, 0x61, 0x6d, 0x65, 0x22, 0x8d, 0x01, 0x0a, 0x0f, 0x46, 0x69, 0x6e, 0x64, 0x50, 0x72, 0x6f,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2e, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x74,
+	0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x46, 0x69, 0x6c, 0x74, 0x65,
+	0x72, 0x50, 0x72, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x48, 0x00, 0x52, 0x06, 0x66,
+	0x69, 0x6c, 0x74, 0x65, 0x72, 0x88, 0x01, 0x01, 0x12, 0x30, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69,
+	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x50,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x01, 0x52, 0x0a, 0x70, 0x61, 0x67,
+	0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x88, 0x01, 0x01, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x66,
+	0x69, 0x6c, 0x74, 0x65, 0x72, 0x42, 0x0d, 0x0a, 0x0b, 0x5f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x22, 0x81, 0x04, 0x0a, 0x11, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65,
+	0x72, 0x56, 0x69, 0x65, 0x77, 0x49, 0x6e, 0x66, 0x6f, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x64, 0x5f, 0x62, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x42, 0x79, 0x12, 0x1d, 0x0a, 0x0a, 0x75, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x75, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x75, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x64, 0x5f, 0x62, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x75, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x64, 0x42, 0x79, 0x12, 0x1d, 0x0a, 0x0a, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x64, 0x5f, 0x62, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x64, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x64, 0x42, 0x79, 0x12, 0x1d, 0x0a, 0x0a, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x64,
+	0x5f, 0x61, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x64, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x64, 0x41, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x69, 0x6e, 0x74, 0x72,
+	0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c,
+	0x69, 0x6e, 0x74, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05,
+	0x79, 0x65, 0x61, 0x72, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x79, 0x65, 0x61,
+	0x72, 0x73, 0x12, 0x2c, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x74, 0x61, 0x6c, 0x5f, 0x63, 0x6f, 0x64,
+	0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x61, 0x6c,
+	0x43, 0x6f, 0x64, 0x65, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x74, 0x61, 0x6c, 0x43, 0x6f, 0x64, 0x65,
+	0x12, 0x1b, 0x0a, 0x09, 0x6e, 0x75, 0x6d, 0x5f, 0x68, 0x69, 0x72, 0x65, 0x73, 0x18, 0x0d, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x08, 0x6e, 0x75, 0x6d, 0x48, 0x69, 0x72, 0x65, 0x73, 0x12, 0x39, 0x0a,
+	0x06, 0x72, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e,
+	0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x56, 0x69, 0x65, 0x77, 0x49, 0x6e, 0x66, 0x6f,
+	0x72, 0x2e, 0x4f, 0x76, 0x65, 0x72, 0x76, 0x69, 0x65, 0x77, 0x52, 0x61, 0x74, 0x69, 0x6e, 0x67,
+	0x52, 0x06, 0x72, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x1a, 0x4e, 0x0a, 0x0e, 0x4f, 0x76, 0x65, 0x72,
+	0x76, 0x69, 0x65, 0x77, 0x52, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x12, 0x1d, 0x0a, 0x0a, 0x6e, 0x75,
+	0x6d, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09,
+	0x6e, 0x75, 0x6d, 0x52, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x76, 0x67,
+	0x5f, 0x72, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x09, 0x61,
+	0x76, 0x67, 0x52, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x22, 0x44, 0x0a, 0x10, 0x46, 0x69, 0x6e, 0x64,
+	0x50, 0x72, 0x6f, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x30, 0x0a, 0x09,
+	0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x12, 0x2e, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x56, 0x69, 0x65, 0x77, 0x49, 0x6e,
+	0x66, 0x6f, 0x72, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x73, 0x22, 0x81,
 	0x01, 0x0a, 0x10, 0x53, 0x69, 0x67, 0x6e, 0x55, 0x70, 0x50, 0x72, 0x6f, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x69, 0x6e, 0x74, 0x72, 0x6f,
@@ -1905,93 +2168,101 @@ func file_api_pro_api_pro_api_proto_rawDescGZIP() []byte {
 	return file_api_pro_api_pro_api_proto_rawDescData
 }
 
-var file_api_pro_api_pro_api_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
+var file_api_pro_api_pro_api_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
 var file_api_pro_api_pro_api_proto_goTypes = []interface{}{
-	(*ProviderInfo)(nil),                    // 0: ProviderInfo
-	(*FilterProRequest)(nil),                // 1: FilterProRequest
-	(*FindProsRequest)(nil),                 // 2: FindProsRequest
-	(*FindProsResponse)(nil),                // 3: FindProsResponse
-	(*SignUpProRequest)(nil),                // 4: SignUpProRequest
-	(*UpdateProRequest)(nil),                // 5: UpdateProRequest
-	(*AddPaymentMethodProRequest)(nil),      // 6: AddPaymentMethodProRequest
-	(*ReplyReviewProRequest)(nil),           // 7: ReplyReviewProRequest
-	(*ReviewProRequest)(nil),                // 8: ReviewProRequest
-	(*AddServiceProRequest)(nil),            // 9: AddServiceProRequest
-	(*DeleteServiceProRequest)(nil),         // 10: DeleteServiceProRequest
-	(*AddSocialMediaProRequest)(nil),        // 11: AddSocialMediaProRequest
-	(*FindProByIdRequest)(nil),              // 12: FindProByIdRequest
-	(*FindProByIdResponse)(nil),             // 13: FindProByIdResponse
-	(*ProviderProfileResponse)(nil),         // 14: ProviderProfileResponse
-	(*DeleteProByIdRequest)(nil),            // 15: DeleteProByIdRequest
-	(*GetAllServiceOfProviderRequest)(nil),  // 16: GetAllServiceOfProviderRequest
-	(*GetAllServiceOfProviderResponse)(nil), // 17: GetAllServiceOfProviderResponse
-	(*FindAllHireRequest)(nil),              // 18: FindAllHireRequest
-	(*FindAllHireResponse)(nil),             // 19: FindAllHireResponse
-	(*CreateHireRequest)(nil),               // 20: CreateHireRequest
-	(*CreateHireResponse)(nil),              // 21: CreateHireResponse
-	(*UpdateStatusHireRequest)(nil),         // 22: UpdateStatusHireRequest
-	(*UpdateStatusHireResponse)(nil),        // 23: UpdateStatusHireResponse
-	(*DeleteHireRequest)(nil),               // 24: DeleteHireRequest
-	(*JoinAsProviderRequest)(nil),           // 25: JoinAsProviderRequest
-	(*JoinAsProviderResponse)(nil),          // 26: JoinAsProviderResponse
-	(*PostalCode)(nil),                      // 27: PostalCode
-	(*Pagination)(nil),                      // 28: Pagination
-	(*Service)(nil),                         // 29: Service
-	(*Hire)(nil),                            // 30: Hire
-	(*emptypb.Empty)(nil),                   // 31: google.protobuf.Empty
+	(*ProviderInfo)(nil),                     // 0: ProviderInfo
+	(*FilterProRequest)(nil),                 // 1: FilterProRequest
+	(*FindProsRequest)(nil),                  // 2: FindProsRequest
+	(*ProviderViewInfor)(nil),                // 3: ProviderViewInfor
+	(*FindProsResponse)(nil),                 // 4: FindProsResponse
+	(*SignUpProRequest)(nil),                 // 5: SignUpProRequest
+	(*UpdateProRequest)(nil),                 // 6: UpdateProRequest
+	(*AddPaymentMethodProRequest)(nil),       // 7: AddPaymentMethodProRequest
+	(*ReplyReviewProRequest)(nil),            // 8: ReplyReviewProRequest
+	(*ReviewProRequest)(nil),                 // 9: ReviewProRequest
+	(*AddServiceProRequest)(nil),             // 10: AddServiceProRequest
+	(*DeleteServiceProRequest)(nil),          // 11: DeleteServiceProRequest
+	(*AddSocialMediaProRequest)(nil),         // 12: AddSocialMediaProRequest
+	(*FindProByIdRequest)(nil),               // 13: FindProByIdRequest
+	(*FindProByIdResponse)(nil),              // 14: FindProByIdResponse
+	(*ProviderProfileResponse)(nil),          // 15: ProviderProfileResponse
+	(*DeleteProByIdRequest)(nil),             // 16: DeleteProByIdRequest
+	(*GetAllServiceOfProviderRequest)(nil),   // 17: GetAllServiceOfProviderRequest
+	(*GetAllServiceOfProviderResponse)(nil),  // 18: GetAllServiceOfProviderResponse
+	(*FindAllHireRequest)(nil),               // 19: FindAllHireRequest
+	(*FindAllHireResponse)(nil),              // 20: FindAllHireResponse
+	(*CreateHireRequest)(nil),                // 21: CreateHireRequest
+	(*CreateHireResponse)(nil),               // 22: CreateHireResponse
+	(*UpdateStatusHireRequest)(nil),          // 23: UpdateStatusHireRequest
+	(*UpdateStatusHireResponse)(nil),         // 24: UpdateStatusHireResponse
+	(*DeleteHireRequest)(nil),                // 25: DeleteHireRequest
+	(*JoinAsProviderRequest)(nil),            // 26: JoinAsProviderRequest
+	(*JoinAsProviderResponse)(nil),           // 27: JoinAsProviderResponse
+	(*ProviderViewInfor_OverviewRating)(nil), // 28: ProviderViewInfor.OverviewRating
+	(*PostalCode)(nil),                       // 29: PostalCode
+	(*SocialMedia)(nil),                      // 30: SocialMedia
+	(*PaymentMethod)(nil),                    // 31: PaymentMethod
+	(*Pagination)(nil),                       // 32: Pagination
+	(*Service)(nil),                          // 33: Service
+	(*Hire)(nil),                             // 34: Hire
+	(*emptypb.Empty)(nil),                    // 35: google.protobuf.Empty
 }
 var file_api_pro_api_pro_api_proto_depIdxs = []int32{
-	27, // 0: ProviderInfo.postal_code:type_name -> PostalCode
-	1,  // 1: FindProsRequest.filter:type_name -> FilterProRequest
-	28, // 2: FindProsRequest.pagination:type_name -> Pagination
-	0,  // 3: FindProsResponse.providers:type_name -> ProviderInfo
-	0,  // 4: FindProByIdResponse.provider:type_name -> ProviderInfo
-	0,  // 5: ProviderProfileResponse.provider:type_name -> ProviderInfo
-	29, // 6: GetAllServiceOfProviderResponse.services:type_name -> Service
-	30, // 7: FindAllHireResponse.hires:type_name -> Hire
-	30, // 8: CreateHireResponse.hire:type_name -> Hire
-	30, // 9: UpdateStatusHireResponse.hire:type_name -> Hire
-	2,  // 10: ProService.FindPros:input_type -> FindProsRequest
-	12, // 11: ProService.FindProById:input_type -> FindProByIdRequest
-	16, // 12: ProService.GetAllServiceOfProvider:input_type -> GetAllServiceOfProviderRequest
-	31, // 13: ProService.GetProviderProfile:input_type -> google.protobuf.Empty
-	15, // 14: ProService.DeleteProById:input_type -> DeleteProByIdRequest
-	4,  // 15: ProService.SignUpPro:input_type -> SignUpProRequest
-	25, // 16: ProService.JoinAsProvider:input_type -> JoinAsProviderRequest
-	5,  // 17: ProService.UpdatePro:input_type -> UpdateProRequest
-	6,  // 18: ProService.AddPaymentMethodPro:input_type -> AddPaymentMethodProRequest
-	7,  // 19: ProService.ReplyReviewPro:input_type -> ReplyReviewProRequest
-	8,  // 20: ProService.ReviewPro:input_type -> ReviewProRequest
-	9,  // 21: ProService.AddServicePro:input_type -> AddServiceProRequest
-	11, // 22: ProService.AddSocialMediaPro:input_type -> AddSocialMediaProRequest
-	10, // 23: ProService.DeleteServicePro:input_type -> DeleteServiceProRequest
-	18, // 24: HireService.FindAllHire:input_type -> FindAllHireRequest
-	20, // 25: HireService.CreateHire:input_type -> CreateHireRequest
-	22, // 26: HireService.UpdateStatusHire:input_type -> UpdateStatusHireRequest
-	24, // 27: HireService.DeleteHire:input_type -> DeleteHireRequest
-	3,  // 28: ProService.FindPros:output_type -> FindProsResponse
-	13, // 29: ProService.FindProById:output_type -> FindProByIdResponse
-	17, // 30: ProService.GetAllServiceOfProvider:output_type -> GetAllServiceOfProviderResponse
-	14, // 31: ProService.GetProviderProfile:output_type -> ProviderProfileResponse
-	31, // 32: ProService.DeleteProById:output_type -> google.protobuf.Empty
-	0,  // 33: ProService.SignUpPro:output_type -> ProviderInfo
-	26, // 34: ProService.JoinAsProvider:output_type -> JoinAsProviderResponse
-	0,  // 35: ProService.UpdatePro:output_type -> ProviderInfo
-	31, // 36: ProService.AddPaymentMethodPro:output_type -> google.protobuf.Empty
-	31, // 37: ProService.ReplyReviewPro:output_type -> google.protobuf.Empty
-	31, // 38: ProService.ReviewPro:output_type -> google.protobuf.Empty
-	31, // 39: ProService.AddServicePro:output_type -> google.protobuf.Empty
-	31, // 40: ProService.AddSocialMediaPro:output_type -> google.protobuf.Empty
-	31, // 41: ProService.DeleteServicePro:output_type -> google.protobuf.Empty
-	19, // 42: HireService.FindAllHire:output_type -> FindAllHireResponse
-	21, // 43: HireService.CreateHire:output_type -> CreateHireResponse
-	23, // 44: HireService.UpdateStatusHire:output_type -> UpdateStatusHireResponse
-	31, // 45: HireService.DeleteHire:output_type -> google.protobuf.Empty
-	28, // [28:46] is the sub-list for method output_type
-	10, // [10:28] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	29, // 0: ProviderInfo.postal_code:type_name -> PostalCode
+	30, // 1: ProviderInfo.social_medias:type_name -> SocialMedia
+	31, // 2: ProviderInfo.payment_method:type_name -> PaymentMethod
+	1,  // 3: FindProsRequest.filter:type_name -> FilterProRequest
+	32, // 4: FindProsRequest.pagination:type_name -> Pagination
+	29, // 5: ProviderViewInfor.postal_code:type_name -> PostalCode
+	28, // 6: ProviderViewInfor.rating:type_name -> ProviderViewInfor.OverviewRating
+	3,  // 7: FindProsResponse.providers:type_name -> ProviderViewInfor
+	0,  // 8: FindProByIdResponse.provider:type_name -> ProviderInfo
+	0,  // 9: ProviderProfileResponse.provider:type_name -> ProviderInfo
+	33, // 10: GetAllServiceOfProviderResponse.services:type_name -> Service
+	34, // 11: FindAllHireResponse.hires:type_name -> Hire
+	34, // 12: CreateHireResponse.hire:type_name -> Hire
+	34, // 13: UpdateStatusHireResponse.hire:type_name -> Hire
+	2,  // 14: ProService.FindPros:input_type -> FindProsRequest
+	13, // 15: ProService.FindProById:input_type -> FindProByIdRequest
+	17, // 16: ProService.GetAllServiceOfProvider:input_type -> GetAllServiceOfProviderRequest
+	35, // 17: ProService.GetProviderProfile:input_type -> google.protobuf.Empty
+	16, // 18: ProService.DeleteProById:input_type -> DeleteProByIdRequest
+	5,  // 19: ProService.SignUpPro:input_type -> SignUpProRequest
+	26, // 20: ProService.JoinAsProvider:input_type -> JoinAsProviderRequest
+	6,  // 21: ProService.UpdatePro:input_type -> UpdateProRequest
+	7,  // 22: ProService.AddPaymentMethodPro:input_type -> AddPaymentMethodProRequest
+	8,  // 23: ProService.ReplyReviewPro:input_type -> ReplyReviewProRequest
+	9,  // 24: ProService.ReviewPro:input_type -> ReviewProRequest
+	10, // 25: ProService.AddServicePro:input_type -> AddServiceProRequest
+	12, // 26: ProService.AddSocialMediaPro:input_type -> AddSocialMediaProRequest
+	11, // 27: ProService.DeleteServicePro:input_type -> DeleteServiceProRequest
+	19, // 28: HireService.FindAllHire:input_type -> FindAllHireRequest
+	21, // 29: HireService.CreateHire:input_type -> CreateHireRequest
+	23, // 30: HireService.UpdateStatusHire:input_type -> UpdateStatusHireRequest
+	25, // 31: HireService.DeleteHire:input_type -> DeleteHireRequest
+	4,  // 32: ProService.FindPros:output_type -> FindProsResponse
+	14, // 33: ProService.FindProById:output_type -> FindProByIdResponse
+	18, // 34: ProService.GetAllServiceOfProvider:output_type -> GetAllServiceOfProviderResponse
+	15, // 35: ProService.GetProviderProfile:output_type -> ProviderProfileResponse
+	35, // 36: ProService.DeleteProById:output_type -> google.protobuf.Empty
+	0,  // 37: ProService.SignUpPro:output_type -> ProviderInfo
+	27, // 38: ProService.JoinAsProvider:output_type -> JoinAsProviderResponse
+	0,  // 39: ProService.UpdatePro:output_type -> ProviderInfo
+	35, // 40: ProService.AddPaymentMethodPro:output_type -> google.protobuf.Empty
+	35, // 41: ProService.ReplyReviewPro:output_type -> google.protobuf.Empty
+	35, // 42: ProService.ReviewPro:output_type -> google.protobuf.Empty
+	35, // 43: ProService.AddServicePro:output_type -> google.protobuf.Empty
+	35, // 44: ProService.AddSocialMediaPro:output_type -> google.protobuf.Empty
+	35, // 45: ProService.DeleteServicePro:output_type -> google.protobuf.Empty
+	20, // 46: HireService.FindAllHire:output_type -> FindAllHireResponse
+	22, // 47: HireService.CreateHire:output_type -> CreateHireResponse
+	24, // 48: HireService.UpdateStatusHire:output_type -> UpdateStatusHireResponse
+	35, // 49: HireService.DeleteHire:output_type -> google.protobuf.Empty
+	32, // [32:50] is the sub-list for method output_type
+	14, // [14:32] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_api_pro_api_pro_api_proto_init() }
@@ -2038,7 +2309,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindProsResponse); i {
+			switch v := v.(*ProviderViewInfor); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2050,7 +2321,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SignUpProRequest); i {
+			switch v := v.(*FindProsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2062,7 +2333,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateProRequest); i {
+			switch v := v.(*SignUpProRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2074,7 +2345,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddPaymentMethodProRequest); i {
+			switch v := v.(*UpdateProRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2086,7 +2357,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ReplyReviewProRequest); i {
+			switch v := v.(*AddPaymentMethodProRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2098,7 +2369,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ReviewProRequest); i {
+			switch v := v.(*ReplyReviewProRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2110,7 +2381,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddServiceProRequest); i {
+			switch v := v.(*ReviewProRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2122,7 +2393,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteServiceProRequest); i {
+			switch v := v.(*AddServiceProRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2134,7 +2405,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddSocialMediaProRequest); i {
+			switch v := v.(*DeleteServiceProRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2146,7 +2417,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindProByIdRequest); i {
+			switch v := v.(*AddSocialMediaProRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2158,7 +2429,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindProByIdResponse); i {
+			switch v := v.(*FindProByIdRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2170,7 +2441,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProviderProfileResponse); i {
+			switch v := v.(*FindProByIdResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2182,7 +2453,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteProByIdRequest); i {
+			switch v := v.(*ProviderProfileResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2194,7 +2465,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllServiceOfProviderRequest); i {
+			switch v := v.(*DeleteProByIdRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2206,7 +2477,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllServiceOfProviderResponse); i {
+			switch v := v.(*GetAllServiceOfProviderRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2218,7 +2489,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindAllHireRequest); i {
+			switch v := v.(*GetAllServiceOfProviderResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2230,7 +2501,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindAllHireResponse); i {
+			switch v := v.(*FindAllHireRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2242,7 +2513,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateHireRequest); i {
+			switch v := v.(*FindAllHireResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2254,7 +2525,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateHireResponse); i {
+			switch v := v.(*CreateHireRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2266,7 +2537,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateStatusHireRequest); i {
+			switch v := v.(*CreateHireResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2278,7 +2549,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateStatusHireResponse); i {
+			switch v := v.(*UpdateStatusHireRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2290,7 +2561,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteHireRequest); i {
+			switch v := v.(*UpdateStatusHireResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2302,7 +2573,7 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*JoinAsProviderRequest); i {
+			switch v := v.(*DeleteHireRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2314,7 +2585,31 @@ func file_api_pro_api_pro_api_proto_init() {
 			}
 		}
 		file_api_pro_api_pro_api_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*JoinAsProviderRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_pro_api_pro_api_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*JoinAsProviderResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_pro_api_pro_api_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProviderViewInfor_OverviewRating); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2328,15 +2623,15 @@ func file_api_pro_api_pro_api_proto_init() {
 	}
 	file_api_pro_api_pro_api_proto_msgTypes[1].OneofWrappers = []interface{}{}
 	file_api_pro_api_pro_api_proto_msgTypes[2].OneofWrappers = []interface{}{}
-	file_api_pro_api_pro_api_proto_msgTypes[5].OneofWrappers = []interface{}{}
-	file_api_pro_api_pro_api_proto_msgTypes[18].OneofWrappers = []interface{}{}
+	file_api_pro_api_pro_api_proto_msgTypes[6].OneofWrappers = []interface{}{}
+	file_api_pro_api_pro_api_proto_msgTypes[19].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_pro_api_pro_api_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   27,
+			NumMessages:   29,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

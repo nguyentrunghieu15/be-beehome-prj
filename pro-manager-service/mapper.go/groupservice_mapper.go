@@ -31,6 +31,7 @@ func MapToGroupService(ds *datasource.GroupService) *proapi.GroupService {
 		DeletedAt: deletedAt,
 		Name:      ds.Name,
 		Detail:    ds.Detail,
+		Services:  MapToServices(ds.Services),
 	}
 }
 

@@ -6,13 +6,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
 	"gorm.io/gorm"
 )
 
 type IProviderRepo interface {
-	FindProviders(interface{}) ([]*Provider, error)
+	FindProviders(*proapi.FindProsRequest) ([]*ProviderReviewInfor, error)
 	FindOneById(uuid.UUID) (*Provider, error)
 	FindOneByUserId(uuid.UUID) (*Provider, error)
 	FindOneByName(name string) (*Provider, error)
@@ -24,6 +25,14 @@ type IProviderRepo interface {
 	RemoveServicesOfPro(uuid.UUID, ...uuid.UUID) error
 }
 
+type ProviderReviewInfor struct {
+	Provider
+	PostalCode
+	HireCount     int64
+	AverageRating float64
+	ReviewCount   int64
+}
+
 type ProviderRepo struct {
 	db *database.PostgreDb
 }
@@ -33,6 +42,7 @@ func (pr *ProviderRepo) FindOneById(id uuid.UUID) (*Provider, error) {
 	result := pr.db.Preload("PostalCode").
 		Preload("PaymentMethods").
 		Preload("SocialMedias").
+		Preload("Hires", "status = ?", "approve").
 		First(provider, "id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -216,8 +226,77 @@ func (pr *ProviderRepo) RemoveServicesOfPro(providerID uuid.UUID, serviceIDs ...
 	return nil
 }
 
-func (pr *ProviderRepo) FindProviders(req interface{}) ([]*Provider, error) {
-	return nil, nil
+func (pr *ProviderRepo) FindProviders(req *proapi.FindProsRequest) ([]*ProviderReviewInfor, error) {
+	// Subquery to filter providers offering 'Oven Cleaning' service
+	subquery := pr.db.Select("provider_id").Table("providers").
+		Joins("JOIN provider_service ON providers.id = provider_service.provider_id").
+		Joins("JOIN services ON services.id = provider_service.service_id").
+		Joins("JOIN group_services ON group_services.id = services.group_service_id")
+	if req.Filter != nil {
+		if req.Filter.ServiceName != nil {
+			subquery = subquery.Where("services.name = ? OR group_services.name = ?", *req.Filter.ServiceName, *req.Filter.ServiceName)
+		}
+	}
+
+	// Main query with joins, filtering, aggregations, and pagination
+	var providers []*ProviderReviewInfor
+
+	query := pr.db.Table("providers"). // Preload PostalCode data
+						Select("providers.*, postal_codes.*, COUNT(hires.id) AS hire_count, AVG(reviews.rating) AS average_rating, COUNT(reviews.id) AS review_count").
+						Joins("JOIN postal_codes ON postal_codes.id = providers.postal_code_id").
+						Joins("LEFT JOIN hires ON hires.provider_id = providers.id").
+						Joins("LEFT JOIN reviews ON reviews.provider_id = providers.id")
+
+	if req.Filter != nil {
+		if req.Filter.ServiceName != nil {
+			// Use subquery for efficient filtering
+			query = query.Where("providers.id IN (?)", subquery)
+		}
+	}
+	// Apply filters based on request parameters
+	if req.Filter != nil {
+		if req.Filter.Name != nil {
+			query = query.Where("providers.name like %?%", *req.Filter.Name)
+		}
+		if req.Filter.PostalCode != nil {
+			query = query.Where("postal_codes.zipcode = ? AND (hires.status <> ? OR hires.status ISNULL)", *req.Filter.PostalCode, "decline")
+		}
+		if req.Filter.Years != nil {
+			query = query.Where("providers.years = ?", *req.Filter.Years)
+		}
+		if req.Filter.Introduction != nil {
+			query = query.Where("providers.introduction like %?%", *req.Filter.Introduction)
+		}
+	}
+	query = query.Group("providers.id, postal_codes.id")
+
+	// Apply pagination based on request parameters
+	if req.Pagination != nil {
+		// Add sorting logic based on req.Pagination.Sort and req.Pagination.SortBy
+		if req.Pagination.Sort != nil && req.Pagination.SortBy != nil {
+			sortField := *req.Pagination.SortBy
+			sortOrder := "ASC"
+			if *req.Pagination.Sort == proapi.TypeSort_DESC {
+				sortOrder = "DESC"
+			}
+			query = query.Order(fmt.Sprintf("%s %s", sortField, sortOrder))
+		}
+
+		if req.Pagination.Page != nil && req.Pagination.PageSize != nil {
+			offset := int(*req.Pagination.Page) * int(*req.Pagination.PageSize)
+			query = query.Offset(offset)
+		}
+
+		if req.Pagination.Limit != nil {
+			query = query.Limit(int(*req.Pagination.Limit))
+		}
+
+	}
+	err := query.Scan(&providers)
+	if err.Error != nil {
+		return nil, err.Error
+	}
+	return providers, nil
 }
 
 func NewProviderRepo(db *database.PostgreDb) *ProviderRepo {

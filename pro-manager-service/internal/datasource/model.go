@@ -111,6 +111,7 @@ type Provider struct {
 	UserId         uuid.UUID        `json:"user_id,omitempty"`
 	PaymentMethods []*PaymentMethod `                                gorm:"foreignKey:ProviderId"`
 	SocialMedias   []*SocialMedia   `                                gorm:"foreignKey:ProviderId"`
+	Hires          []*Hire          `                                gorm:"foreignKey:ProviderId"`
 	Services       []*Service       `                                gorm:"many2many:provider_service;"`
 }
 
@@ -129,7 +130,7 @@ type Hire struct {
 	Service         Service        `json:"service,omitempty"           gorm:"foreignKey:ServiceId"`
 	WorkTimeFrom    string         `json:"work_time_from,omitempty"`
 	WorkTimeTo      string         `json:"work_time_to,omitempty"`
-	Status          string         `json:"status,omitempty"`
+	Status          string         `json:"status,omitempty"` // pendding , aprove , decline ,
 	PaymentMethodId uuid.UUID      `json:"payment_method_id,omitempty"`
 	PaymentMethod   PaymentMethod  `json:"payment_method,omitempty"    gorm:"foreignKey:PaymentMethodId"`
 }

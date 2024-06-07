@@ -17,7 +17,17 @@ import (
 func (s *ProviderService) FindPros(ctx context.Context, req *proapi.FindProsRequest) (*proapi.FindProsResponse, error) {
 	// Implement logic to search providers using proRepo based on request criteria
 	// ...
-	return &proapi.FindProsResponse{}, nil // Replace with actual response population
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	providers, err := s.proRepo.FindProviders(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proapi.FindProsResponse{Providers: mapper.MapToProviderViewInfos(providers)}, nil // Replace with actual response population
 }
 
 // Find pro by ID
@@ -251,7 +261,6 @@ func (s *ProviderService) AddServicePro(ctx context.Context, req *proapi.AddServ
 
 	// Extract provider ID from context (assuming context carries provider ID)
 	providerID := uuid.MustParse(ctx.Value("provider_id").(string))
-	fmt.Println(providerID)
 
 	// Convert service ID from string to uuid.UUID
 	servicesID := make([]uuid.UUID, 0)
@@ -279,7 +288,10 @@ func (s *ProviderService) AddSocialMediaPro(
 	}
 
 	// Extract provider ID from context (assuming context carries provider ID)
-	providerID := uuid.MustParse(ctx.Value("provider_id").(string))
+	providerID := uuid.MustParse(
+		ctx.Value("provider_id").(string),
+	) // Implement this function based on your context usage
+	fmt.Println(providerID)
 
 	// Convert request data to map
 	data, err := convert.StructProtoToMap(req)
