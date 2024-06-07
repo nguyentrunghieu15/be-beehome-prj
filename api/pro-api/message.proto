@@ -45,7 +45,7 @@ message Review {
     int32  rating = 10;
     string comment = 11;
     string reply = 12;
-    int32 service_id = 13;
+    string service_id = 13;
 }
 
 message GroupService {

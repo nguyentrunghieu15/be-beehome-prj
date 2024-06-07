@@ -28,6 +28,7 @@ type ProServiceClient interface {
 	// Find providers based on search by id
 	FindProById(ctx context.Context, in *FindProByIdRequest, opts ...grpc.CallOption) (*FindProByIdResponse, error)
 	GetAllServiceOfProvider(ctx context.Context, in *GetAllServiceOfProviderRequest, opts ...grpc.CallOption) (*GetAllServiceOfProviderResponse, error)
+	GetAllReviewsOfProvider(ctx context.Context, in *GetAllReviewOfProviderRequest, opts ...grpc.CallOption) (*GetAllReviewOfProviderResponse, error)
 	// get provider profile of user logined
 	GetProviderProfile(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ProviderProfileResponse, error)
 	// delete pro by id
@@ -81,6 +82,15 @@ func (c *proServiceClient) FindProById(ctx context.Context, in *FindProByIdReque
 func (c *proServiceClient) GetAllServiceOfProvider(ctx context.Context, in *GetAllServiceOfProviderRequest, opts ...grpc.CallOption) (*GetAllServiceOfProviderResponse, error) {
 	out := new(GetAllServiceOfProviderResponse)
 	err := c.cc.Invoke(ctx, "/ProService/GetAllServiceOfProvider", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proServiceClient) GetAllReviewsOfProvider(ctx context.Context, in *GetAllReviewOfProviderRequest, opts ...grpc.CallOption) (*GetAllReviewOfProviderResponse, error) {
+	out := new(GetAllReviewOfProviderResponse)
+	err := c.cc.Invoke(ctx, "/ProService/GetAllReviewsOfProvider", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -195,6 +205,7 @@ type ProServiceServer interface {
 	// Find providers based on search by id
 	FindProById(context.Context, *FindProByIdRequest) (*FindProByIdResponse, error)
 	GetAllServiceOfProvider(context.Context, *GetAllServiceOfProviderRequest) (*GetAllServiceOfProviderResponse, error)
+	GetAllReviewsOfProvider(context.Context, *GetAllReviewOfProviderRequest) (*GetAllReviewOfProviderResponse, error)
 	// get provider profile of user logined
 	GetProviderProfile(context.Context, *emptypb.Empty) (*ProviderProfileResponse, error)
 	// delete pro by id
@@ -232,6 +243,9 @@ func (UnimplementedProServiceServer) FindProById(context.Context, *FindProByIdRe
 }
 func (UnimplementedProServiceServer) GetAllServiceOfProvider(context.Context, *GetAllServiceOfProviderRequest) (*GetAllServiceOfProviderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllServiceOfProvider not implemented")
+}
+func (UnimplementedProServiceServer) GetAllReviewsOfProvider(context.Context, *GetAllReviewOfProviderRequest) (*GetAllReviewOfProviderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllReviewsOfProvider not implemented")
 }
 func (UnimplementedProServiceServer) GetProviderProfile(context.Context, *emptypb.Empty) (*ProviderProfileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProviderProfile not implemented")
@@ -329,6 +343,24 @@ func _ProService_GetAllServiceOfProvider_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProServiceServer).GetAllServiceOfProvider(ctx, req.(*GetAllServiceOfProviderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProService_GetAllReviewsOfProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllReviewOfProviderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProServiceServer).GetAllReviewsOfProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ProService/GetAllReviewsOfProvider",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProServiceServer).GetAllReviewsOfProvider(ctx, req.(*GetAllReviewOfProviderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -549,6 +581,10 @@ var ProService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllServiceOfProvider",
 			Handler:    _ProService_GetAllServiceOfProvider_Handler,
+		},
+		{
+			MethodName: "GetAllReviewsOfProvider",
+			Handler:    _ProService_GetAllReviewsOfProvider_Handler,
 		},
 		{
 			MethodName: "GetProviderProfile",

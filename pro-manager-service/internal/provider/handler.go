@@ -384,7 +384,6 @@ func (s *ProviderService) DeleteServicePro(
 
 	// Extract provider ID from context (assuming context carries provider ID)
 	providerID := uuid.MustParse(ctx.Value("provider_id").(string))
-	fmt.Println(providerID)
 
 	// Convert service ID from string to uuid.UUID
 	servicesID := make([]uuid.UUID, 0)
@@ -399,4 +398,23 @@ func (s *ProviderService) DeleteServicePro(
 
 	// Return empty response (modify if needed)
 	return &emptypb.Empty{}, nil
+}
+
+func (s *ProviderService) GetAllReviewsOfProvider(ctx context.Context, req *proapi.GetAllReviewOfProviderRequest) (*proapi.GetAllReviewOfProviderResponse, error) {
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	// Extract provider ID from context (assuming context carries provider ID)
+	providerID := uuid.MustParse(req.GetId())
+
+	reviews, err := s.reviewRepo.FindReviewsByProviderId(providerID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proapi.GetAllReviewOfProviderResponse{
+		Reviews: mapper.MapToReviews(reviews),
+	}, nil
 }

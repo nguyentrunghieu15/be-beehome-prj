@@ -934,6 +934,36 @@
         ]
       }
     },
+    "/api/v1/providers/{id}/reviews": {
+      "get": {
+        "operationId": "ProService_GetAllReviewsOfProvider",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetAllReviewOfProviderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
     "/api/v1/providers/{id}/services": {
       "get": {
         "operationId": "ProService_GetAllServiceOfProvider",
@@ -1391,6 +1421,18 @@
       },
       "title": "Response message for finding providers"
     },
+    "GetAllReviewOfProviderResponse": {
+      "type": "object",
+      "properties": {
+        "reviews": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Review"
+          }
+        }
+      }
+    },
     "GetAllServiceOfProviderResponse": {
       "type": "object",
       "properties": {
@@ -1783,6 +1825,51 @@
         }
       },
       "title": "Request message for replying to a review as a professional"
+    },
+    "Review": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "providerId": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "reply": {
+          "type": "string"
+        },
+        "serviceId": {
+          "type": "string"
+        }
+      }
     },
     "ReviewProRequest": {
       "type": "object",

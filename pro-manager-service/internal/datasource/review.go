@@ -11,8 +11,8 @@ import (
 type IReviewRepo interface {
 	FindReviews(interface{}) ([]*Review, error)
 	FindOneById(uuid.UUID) (*Review, error)
-	FindReviewsByUserId(string) ([]*Review, error)
-	FindReviewsByProviderId(string) ([]*Review, error)
+	FindReviewsByUserId(uuid.UUID) ([]*Review, error)
+	FindReviewsByProviderId(uuid.UUID) ([]*Review, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*Review, error)
 	CreateReview(map[string]interface{}) (*Review, error)
 	DeleteOneById(uuid.UUID) error
@@ -24,25 +24,25 @@ type ReviewRepo struct {
 
 func (rr *ReviewRepo) FindOneById(id uuid.UUID) (*Review, error) {
 	review := &Review{}
-	result := rr.db.Preload("Provider").Preload("Service").First(review, "id = ?", id)
+	result := rr.db.First(review, "id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return review, nil
 }
 
-func (rr *ReviewRepo) FindReviewsByUserId(userId string) ([]*Review, error) {
+func (rr *ReviewRepo) FindReviewsByUserId(userId uuid.UUID) ([]*Review, error) {
 	var reviews []*Review
-	result := rr.db.Preload("Provider").Preload("Service").Find(&reviews, "user_id = ?", userId)
+	result := rr.db.Find(&reviews, "user_id = ?", userId)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return reviews, nil
 }
 
-func (rr *ReviewRepo) FindReviewsByProviderId(providerId string) ([]*Review, error) {
+func (rr *ReviewRepo) FindReviewsByProviderId(providerId uuid.UUID) ([]*Review, error) {
 	var reviews []*Review
-	result := rr.db.Preload("Provider").Preload("Service").Find(&reviews, "provider_id = ?", providerId)
+	result := rr.db.Preload("Provider").Find(&reviews, "provider_id = ?", providerId)
 	if result.Error != nil {
 		return nil, result.Error
 	}

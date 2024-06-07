@@ -81,6 +81,12 @@ service ProService {
     };
   };
 
+  rpc GetAllReviewsOfProvider (GetAllReviewOfProviderRequest) returns (GetAllReviewOfProviderResponse){
+    option (google.api.http) = {
+      get: "/api/v1/providers/{id}/reviews"
+    };
+  };
+
   // get provider profile of user logined
   rpc GetProviderProfile (google.protobuf.Empty) returns (ProviderProfileResponse){
     option (google.api.http) = {
@@ -303,9 +309,18 @@ message GetAllServiceOfProviderRequest {
   string id = 1;
 }
 
+message GetAllReviewOfProviderRequest {
+  string id = 1;
+}
+
 message GetAllServiceOfProviderResponse {
   repeated Service services = 1;
 }
+
+message GetAllReviewOfProviderResponse {
+  repeated Review reviews =1;
+}
+
 
 // Service definition for managing hires
 service HireService {
