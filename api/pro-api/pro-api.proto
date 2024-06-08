@@ -164,6 +164,22 @@ service ProService {
     };
   }
 
+  // Add social media information for a professional
+  rpc UpdateSocialMediaPro (UpdateSocialMediaProRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/api/v1/providers/update-social-media"
+      body: "*"
+    };
+  }
+
+  // Add social media information for a professional
+  rpc DeleteSocialMediaPro (DeleteSocialMediaProRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/providers/delete-social-media"
+      body: "*"
+    };
+  }
+
   // Delete a service offered by a professional
   rpc DeleteServicePro (DeleteServiceProRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
@@ -284,6 +300,17 @@ message DeleteServiceProRequest {
 message AddSocialMediaProRequest {
   string name = 1;
   string link = 2;
+}
+
+// Request message for adding social media information for a professional
+message UpdateSocialMediaProRequest {
+  string id =3;
+  string name = 1;
+  string link = 2;
+}
+
+message DeleteSocialMediaProRequest {
+  string id =3;
 }
 
 

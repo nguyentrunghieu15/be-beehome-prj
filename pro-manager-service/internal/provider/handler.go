@@ -27,7 +27,9 @@ func (s *ProviderService) FindPros(ctx context.Context, req *proapi.FindProsRequ
 		return nil, err
 	}
 
-	return &proapi.FindProsResponse{Providers: mapper.MapToProviderViewInfos(providers)}, nil // Replace with actual response population
+	return &proapi.FindProsResponse{
+		Providers: mapper.MapToProviderViewInfos(providers),
+	}, nil // Replace with actual response population
 }
 
 // Find pro by ID
@@ -400,7 +402,10 @@ func (s *ProviderService) DeleteServicePro(
 	return &emptypb.Empty{}, nil
 }
 
-func (s *ProviderService) GetAllReviewsOfProvider(ctx context.Context, req *proapi.GetAllReviewOfProviderRequest) (*proapi.GetAllReviewOfProviderResponse, error) {
+func (s *ProviderService) GetAllReviewsOfProvider(
+	ctx context.Context,
+	req *proapi.GetAllReviewOfProviderRequest,
+) (*proapi.GetAllReviewOfProviderResponse, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
@@ -417,4 +422,44 @@ func (s *ProviderService) GetAllReviewsOfProvider(ctx context.Context, req *proa
 	return &proapi.GetAllReviewOfProviderResponse{
 		Reviews: mapper.MapToReviews(reviews),
 	}, nil
+}
+
+func (s *ProviderService) UpdateSocialMediaPro(
+	ctx context.Context,
+	req *proapi.UpdateSocialMediaProRequest,
+) (*emptypb.Empty, error) {
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	mapData, err := convert.StructProtoToMap(req)
+	if err != nil {
+		return nil, err
+	}
+
+	delete(mapData, "id")
+
+	_, err = s.socialMediaRepo.UpdateOneById(uuid.MustParse(req.Id), mapData)
+	if err != nil {
+		return nil, err
+	}
+	return &emptypb.Empty{}, nil
+}
+
+// Add social media information for a professional
+func (s *ProviderService) DeleteSocialMediaPro(
+	ctx context.Context,
+	req *proapi.DeleteSocialMediaProRequest,
+) (*emptypb.Empty, error) {
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+	id := uuid.MustParse(req.Id)
+	err := s.socialMediaRepo.DeleteOneById(id)
+	if err != nil {
+		return nil, err
+	}
+	return &emptypb.Empty{}, nil
 }

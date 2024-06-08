@@ -712,6 +712,40 @@
         ]
       }
     },
+    "/api/v1/providers/delete-social-media": {
+      "post": {
+        "summary": "Add social media information for a professional",
+        "operationId": "ProService_DeleteSocialMediaPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteSocialMediaProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
     "/api/v1/providers/owner/profile": {
       "get": {
         "summary": "get provider profile of user logined",
@@ -828,6 +862,40 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/SignUpProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/update-social-media": {
+      "post": {
+        "summary": "Add social media information for a professional",
+        "operationId": "ProService_UpdateSocialMediaPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateSocialMediaProRequest"
             }
           }
         ],
@@ -1324,6 +1392,14 @@
         }
       },
       "title": "Request message for deleting a service offered by a professional"
+    },
+    "DeleteSocialMediaProRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
     },
     "FilterGroupServices": {
       "type": "object",
@@ -1997,6 +2073,21 @@
         "DESC"
       ],
       "default": "NONE"
+    },
+    "UpdateSocialMediaProRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for adding social media information for a professional"
     },
     "UpdateStatusHireResponse": {
       "type": "object",
