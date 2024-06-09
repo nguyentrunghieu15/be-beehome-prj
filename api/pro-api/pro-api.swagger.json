@@ -347,42 +347,12 @@
         },
         "parameters": [
           {
-            "name": "providerId",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "serviceId",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "workTimeFrom",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "workTimeTo",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "paymentMethodId",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateHireRequest"
+            }
           }
         ],
         "tags": [
@@ -448,11 +418,12 @@
             "type": "string"
           },
           {
-            "name": "newStatus",
-            "description": "Updated status value",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/HireServiceUpdateStatusHireBody"
+            }
           }
         ],
         "tags": [
@@ -713,7 +684,7 @@
       }
     },
     "/api/v1/providers/delete-social-media": {
-      "post": {
+      "delete": {
         "summary": "Add social media information for a professional",
         "operationId": "ProService_DeleteSocialMediaPro",
         "responses": {
@@ -733,12 +704,10 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeleteSocialMediaProRequest"
-            }
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -871,7 +840,7 @@
       }
     },
     "/api/v1/providers/update-social-media": {
-      "post": {
+      "put": {
         "summary": "Add social media information for a professional",
         "operationId": "ProService_UpdateSocialMediaPro",
         "responses": {
@@ -1357,6 +1326,32 @@
         }
       }
     },
+    "CreateHireRequest": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string"
+        },
+        "serviceId": {
+          "type": "string"
+        },
+        "workTimeFrom": {
+          "type": "string"
+        },
+        "workTimeTo": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "paymentMethodId": {
+          "type": "string"
+        },
+        "issue": {
+          "type": "string"
+        }
+      }
+    },
     "CreateHireResponse": {
       "type": "object",
       "properties": {
@@ -1392,14 +1387,6 @@
         }
       },
       "title": "Request message for deleting a service offered by a professional"
-    },
-    "DeleteSocialMediaProRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        }
-      }
     },
     "FilterGroupServices": {
       "type": "object",
@@ -1469,7 +1456,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/Hire"
+            "$ref": "#/definitions/HireInfor"
           },
           "title": "List of Hire objects"
         }
@@ -1615,6 +1602,74 @@
         },
         "paymentMethodId": {
           "type": "string"
+        },
+        "issue": {
+          "type": "string"
+        }
+      }
+    },
+    "HireInfor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "providerId": {
+          "type": "string"
+        },
+        "serviceId": {
+          "type": "string"
+        },
+        "workTimeFrom": {
+          "type": "string"
+        },
+        "workTimeTo": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "paymentMethodId": {
+          "type": "string"
+        },
+        "issue": {
+          "type": "string"
+        },
+        "service": {
+          "$ref": "#/definitions/Service"
+        },
+        "provider": {
+          "$ref": "#/definitions/ProviderInfo"
+        }
+      }
+    },
+    "HireServiceUpdateStatusHireBody": {
+      "type": "object",
+      "properties": {
+        "newStatus": {
+          "type": "string",
+          "title": "Updated status value"
         }
       }
     },

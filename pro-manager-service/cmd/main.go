@@ -192,7 +192,7 @@ func main() {
 	)
 
 	hireMux := runtime.NewServeMux()
-	proapi.RegisterHireServiceHandlerFromEndpoint(context.Background(), proMux, "localhost:3002", opts)
+	proapi.RegisterHireServiceHandlerFromEndpoint(context.Background(), hireMux, "localhost:3002", opts)
 	e.Any("/api/v1/hires*", echo.WrapHandler(hireMux),
 		echojwt.WithConfig(echojwt.Config{
 			SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),

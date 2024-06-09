@@ -90,7 +90,9 @@ func (r *HireRepo) FindAll(dataParams map[string]interface{}) ([]*Hire, error) {
 	}
 
 	// Find all matching hires
-	if err := db.Find(&hires).Error; err != nil {
+	if err := db.Preload("Service").
+		Preload("Provider").
+		Find(&hires).Error; err != nil {
 		return nil, err
 	}
 

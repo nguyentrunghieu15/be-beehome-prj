@@ -35,7 +35,7 @@ func (s *HireService) FindAllHire(
 		return nil, err
 	}
 
-	return &proapi.FindAllHireResponse{Hires: mapper.MapToListHire(hires)}, nil
+	return &proapi.FindAllHireResponse{Hires: mapper.MapToListHireInfors(hires)}, nil
 }
 
 func (s *HireService) CreateHire(
@@ -51,6 +51,9 @@ func (s *HireService) CreateHire(
 	if err != nil {
 		return nil, err
 	}
+
+	userId := uuid.MustParse(ctx.Value("user_id").(string))
+	mapHire["user_id"] = userId
 
 	// Use hireRepo to create a new hire
 	hire, err := s.hireRepo.CreateHire(mapHire)

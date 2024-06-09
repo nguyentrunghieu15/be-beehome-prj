@@ -125,12 +125,13 @@ type Hire struct {
 	DeletedAt       gorm.DeletedAt `json:"deleted_at,omitempty"`
 	UserId          string         `json:"user_id,omitempty"`
 	ProviderId      uuid.UUID      `json:"provider_id,omitempty"`
-	Provider        Provider       `json:"provider,omitempty"          gorm:"foreignKey:ProviderId"`
+	Provider        *Provider      `json:"provider,omitempty"          gorm:"foreignKey:ProviderId"`
 	ServiceId       uuid.UUID      `json:"service_id,omitempty"`
-	Service         Service        `json:"service,omitempty"           gorm:"foreignKey:ServiceId"`
+	Service         *Service       `json:"service,omitempty"           gorm:"foreignKey:ServiceId"`
 	WorkTimeFrom    string         `json:"work_time_from,omitempty"`
 	WorkTimeTo      string         `json:"work_time_to,omitempty"`
 	Status          string         `json:"status,omitempty"` // pendding , aprove , decline ,
 	PaymentMethodId uuid.UUID      `json:"payment_method_id,omitempty"`
-	PaymentMethod   PaymentMethod  `json:"payment_method,omitempty"    gorm:"foreignKey:PaymentMethodId"`
+	PaymentMethod   *PaymentMethod `json:"payment_method,omitempty"    gorm:"foreignKey:PaymentMethodId"`
+	Issue           string         `json:"issue,omitempty"`
 }

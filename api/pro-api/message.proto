@@ -116,6 +116,7 @@ message Hire {
     string work_time_to = 12;
     string status = 13;
     string payment_method_id = 14;
+    string issue = 15;
 }
 
 enum TypeSort {

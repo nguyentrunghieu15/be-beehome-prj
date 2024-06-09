@@ -356,8 +356,7 @@
             "name": "serviceId",
             "in": "query",
             "required": false,
-            "type": "integer",
-            "format": "int32"
+            "type": "string"
           },
           {
             "name": "workTimeFrom",
@@ -381,8 +380,13 @@
             "name": "paymentMethodId",
             "in": "query",
             "required": false,
-            "type": "integer",
-            "format": "int32"
+            "type": "string"
+          },
+          {
+            "name": "issue",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -712,6 +716,38 @@
         ]
       }
     },
+    "/api/v1/providers/delete-social-media": {
+      "delete": {
+        "summary": "Add social media information for a professional",
+        "operationId": "ProService_DeleteSocialMediaPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
     "/api/v1/providers/owner/profile": {
       "get": {
         "summary": "get provider profile of user logined",
@@ -828,6 +864,40 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/SignUpProRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProService"
+        ]
+      }
+    },
+    "/api/v1/providers/update-social-media": {
+      "put": {
+        "summary": "Add social media information for a professional",
+        "operationId": "ProService_UpdateSocialMediaPro",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateSocialMediaProRequest"
             }
           }
         ],
@@ -1539,6 +1609,9 @@
         },
         "paymentMethodId": {
           "type": "string"
+        },
+        "issue": {
+          "type": "string"
         }
       }
     },
@@ -1997,6 +2070,21 @@
         "DESC"
       ],
       "default": "NONE"
+    },
+    "UpdateSocialMediaProRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        }
+      },
+      "title": "Request message for adding social media information for a professional"
     },
     "UpdateStatusHireResponse": {
       "type": "object",
