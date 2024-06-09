@@ -13,7 +13,10 @@ func WrapperJwtFunc() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			// Access request headers
-			user := c.Get("user").(*jwt.Token)
+			user, ok := c.Get("user").(*jwt.Token)
+			if !ok {
+				return next(c)
+			}
 			if claim, ok := user.Claims.(jwt.MapClaims); ok {
 				c.Request().Header.Set("Grpc-Metadata-user-id", claim["ID"].(string))
 			}
@@ -54,4 +57,11 @@ func skipAttachProviderJwt(c echo.Context) bool {
 		return false
 	}
 	return true
+}
+
+func SkipperJWTProviderService(c echo.Context) bool {
+	if c.Request().Method == "GET" {
+		return true
+	}
+	return false
 }

@@ -186,6 +186,7 @@ func main() {
 	e.Any("/api/v1/providers*", echo.WrapHandler(proMux),
 		echojwt.WithConfig(echojwt.Config{
 			SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
+			Skipper:    middleware.SkipperJWTProviderService,
 		}),
 		middleware.WrapperJwtFunc(),
 		middleware.AttachProviderFunc(),
