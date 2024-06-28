@@ -8,6 +8,9 @@ import (
 )
 
 func MapToService(s *datasource.Service) *proapi.Service {
+	if s == nil {
+		return nil
+	}
 	// Handle potential conversion errors (e.g., time format)
 	createdAt := s.CreatedAt.Format(time.RFC3339Nano)
 	deletedAt := ""

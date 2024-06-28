@@ -42,7 +42,7 @@ func (rr *ReviewRepo) FindReviewsByUserId(userId uuid.UUID) ([]*Review, error) {
 
 func (rr *ReviewRepo) FindReviewsByProviderId(providerId uuid.UUID) ([]*Review, error) {
 	var reviews []*Review
-	result := rr.db.Preload("Provider").Find(&reviews, "provider_id = ?", providerId)
+	result := rr.db.Preload("Provider").Preload("Service").Find(&reviews, "provider_id = ?", providerId)
 	if result.Error != nil {
 		return nil, result.Error
 	}

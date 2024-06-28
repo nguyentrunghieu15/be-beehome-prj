@@ -1661,6 +1661,9 @@
         },
         "provider": {
           "$ref": "#/definitions/ProviderInfo"
+        },
+        "review": {
+          "$ref": "#/definitions/Review"
         }
       }
     },
@@ -1999,6 +2002,18 @@
         },
         "serviceId": {
           "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "hireId": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "service": {
+          "$ref": "#/definitions/Service"
         }
       }
     },
@@ -2013,6 +2028,15 @@
           "format": "int32"
         },
         "comment": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "hireId": {
           "type": "string"
         }
       },

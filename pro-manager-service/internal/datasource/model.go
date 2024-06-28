@@ -77,7 +77,10 @@ type Review struct {
 	Comment    string         `json:"comment,omitempty"`
 	Reply      string         `json:"reply,omitempty"`
 	ServiceId  uuid.UUID      `json:"service_id,omitempty"`
-	Service    Service        `json:"service,omitempty"     gorm:"foreignKey:ServiceId"`
+	Service    *Service       `json:"service,omitempty"     gorm:"foreignKey:ServiceId"`
+	Note       *string        `json:"note,omitempty"`
+	UserName   string         `json:"user_name,omitempty"`
+	HireId     uuid.UUID      `json:"hire_id,omitempty"`
 }
 
 type PostalCode struct {
@@ -134,4 +137,5 @@ type Hire struct {
 	PaymentMethodId uuid.UUID      `json:"payment_method_id,omitempty"`
 	PaymentMethod   *PaymentMethod `json:"payment_method,omitempty"    gorm:"foreignKey:PaymentMethodId"`
 	Issue           string         `json:"issue,omitempty"`
+	Review          *Review        `json:"review,omitempty"            gorm:"foreignKey:HireId"`
 }

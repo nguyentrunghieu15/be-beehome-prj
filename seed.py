@@ -225,11 +225,11 @@ def main(seed_zipcode=False, seed_services=False):
   
 
     # Replace placeholders with your actual database credentials and table name
-    db_name = "beehome"
+    db_name = "bee-home"
     db_user = "hiro"
-    db_password = "1"
+    db_password = "123456a@"
     db_host = "localhost"
-    db_port = 5432  # Default PostgreSQL port
+    db_port = 5433  # Default PostgreSQL port
 
     if seed_zipcode:
           # Example usage

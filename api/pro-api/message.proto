@@ -46,6 +46,10 @@ message Review {
     string comment = 11;
     string reply = 12;
     string service_id = 13;
+    string user_name = 14;
+    string hire_id = 15;
+    string note  =16;
+    Service service = 17;
 }
 
 message GroupService {

@@ -78,6 +78,7 @@ func MapToHireInfor(hire *datasource.Hire) *proapi.HireInfor {
 		Issue:           hire.Issue,
 		Service:         MapToService(hire.Service),
 		Provider:        MapProviderToInfo(hire.Provider),
+		Review:          MapToReview(hire.Review),
 	}
 }
 

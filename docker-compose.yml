@@ -1,17 +1,108 @@
 version: "3"
 
 services:
-    reverse-proxy:
-        container_name: reverse-proxy
-        # The official v3 Traefik docker image
-        image: traefik:v3.0
-        # Enables the web UI and tells Traefik to listen to docker
-        command: --api.insecure=true --providers.docker
+    # reverse-proxy:
+    #     container_name: reverse-proxy
+    #     # The official v3 Traefik docker image
+    #     image: traefik:v3.0
+    #     # Enables the web UI and tells Traefik to listen to docker
+    #     command: --api.insecure=true --providers.docker
+    #     ports:
+    #         # The HTTP port
+    #         # - "80:80"
+    #         # The Web UI (enabled by --api.insecure=true)
+    #         - "8080:8080"
+    #     volumes:
+    #         # So that Traefik can listen to the Docker events
+    #         - /var/run/docker.sock:/var/run/docker.sock
+    elastic:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+        container_name: elasticsearch
+        environment:
+            - ELASTIC_PASSWORD=123456a@
+            - KIBANA_PASSWORD=123456a@
+            - discovery.type=single-node
+            - xpack.security.http.ssl.enabled=false
+            - xpack.license.self_generated.type=trial
         ports:
-            # The HTTP port
-            # - "80:80"
-            # The Web UI (enabled by --api.insecure=true)
-            - "8080:8080"
+            - 9200:9200
         volumes:
-            # So that Traefik can listen to the Docker events
-            - /var/run/docker.sock:/var/run/docker.sock
+            - ./setup_kibana_password.sh:/usr/local/bin/setup_kibana_password.sh
+        entrypoint:
+            - /bin/bash
+            - -c
+            - |
+                /usr/local/bin/setup_kibana_password.sh &
+                /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
+    kibana:
+        image: docker.elastic.co/kibana/kibana:8.14.1
+        container_name: kibana
+        ports:
+            - 5601:5601
+        environment:
+            - ELASTICSEARCH_URL=http://elasticsearch:9200
+            - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+            - ELASTICSEARCH_USERNAME=kibana_system
+            - ELASTICSEARCH_PASSWORD=123456a@
+            - xpack.security.enabled=false
+            - xpack.license.self_generated.type=basic
+        depends_on:
+            - elastic
+        restart: unless-stopped
+
+    cerbos:
+        image: ghcr.io/cerbos/cerbos:0.37.0
+        container_name: cerbos
+        ports:
+            - 3592:3592
+        volumes:
+            - ./cerbos/policies:/policies
+
+    postgres:
+        image: postgres:16.2
+        restart: always
+        # set shared memory limit when using docker-compose
+        shm_size: 128mb
+        # or set shared memory limit when deploy via swarm stack
+        volumes:
+            - type: tmpfs
+              target: /dev/shm
+              tmpfs:
+                  size: 134217728 # 128*2^20 bytes = 128Mb
+        ports:
+            - 5433:5432
+        environment:
+            - POSTGRES_USER=hiro
+            - POSTGRES_PASSWORD=123456a@
+            - POSTGRES_DB=bee-home
+
+    redis:
+        image: redis:7.2
+
+    provider.server:
+        image: provider.server
+        container_name: provider.server
+        build:
+            dockerfile: ./pro-manager-service/Dockerfile
+        volumes:
+            - ./pro-manager-service/.docker.env:/pro-manager-service/.env
+        depends_on:
+            - postgres
+            - redis
+        ports:
+            - 3003:3003
+        restart: unless-stopped
+
+    user.server:
+        image: user.server
+        container_name: user.server
+        build:
+            dockerfile: ./user-manager-service/Dockerfile
+        volumes:
+            - ./user-manager-service/.docker.env:/user-manager-service/.env
+        depends_on:
+            - postgres
+            - redis
+        ports:
+            - 3000:3000
+        restart: unless-stopped

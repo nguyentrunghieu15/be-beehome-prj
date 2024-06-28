@@ -8,6 +8,9 @@ import (
 )
 
 func MapToReview(ds *datasource.Review) *proapi.Review {
+	if ds == nil {
+		return nil
+	}
 	// Handle potential conversion errors (e.g., UUID to string)
 	id := ds.ID.String()
 	createdAt := ds.CreatedAt.Format(time.RFC3339Nano)
@@ -38,6 +41,10 @@ func MapToReview(ds *datasource.Review) *proapi.Review {
 		Comment:    ds.Comment,
 		Reply:      ds.Reply,
 		ServiceId:  serviceId,
+		UserName:   ds.UserName,
+		HireId:     ds.HireId.String(),
+		Note:       *ds.Note,
+		Service:    MapToService(ds.Service),
 	}
 }
 
