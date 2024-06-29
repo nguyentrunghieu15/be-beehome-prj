@@ -75,11 +75,3 @@ func SetRulesOfPagination(v validator.IValidator) {
 	}
 	v.RegisterRules(validationRules, &userapi.Pagination{})
 }
-
-func SetRulesOfSort(v validator.IValidator) {
-	validationRules := map[string]string{
-		"Type":  "omitempty,required,oneof=asc desc", // must be either "asc" or "desc"
-		"Field": "omitempty,required",                // field name cannot be empty
-	}
-	v.RegisterRules(validationRules, &userapi.Sort{})
-}

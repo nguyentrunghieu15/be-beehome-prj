@@ -1,20 +1,22 @@
 version: "3"
 
 services:
-    # reverse-proxy:
-    #     container_name: reverse-proxy
-    #     # The official v3 Traefik docker image
-    #     image: traefik:v3.0
-    #     # Enables the web UI and tells Traefik to listen to docker
-    #     command: --api.insecure=true --providers.docker
-    #     ports:
-    #         # The HTTP port
-    #         # - "80:80"
-    #         # The Web UI (enabled by --api.insecure=true)
-    #         - "8080:8080"
-    #     volumes:
-    #         # So that Traefik can listen to the Docker events
-    #         - /var/run/docker.sock:/var/run/docker.sock
+    reverse-proxy:
+        container_name: reverse-proxy
+        # The official v3 Traefik docker image
+        image: traefik:v3.0
+        # Enables the web UI and tells Traefik to listen to docker
+        command:
+            - "--providers.docker=true"
+            - "--api.insecure=true"
+            - "--entryPoints.backend.address=:3000"
+            - "--api.dashboard=true"
+        ports:
+            - "3000:3000"
+            - "8080:8080"
+        volumes:
+            # So that Traefik can listen to the Docker events
+            - /var/run/docker.sock:/var/run/docker.sock
     elastic:
         image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
         container_name: elasticsearch
@@ -60,6 +62,7 @@ services:
 
     postgres:
         image: postgres:16.2
+        container_name: postgres
         restart: always
         # set shared memory limit when using docker-compose
         shm_size: 128mb
@@ -78,6 +81,7 @@ services:
 
     redis:
         image: redis:7.2
+        container_name: redis
 
     provider.server:
         image: provider.server
@@ -89,9 +93,14 @@ services:
         depends_on:
             - postgres
             - redis
-        ports:
-            - 3003:3003
+        # ports:
+        #     - 3003:3003
         restart: unless-stopped
+        labels:
+            - "traefik.http.routers.router2.entryPoints=backend"
+            - "traefik.http.routers.router2.rule=PathPrefix(`/api/v1/providers`) || PathPrefix(`/api/v1/hires`) || PathPrefix(`/api/v1/services`) || PathPrefix(`/api/v1/group_services`)"
+            - "traefik.http.routers.router2.service=service2"
+            - "traefik.http.services.service2.loadbalancer.server.port=3003"        
 
     user.server:
         image: user.server
@@ -103,6 +112,13 @@ services:
         depends_on:
             - postgres
             - redis
-        ports:
-            - 3000:3000
+        # ports:
+        #     - 3000:3000
         restart: unless-stopped
+        labels:
+            - "traefik.http.routers.router1.entryPoints=backend"
+            - "traefik.http.routers.router1.rule=PathPrefix(`/api/v1/auth`) || PathPrefix(`/api/v1/user`) || PathPrefix(`/api/v1/profile`)"
+            - "traefik.http.routers.router1.service=service1"
+            - "traefik.http.services.service1.loadbalancer.server.port=3000"
+            - "traefik.http.middlewares.authorized.forwardauth.address=http://172.17.0.1:3133"
+            - "traefik.http.routers.router1.middlewares=authorized"

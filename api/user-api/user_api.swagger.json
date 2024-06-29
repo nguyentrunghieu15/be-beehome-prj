@@ -189,27 +189,34 @@
         },
         "parameters": [
           {
+            "name": "pagination.limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.page",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
             "name": "pagination.pageSize",
             "in": "query",
             "required": false,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
-            "name": "pagination.pageToken",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "sort.type",
+            "name": "pagination.sort",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "sort.field",
+            "name": "pagination.sortBy",
             "in": "query",
             "required": false,
             "type": "string"
@@ -462,23 +469,22 @@
     "Pagination": {
       "type": "object",
       "properties": {
-        "pageSize": {
-          "type": "integer",
-          "format": "int32"
+        "limit": {
+          "type": "string",
+          "format": "int64"
         },
-        "pageToken": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "Sort": {
-      "type": "object",
-      "properties": {
-        "type": {
+        "page": {
+          "type": "string",
+          "format": "int64"
+        },
+        "pageSize": {
+          "type": "string",
+          "format": "int64"
+        },
+        "sort": {
           "type": "string"
         },
-        "field": {
+        "sortBy": {
           "type": "string"
         }
       }

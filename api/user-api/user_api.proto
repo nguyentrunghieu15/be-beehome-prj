@@ -109,16 +109,6 @@ message User {
   string status = 12;
 }
 
-message Pagination {
-  int32 page_size = 1;
-  int32 page_token = 2;
-}
-
-message Sort {
-  string type = 1;
-  string field = 2;
-}
-
 message UserInfor {
   string id = 1;
   string created_at = 2;
@@ -136,7 +126,14 @@ message UserInfor {
 
 message ListUsersRequest {
   optional Pagination pagination = 1;
-  optional Sort sort = 2;
+}
+
+message Pagination {
+  optional int64 limit = 2;
+  optional int64 page = 3;
+  optional int64 page_size = 4;
+  optional string sort = 5;
+  optional string sort_by = 6;
 }
 
 message ListUsersResponse {

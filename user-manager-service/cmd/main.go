@@ -45,14 +45,15 @@ var rotateWriterConfig = logwrapper.ConfigRollbackWriter{
 
 func validateEnverionment() error {
 	var rules = map[string]interface{}{
-		"JWT_SECRET_KEY":    "required",
-		"POSTGRES_HOST":     "required",
-		"POSTGRES_USER":     "required",
-		"POSTGRES_PASSWORD": "required",
-		"POSTGRES_DBNAME":   "required",
-		"POSTGRES_PORT":     "required,numeric",
-		"POSTGRES_SSLMODE":  "required,oneof=disable enable",
-		"CHIPHER_KEY":       "required",
+		"JWT_SECRET_KEY":       "required",
+		"POSTGRES_HOST":        "required",
+		"POSTGRES_USER":        "required",
+		"POSTGRES_PASSWORD":    "required",
+		"POSTGRES_DBNAME":      "required",
+		"POSTGRES_PORT":        "required,numeric",
+		"POSTGRES_SSLMODE":     "required,oneof=disable enable",
+		"CHIPHER_KEY":          "required",
+		"AUTHORIZATION_SERVER": "required",
 	}
 	return envloader.MustLoad(envfile, rules)
 }
@@ -177,6 +178,8 @@ func main() {
 	e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 	}))
+	e.Use(middleware.AuthorizationMiddleware(os.Getenv("AUTHORIZATION_SERVER")))
+
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	authmux := runtime.NewServeMux()
 	authapi.RegisterAuthServiceHandlerFromEndpoint(context.Background(), authmux, "localhost:3001", opts)

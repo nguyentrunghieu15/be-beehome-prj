@@ -255,3 +255,5 @@ if __name__ == "__main__":
     
     main(args.seed_zipcode, args.seed_services)
 
+#example
+#python3 seed.py --seed-zipcode --seed-services
