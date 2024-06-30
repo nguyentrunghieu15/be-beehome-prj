@@ -1,17 +1,38 @@
 package main
 
 import (
+	"log"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/auth"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/pro"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/user"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/envloader"
 )
 
 var addr = ":3133"
 
+const (
+	envfile string = "./authorize-service/.env"
+	logDir  string = "./authorize-service/logs/user-service.log"
+)
+
+func validateEnverionment() error {
+	var rules = map[string]interface{}{
+		"JWT_SECRET_KEY": "required",
+		"MONGO_USERNAME": "required",
+	}
+	return envloader.MustLoad(envfile, rules)
+}
+
 func main() {
+
+	if err := validateEnverionment(); err != nil {
+		log.Panic(err)
+	}
+
 	e := echo.New()
 	// Middleware
 	e.Use(middleware.Logger())

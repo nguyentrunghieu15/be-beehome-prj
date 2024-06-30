@@ -100,7 +100,7 @@ services:
             - "traefik.http.routers.router2.entryPoints=backend"
             - "traefik.http.routers.router2.rule=PathPrefix(`/api/v1/providers`) || PathPrefix(`/api/v1/hires`) || PathPrefix(`/api/v1/services`) || PathPrefix(`/api/v1/group_services`)"
             - "traefik.http.routers.router2.service=service2"
-            - "traefik.http.services.service2.loadbalancer.server.port=3003"        
+            - "traefik.http.services.service2.loadbalancer.server.port=3003"
 
     user.server:
         image: user.server
@@ -122,3 +122,12 @@ services:
             - "traefik.http.services.service1.loadbalancer.server.port=3000"
             - "traefik.http.middlewares.authorized.forwardauth.address=http://172.17.0.1:3133"
             - "traefik.http.routers.router1.middlewares=authorized"
+    mongo:
+        image: mongo:jammy
+        container_name: mongo
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: hiro
+            MONGO_INITDB_ROOT_PASSWORD: 123456a@
+        ports:
+            - "27017:27017"
