@@ -1,54 +1,31 @@
 package pro
 
 import (
-	"context"
+	"net/http"
 
-	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
-	"google.golang.org/protobuf/types/known/emptypb"
+	"github.com/labstack/echo/v4"
 )
 
-type ServiceAPIServer struct {
-	proapi.UnimplementedServiceManagerServiceServer
+func ListServices(c echo.Context) error {
+	return c.JSON(http.StatusOK, "ListServices response")
 }
 
-func NewServiceAPI() *ServiceAPIServer {
-	return &ServiceAPIServer{}
+func CreateService(c echo.Context) error {
+	return c.JSON(http.StatusOK, "CreateService response")
 }
 
-func (s *ServiceAPIServer) CreateService(
-	ctx context.Context,
-	req *proapi.CreateServiceRequest,
-) (*proapi.Service, error) {
-	return nil, nil
+func FulltextSearchServices(c echo.Context) error {
+	return c.JSON(http.StatusOK, "FulltextSearchServices response")
 }
 
-func (s *ServiceAPIServer) DeleteService(
-	ctx context.Context,
-	req *proapi.DeleteServiceRequest,
-) (*emptypb.Empty, error) {
-	return nil, nil
+func GetService(c echo.Context) error {
+	return c.JSON(http.StatusOK, "GetService response")
 }
 
-func (s *ServiceAPIServer) FulltextSearchServices(
-	ctx context.Context,
-	req *proapi.FulltextSearchServicesRequest,
-) (*proapi.ListServicesResponse, error) {
-	return nil, nil
-}
-func (s *ServiceAPIServer) GetService(ctx context.Context, req *proapi.GetServiceRequest) (*proapi.Service, error) {
-	return nil, nil
+func DeleteService(c echo.Context) error {
+	return c.JSON(http.StatusOK, "DeleteService response")
 }
 
-func (s *ServiceAPIServer) ListServices(
-	ctx context.Context,
-	req *proapi.ListServicesRequest,
-) (*proapi.ListServicesResponse, error) {
-	return nil, nil
-}
-
-func (s *ServiceAPIServer) UpdateService(
-	ctx context.Context,
-	req *proapi.UpdateServiceRequest,
-) (*proapi.Service, error) {
-	return nil, nil
+func UpdateService(c echo.Context) error {
+	return c.JSON(http.StatusOK, "UpdateService response")
 }

@@ -1,107 +1,75 @@
 package pro
 
 import (
-	"context"
+	"net/http"
 
-	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
-	"google.golang.org/protobuf/types/known/emptypb"
+	"github.com/labstack/echo/v4"
 )
 
-type ProAPIServer struct {
-	proapi.UnimplementedProServiceServer
+func FindPros(c echo.Context) error {
+	return c.JSON(http.StatusOK, "FindPros response")
 }
 
-func NewProAPI() *ProAPIServer {
-	return &ProAPIServer{}
+func JoinAsProvider(c echo.Context) error {
+	return c.JSON(http.StatusOK, "JoinAsProvider response")
 }
 
-func (s *ProAPIServer) AddPaymentMethodPro(
-	ctx context.Context,
-	req *proapi.AddPaymentMethodProRequest,
-) (*emptypb.Empty, error) {
-	return nil, nil
-}
-func (s *ProAPIServer) AddServicePro(ctx context.Context, req *proapi.AddServiceProRequest) (*emptypb.Empty, error) {
-	return nil, nil
+func AddPaymentMethodPro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "AddPaymentMethodPro response")
 }
 
-func (s *ProAPIServer) AddSocialMediaPro(
-	ctx context.Context,
-	req *proapi.AddSocialMediaProRequest,
-) (*emptypb.Empty, error) {
-	return nil, nil
-}
-func (s *ProAPIServer) DeleteProById(ctx context.Context, req *proapi.DeleteProByIdRequest) (*emptypb.Empty, error) {
-	return nil, nil
+func AddServicePro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "AddServicePro response")
 }
 
-func (s *ProAPIServer) DeleteServicePro(
-	ctx context.Context,
-	req *proapi.DeleteServiceProRequest,
-) (*emptypb.Empty, error) {
-	return nil, nil
+func AddSocialMediaPro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "AddSocialMediaPro response")
 }
 
-func (s *ProAPIServer) DeleteSocialMediaPro(
-	ctx context.Context,
-	req *proapi.DeleteSocialMediaProRequest,
-) (*emptypb.Empty, error) {
-	return nil, nil
+func DeleteServicePro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "DeleteServicePro response")
 }
 
-func (s *ProAPIServer) FindProById(
-	ctx context.Context,
-	req *proapi.FindProByIdRequest,
-) (*proapi.FindProByIdResponse, error) {
-	return nil, nil
-}
-func (s *ProAPIServer) FindPros(ctx context.Context, req *proapi.FindProsRequest) (*proapi.FindProsResponse, error) {
-	return nil, nil
+func DeleteSocialMediaPro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "DeleteSocialMediaPro response")
 }
 
-func (s *ProAPIServer) GetAllReviewsOfProvider(
-	ctx context.Context,
-	req *proapi.GetAllReviewOfProviderRequest,
-) (*proapi.GetAllReviewOfProviderResponse, error) {
-	return nil, nil
+func GetProviderProfile(c echo.Context) error {
+	return c.JSON(http.StatusOK, "GetProviderProfile response")
 }
 
-func (s *ProAPIServer) GetAllServiceOfProvider(
-	ctx context.Context,
-	req *proapi.GetAllServiceOfProviderRequest,
-) (*proapi.GetAllServiceOfProviderResponse, error) {
-	return nil, nil
+func ReplyReviewPro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "ReplyReviewPro response")
 }
 
-func (s *ProAPIServer) GetProviderProfile(
-	ctx context.Context,
-	req *emptypb.Empty,
-) (*proapi.ProviderProfileResponse, error) {
-	return nil, nil
+func ReviewPro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "ReviewPro response")
 }
 
-func (s *ProAPIServer) JoinAsProvider(
-	ctx context.Context,
-	req *proapi.JoinAsProviderRequest,
-) (*proapi.JoinAsProviderResponse, error) {
-	return nil, nil
-}
-func (s *ProAPIServer) ReplyReviewPro(ctx context.Context, req *proapi.ReplyReviewProRequest) (*emptypb.Empty, error) {
-	return nil, nil
-}
-func (s *ProAPIServer) ReviewPro(ctx context.Context, req *proapi.ReviewProRequest) (*emptypb.Empty, error) {
-	return nil, nil
-}
-func (s *ProAPIServer) SignUpPro(ctx context.Context, req *proapi.SignUpProRequest) (*proapi.ProviderInfo, error) {
-	return nil, nil
-}
-func (s *ProAPIServer) UpdatePro(ctx context.Context, req *proapi.UpdateProRequest) (*proapi.ProviderInfo, error) {
-	return nil, nil
+func SignUpPro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "SignUpPro response")
 }
 
-func (s *ProAPIServer) UpdateSocialMediaPro(
-	ctx context.Context,
-	req *proapi.UpdateSocialMediaProRequest,
-) (*emptypb.Empty, error) {
-	return nil, nil
+func UpdateSocialMediaPro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "UpdateSocialMediaPro response")
+}
+
+func FindProById(c echo.Context) error {
+	return c.JSON(http.StatusOK, "FindProById response")
+}
+
+func DeleteProById(c echo.Context) error {
+	return c.JSON(http.StatusOK, "DeleteProById response")
+}
+
+func UpdatePro(c echo.Context) error {
+	return c.JSON(http.StatusOK, "UpdatePro response")
+}
+
+func GetAllReviewsOfProvider(c echo.Context) error {
+	return c.JSON(http.StatusOK, "GetAllReviewsOfProvider response")
+}
+
+func GetAllServiceOfProvider(c echo.Context) error {
+	return c.JSON(http.StatusOK, "GetAllServiceOfProvider response")
 }

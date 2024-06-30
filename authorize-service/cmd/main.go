@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/auth"
+	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/pro"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/user"
 )
 
@@ -38,6 +39,47 @@ func main() {
 	e.GET("/api/v1/user/:id", user.GetUser)
 	e.DELETE("/api/v1/user/:id", user.DeleteUser)
 	e.PATCH("/api/v1/user/:id", user.UpdateUser)
+
+	// GroupServiceManager routes
+	e.GET("/api/v1/group_services", pro.ListGroupServices)
+	e.POST("/api/v1/group_services", pro.CreateGroupService)
+	e.GET("/api/v1/group_services/fulltext/search", pro.FulltextSearchGroupServices)
+	e.GET("/api/v1/group_services/:id", pro.GetGroupService)
+	e.DELETE("/api/v1/group_services/:id", pro.DeleteGroupService)
+	e.PATCH("/api/v1/group_services/:id", pro.UpdateGroupService)
+
+	// HireService routes
+	e.GET("/api/v1/hires", pro.FindAllHire)
+	e.POST("/api/v1/hires", pro.CreateHire)
+	e.DELETE("/api/v1/hires/:hireId", pro.DeleteHire)
+	e.PATCH("/api/v1/hires/:hireId", pro.UpdateStatusHire)
+
+	// ProService routes
+	e.GET("/api/v1/providers", pro.FindPros)
+	e.POST("/api/v1/providers", pro.JoinAsProvider)
+	e.POST("/api/v1/providers/add-payment-method", pro.AddPaymentMethodPro)
+	e.POST("/api/v1/providers/add-service", pro.AddServicePro)
+	e.POST("/api/v1/providers/add-social-media", pro.AddSocialMediaPro)
+	e.POST("/api/v1/providers/delete-service", pro.DeleteServicePro)
+	e.DELETE("/api/v1/providers/delete-social-media", pro.DeleteSocialMediaPro)
+	e.GET("/api/v1/providers/owner/profile", pro.GetProviderProfile)
+	e.POST("/api/v1/providers/reply-review", pro.ReplyReviewPro)
+	e.POST("/api/v1/providers/review", pro.ReviewPro)
+	e.POST("/api/v1/providers/signup", pro.SignUpPro)
+	e.PUT("/api/v1/providers/update-social-media", pro.UpdateSocialMediaPro)
+	e.GET("/api/v1/providers/:id", pro.FindProById)
+	e.DELETE("/api/v1/providers/:id", pro.DeleteProById)
+	e.PUT("/api/v1/providers/:id", pro.UpdatePro)
+	e.GET("/api/v1/providers/:id/reviews", pro.GetAllReviewsOfProvider)
+	e.GET("/api/v1/providers/:id/services", pro.GetAllServiceOfProvider)
+
+	// ServiceManagerService routes
+	e.GET("/api/v1/services", pro.ListServices)
+	e.POST("/api/v1/services", pro.CreateService)
+	e.GET("/api/v1/services/fulltext/search", pro.FulltextSearchServices)
+	e.GET("/api/v1/services/:id", pro.GetService)
+	e.DELETE("/api/v1/services/:id", pro.DeleteService)
+	e.PATCH("/api/v1/services/:id", pro.UpdateService)
 
 	e.Logger.Fatal(e.Start(":3133"))
 }

@@ -1,40 +1,23 @@
 package pro
 
 import (
-	"context"
+	"net/http"
 
-	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
-	"google.golang.org/protobuf/types/known/emptypb"
+	"github.com/labstack/echo/v4"
 )
 
-type HireAPIServer struct {
-	proapi.UnimplementedHireServiceServer
+func FindAllHire(c echo.Context) error {
+	return c.JSON(http.StatusOK, "FindAllHire response")
 }
 
-func NewHireAPI() *HireAPIServer {
-	return &HireAPIServer{}
+func CreateHire(c echo.Context) error {
+	return c.JSON(http.StatusOK, "CreateHire response")
 }
 
-func (s *HireAPIServer) CreateHire(
-	ctx context.Context,
-	req *proapi.CreateHireRequest,
-) (*proapi.CreateHireResponse, error) {
-	return nil, nil
-}
-func (s *HireAPIServer) DeleteHire(ctx context.Context, req *proapi.DeleteHireRequest) (*emptypb.Empty, error) {
-	return nil, nil
+func DeleteHire(c echo.Context) error {
+	return c.JSON(http.StatusOK, "DeleteHire response")
 }
 
-func (s *HireAPIServer) FindAllHire(
-	ctx context.Context,
-	req *proapi.FindAllHireRequest,
-) (*proapi.FindAllHireResponse, error) {
-	return nil, nil
-}
-
-func (s *HireAPIServer) UpdateStatusHire(
-	ctx context.Context,
-	req *proapi.UpdateStatusHireRequest,
-) (*proapi.UpdateStatusHireResponse, error) {
-	return nil, nil
+func UpdateStatusHire(c echo.Context) error {
+	return c.JSON(http.StatusOK, "UpdateStatusHire response")
 }

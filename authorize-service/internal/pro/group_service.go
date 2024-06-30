@@ -1,58 +1,31 @@
 package pro
 
 import (
-	"context"
+	"net/http"
 
-	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
-	"google.golang.org/protobuf/types/known/emptypb"
+	"github.com/labstack/echo/v4"
 )
 
-type GroupServiceAPIServer struct {
-	proapi.UnimplementedGroupServiceManagerServer
+func ListGroupServices(c echo.Context) error {
+	return c.JSON(http.StatusOK, "ListGroupServices response")
 }
 
-func NewGroupServiceAPI() *GroupServiceAPIServer {
-	return &GroupServiceAPIServer{}
+func CreateGroupService(c echo.Context) error {
+	return c.JSON(http.StatusOK, "CreateGroupService response")
 }
 
-func (s *GroupServiceAPIServer) CreateGroupService(
-	ctx context.Context,
-	req *proapi.CreateGroupServiceRequest,
-) (*proapi.GroupService, error) {
-	return nil, nil
+func FulltextSearchGroupServices(c echo.Context) error {
+	return c.JSON(http.StatusOK, "FulltextSearchGroupServices response")
 }
 
-func (s *GroupServiceAPIServer) DeleteGroupService(
-	ctx context.Context,
-	req *proapi.DeleteGroupServiceRequest,
-) (*emptypb.Empty, error) {
-	return nil, nil
+func GetGroupService(c echo.Context) error {
+	return c.JSON(http.StatusOK, "GetGroupService response")
 }
 
-func (s *GroupServiceAPIServer) FulltextSearchGroupServices(
-	ctx context.Context,
-	req *proapi.FulltextSearchGroupServicesRequest,
-) (*proapi.ListGroupServicesResponse, error) {
-	return nil, nil
+func DeleteGroupService(c echo.Context) error {
+	return c.JSON(http.StatusOK, "DeleteGroupService response")
 }
 
-func (s *GroupServiceAPIServer) GetGroupService(
-	ctx context.Context,
-	req *proapi.GetGroupServiceRequest,
-) (*proapi.GroupService, error) {
-	return nil, nil
-}
-
-func (s *GroupServiceAPIServer) ListGroupServices(
-	ctx context.Context,
-	req *proapi.ListGroupServicesRequest,
-) (*proapi.ListGroupServicesResponse, error) {
-	return nil, nil
-}
-
-func (s *GroupServiceAPIServer) UpdateGroupService(
-	ctx context.Context,
-	req *proapi.UpdateGroupServiceRequest,
-) (*proapi.GroupService, error) {
-	return nil, nil
+func UpdateGroupService(c echo.Context) error {
+	return c.JSON(http.StatusOK, "UpdateGroupService response")
 }
