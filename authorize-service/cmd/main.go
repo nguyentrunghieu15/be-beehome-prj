@@ -23,6 +23,8 @@ func validateEnverionment() error {
 	var rules = map[string]interface{}{
 		"JWT_SECRET_KEY": "required",
 		"MONGO_USERNAME": "required",
+		"MONGO_PASSWORD" : "required",
+		"MONGO_URI":"required",
 	}
 	return envloader.MustLoad(envfile, rules)
 }
@@ -102,5 +104,5 @@ func main() {
 	e.DELETE("/api/v1/services/:id", pro.DeleteService)
 	e.PATCH("/api/v1/services/:id", pro.UpdateService)
 
-	e.Logger.Fatal(e.Start(":3133"))
+	e.Logger.Fatal(e.Start(addr))
 }
