@@ -5,7 +5,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
-	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
 )
 
 type IPaymentMethodRepo interface {
@@ -56,7 +55,6 @@ func (pr *PaymentMethodRepo) CreatePaymentMethod(data map[string]interface{}) (*
 	var err error
 
 	data["created_at"] = time.Now()
-	data["id"] = random.GenerateRandomUUID()
 
 	result := pr.db.Model(&PaymentMethod{}).Create(data)
 	if result.Error != nil {

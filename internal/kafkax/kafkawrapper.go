@@ -53,9 +53,10 @@ func (inst *KafkaClientWrapper) connect() error {
 	r := kafka.NewReader(rConfig)
 
 	w := &kafka.Writer{
-		Addr:     kafka.TCP(inst.config.BooststrapServer),
-		Topic:    inst.config.Topic,
-		Balancer: &kafka.LeastBytes{},
+		Addr:         kafka.TCP(inst.config.BooststrapServer),
+		Topic:        inst.config.Topic,
+		Balancer:     &kafka.LeastBytes{},
+		RequiredAcks: kafka.RequireAll,
 	}
 
 	inst.conn = conn
@@ -87,6 +88,7 @@ func (inst *KafkaClientWrapper) Writer() *kafka.Writer {
 }
 
 func (inst *KafkaClientWrapper) Conn() *kafka.Conn {
+	inst.once.Do(inst.doConnect)
 	return inst.conn
 }
 

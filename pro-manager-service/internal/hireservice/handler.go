@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
-	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper.go"
+	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 

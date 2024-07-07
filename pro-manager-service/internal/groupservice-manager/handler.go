@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
-	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper.go"
+	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -29,7 +29,10 @@ func (gs *GroupServiceManagerServer) FulltextSearchGroupServices(
 }
 
 // GetService implements the GetService RPC method.
-func (gs *GroupServiceManagerServer) GetGroupService(ctx context.Context, req *proapi.GetGroupServiceRequest) (*proapi.GroupService, error) {
+func (gs *GroupServiceManagerServer) GetGroupService(
+	ctx context.Context,
+	req *proapi.GetGroupServiceRequest,
+) (*proapi.GroupService, error) {
 	// Validate GetServiceRequest (e.g., check if ID is empty)
 	if err := gs.validator.Validate(req); err != nil {
 		return nil, err
@@ -117,7 +120,10 @@ func (gs *GroupServiceManagerServer) DeleteService(
 	return &emptypb.Empty{}, nil
 }
 
-func (gs *GroupServiceManagerServer) ListGroupServices(ctx context.Context, req *proapi.ListGroupServicesRequest) (*proapi.ListGroupServicesResponse, error) {
+func (gs *GroupServiceManagerServer) ListGroupServices(
+	ctx context.Context,
+	req *proapi.ListGroupServicesRequest,
+) (*proapi.ListGroupServicesResponse, error) {
 	// Validate DeleteServiceRequest (e.g., check if ID is empty)
 	if err := gs.validator.Validate(req); err != nil {
 		return nil, err

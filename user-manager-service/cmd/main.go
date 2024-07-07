@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -16,6 +17,7 @@ import (
 	userapi "github.com/nguyentrunghieu15/be-beehome-prj/api/user-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/envloader"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/kafkax"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mail"
 	singletonmanager "github.com/nguyentrunghieu15/be-beehome-prj/internal/singleton_manager"
@@ -23,6 +25,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/captcha"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/auth"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/datasource"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/datasource/migration"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/middleware"
@@ -45,15 +48,16 @@ var rotateWriterConfig = logwrapper.ConfigRollbackWriter{
 
 func validateEnverionment() error {
 	var rules = map[string]interface{}{
-		"JWT_SECRET_KEY":       "required",
-		"POSTGRES_HOST":        "required",
-		"POSTGRES_USER":        "required",
-		"POSTGRES_PASSWORD":    "required",
-		"POSTGRES_DBNAME":      "required",
-		"POSTGRES_PORT":        "required,numeric",
-		"POSTGRES_SSLMODE":     "required,oneof=disable enable",
-		"CHIPHER_KEY":          "required",
-		"AUTHORIZATION_SERVER": "required",
+		"JWT_SECRET_KEY":         "required",
+		"POSTGRES_HOST":          "required",
+		"POSTGRES_USER":          "required",
+		"POSTGRES_PASSWORD":      "required",
+		"POSTGRES_DBNAME":        "required",
+		"POSTGRES_PORT":          "required,numeric",
+		"POSTGRES_SSLMODE":       "required,oneof=disable enable",
+		"CHIPHER_KEY":            "required",
+		"AUTHORIZATION_SERVER":   "required",
+		"KAFKA_BOOTSTRAP_SERVER": "required",
 	}
 	return envloader.MustLoad(envfile, rules)
 }
@@ -205,6 +209,50 @@ func main() {
 		middleware.WrapperJwtFunc(),
 	)
 	e.Static("/swagger", "./user-manager-service/static")
+
+	communication.ProviderResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_PROVIDER,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.UserResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_USER,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+	defer communication.ProviderResourceKafka.Close()
+	defer communication.UserResourceKafka.Close()
+
+	providerMessageHandler := communication.NewProviderResourceHandler(
+		datasource.NewUserRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb)),
+		datasource.NewBannedAccountsRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb)),
+		datasource.NewCardRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb)),
+		manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper),
+	)
+
+	communication.ProviderResourceKafka.Reader()
+
+	go func(h *communication.ProviderResourceHandler) {
+		for {
+			msg, err := communication.ProviderResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(providerMessageHandler)
 
 	log.Fatal(e.Start(addr))
 }

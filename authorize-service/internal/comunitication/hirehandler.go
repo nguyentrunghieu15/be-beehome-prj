@@ -1,0 +1,83 @@
+package comunitication
+
+import (
+	"encoding/json"
+
+	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/model"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
+	"github.com/segmentio/kafka-go"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+type HireResourceHandler struct {
+	logger         logwrapper.ILoggerWrapper
+	hireRepository mongox.Repository[model.Hire]
+}
+
+func NewHireResourceHandler(logger logwrapper.ILoggerWrapper) *HireResourceHandler {
+	return &HireResourceHandler{
+		logger: logger,
+		hireRepository: mongox.Repository[model.Hire]{
+			Client:     mongox.DefaultClient,
+			Collection: "hire",
+		},
+	}
+}
+
+type HireResourceMsg struct {
+	Type       string `json:"type"`
+	HireId     string `bson:"hire_id"`
+	ProviderId string `bson:"provider_id"`
+	UserId     string `bson:"user_id"`
+}
+
+func (h *HireResourceHandler) Router(msg kafka.Message) error {
+	parsedMsg := &HireResourceMsg{}
+	err := json.Unmarshal(msg.Value, parsedMsg)
+	if err != nil {
+		h.logger.Error(err.Error())
+		return err
+	}
+	switch parsedMsg.Type {
+	case "create":
+		return h.CreateHireResource(parsedMsg)
+
+	case "update":
+		return h.UpdateHireResource(parsedMsg)
+
+	case "delete":
+		return h.DeleteHireResource(parsedMsg)
+	}
+	return nil
+}
+
+func (h *HireResourceHandler) CreateHireResource(msg *HireResourceMsg) error {
+	hire := model.Hire{
+		ID:         primitive.NewObjectID(),
+		HireId:     msg.HireId,
+		ProviderId: msg.ProviderId,
+		UserId:     msg.UserId,
+	}
+
+	err := h.hireRepository.InsertOne(hire)
+	if err != nil {
+		h.logger.Error(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (h *HireResourceHandler) UpdateHireResource(msg *HireResourceMsg) error {
+	return nil
+}
+
+func (h *HireResourceHandler) DeleteHireResource(msg *HireResourceMsg) error {
+	err := h.hireRepository.DeleteOneByAtribute("hire_id", msg.HireId)
+	if err != nil {
+		h.logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

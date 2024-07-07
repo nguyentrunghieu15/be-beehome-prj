@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -15,10 +16,12 @@ import (
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/envloader"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/kafkax"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	singletonmanager "github.com/nguyentrunghieu15/be-beehome-prj/internal/singleton_manager"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource/migration"
 	groupservicemanager "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/groupservice-manager"
@@ -43,15 +46,16 @@ var rotateWriterConfig = logwrapper.ConfigRollbackWriter{
 
 func validateEnverionment() error {
 	var rules = map[string]interface{}{
-		"JWT_SECRET_KEY":       "required",
-		"POSTGRES_HOST":        "required",
-		"POSTGRES_USER":        "required",
-		"POSTGRES_PASSWORD":    "required",
-		"POSTGRES_DBNAME":      "required",
-		"POSTGRES_PORT":        "required,numeric",
-		"POSTGRES_SSLMODE":     "required,oneof=disable enable",
-		"CHIPHER_KEY":          "required",
-		"AUTHORIZATION_SERVER": "required",
+		"JWT_SECRET_KEY":         "required",
+		"POSTGRES_HOST":          "required",
+		"POSTGRES_USER":          "required",
+		"POSTGRES_PASSWORD":      "required",
+		"POSTGRES_DBNAME":        "required",
+		"POSTGRES_PORT":          "required,numeric",
+		"POSTGRES_SSLMODE":       "required,oneof=disable enable",
+		"CHIPHER_KEY":            "required",
+		"AUTHORIZATION_SERVER":   "required",
+		"KAFKA_BOOTSTRAP_SERVER": "required",
 	}
 	return envloader.MustLoad(envfile, rules)
 }
@@ -212,6 +216,119 @@ func main() {
 	gpServiceMux := runtime.NewServeMux()
 	proapi.RegisterGroupServiceManagerHandlerFromEndpoint(context.Background(), gpServiceMux, "localhost:3002", opts)
 	e.Any("/api/v1/group_services*", echo.WrapHandler(gpServiceMux))
+
+	communication.UserResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_USER,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.ProviderResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_PROVIDER,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.ServiceResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_SERVICE,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.GroupServiceResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_GSERVICE,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.HireResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_HIRE,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.ReviewResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_REVIEW,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.PaymentMethodResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_PAYMENTMETHOD,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.SocialMediaResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_SOCIALMEDIA,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	defer communication.UserResourceKafka.Close()
+	defer communication.HireResourceKafka.Close()
+	defer communication.PaymentMethodResourceKafka.Close()
+	defer communication.ProviderResourceKafka.Close()
+	defer communication.ReviewResourceKafka.Close()
+	defer communication.ServiceResourceKafka.Close()
+	defer communication.GroupServiceResourceKafka.Close()
+
+	userMessageHandler := communication.NewUserResourceHandler(
+		manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper),
+		datasource.NewProviderRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb)),
+	)
+
+	communication.UserResourceKafka.Reader()
+	go func(h *communication.UserResourceHandler) {
+		for {
+			msg, err := communication.UserResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(userMessageHandler)
 
 	e.Static("/swagger", "./pro-manager-service/static")
 

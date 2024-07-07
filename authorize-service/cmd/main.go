@@ -1,6 +1,9 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"io"
 	"log"
 	"os"
 	"time"
@@ -9,30 +12,52 @@ import (
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/auth"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/cerbosx"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/middleware"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/pro"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/user"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/envloader"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/kafkax"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
+	singletonmanager "github.com/nguyentrunghieu15/be-beehome-prj/internal/singleton_manager"
 )
 
 var addr = ":3133"
 
 const (
 	envfile string = "./authorize-service/.env"
-	logDir  string = "./authorize-service/logs/user-service.log"
+	logDir  string = "./authorize-service/logs/authorize-service.log"
 )
+
+var rotateWriterConfig = logwrapper.ConfigRollbackWriter{
+	MaxAge:     3,
+	MaxSize:    10,
+	MaxBackups: 3,
+	Compress:   true}
 
 func validateEnverionment() error {
 	var rules = map[string]interface{}{
-		"JWT_SECRET_KEY": "required",
-		"MONGO_USERNAME": "required",
-		"MONGO_PASSWORD": "required",
-		"MONGO_URI":      "required",
-		"MONGO_DATABASE": "required",
-		"CERBOS_ADDRESS": "required",
+		"JWT_SECRET_KEY":         "required",
+		"MONGO_USERNAME":         "required",
+		"MONGO_PASSWORD":         "required",
+		"MONGO_URI":              "required",
+		"MONGO_DATABASE":         "required",
+		"CERBOS_ADDRESS":         "required",
+		"KAFKA_BOOTSTRAP_SERVER": "required",
 	}
 	return envloader.MustLoad(envfile, rules)
+}
+
+func initObject(manager *singletonmanager.SingletonManager) {
+	// Create logger for app
+	manager.RegisterInstances(&logwrapper.LoggerWrapper{})
+	// set output for logger
+	logger, _ := (manager.GetInstance(&logwrapper.LoggerWrapper{})).(*logwrapper.LoggerWrapper)
+	fileWriter := logwrapper.NewRollbackWriterFile(logDir, rotateWriterConfig)
+	out := io.MultiWriter(os.Stdout, fileWriter)
+	logger.SetWriter(out)
+
 }
 
 func main() {
@@ -41,9 +66,35 @@ func main() {
 		log.Panic(err)
 	}
 
+	// create singleton manager
+	manager := singletonmanager.NewSingletonManager()
+	// init object
+	initObject(manager)
+
+	logger, _ := manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)
 	e := echo.New()
+	e.Use(echomiddleware.RequestLoggerWithConfig(echomiddleware.RequestLoggerConfig{
+		LogURI:      true,
+		LogStatus:   true,
+		LogRemoteIP: true,
+		LogProtocol: true,
+		LogLatency:  true,
+		LogError:    true,
+		LogValuesFunc: func(c echo.Context, v echomiddleware.RequestLoggerValues) error {
+			logger.Infor(
+				fmt.Sprintf("uri:%v status:%v remoteip:%v protocol:%v latency:%v error:%v",
+					v.URI,
+					v.Status,
+					v.RemoteIP,
+					v.Protocol,
+					v.Latency,
+					v.Error,
+				),
+			)
+			return nil
+		},
+	}))
 	// Middleware
-	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
 	e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
 		AllowOrigins: []string{"*"},
@@ -124,6 +175,189 @@ func main() {
 	e.GET("/api/v1/services/:id", pro.GetService)
 	e.DELETE("/api/v1/services/:id", pro.DeleteService)
 	e.PATCH("/api/v1/services/:id", pro.UpdateService)
+
+	communication.ProviderResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_PROVIDER,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.UserResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_USER,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.ServiceResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_SERVICE,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.GroupServiceResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_GSERVICE,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.HireResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_HIRE,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.SocialMediaResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_SOCIALMEDIA,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	communication.PaymentMethodResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_PAYMENTMETHOD,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
+	// Provider Resource Handler
+	providerMessageHandler := communication.NewProviderResourceHandler(logger)
+	communication.ProviderResourceKafka.Reader()
+	go func(h *communication.ProviderResourceHandler) {
+		for {
+			msg, err := communication.ProviderResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(providerMessageHandler)
+
+	// User Resource Handler
+	userMessageHandler := communication.NewUserResourceHandler(logger)
+	communication.UserResourceKafka.Reader()
+	go func(h *communication.UserResourceHandler) {
+		for {
+			msg, err := communication.UserResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(userMessageHandler)
+
+	// Service Resource Handler
+	serviceMessageHandler := communication.NewServiceResourceHandler(logger)
+	communication.ServiceResourceKafka.Reader()
+	go func(h *communication.ServiceResourceHandler) {
+		for {
+			msg, err := communication.ServiceResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(serviceMessageHandler)
+
+	// Group Service Resource Handler
+	groupServiceMessageHandler := communication.NewGroupServiceResourceHandler(logger)
+	communication.GroupServiceResourceKafka.Reader()
+	go func(h *communication.GroupServiceResourceHandler) {
+		for {
+			msg, err := communication.GroupServiceResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(groupServiceMessageHandler)
+
+	// Hire Resource Handler
+	hireMessageHandler := communication.NewHireResourceHandler(logger)
+	communication.HireResourceKafka.Reader()
+	go func(h *communication.HireResourceHandler) {
+		for {
+			msg, err := communication.HireResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(hireMessageHandler)
+
+	// Social Media Resource Handler
+	socialMediaMessageHandler := communication.NewSocialMediaResourceHandler(logger)
+	communication.SocialMediaResourceKafka.Reader()
+	go func(h *communication.SocialMediaResourceHandler) {
+		for {
+			msg, err := communication.SocialMediaResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(socialMediaMessageHandler)
+
+	// Payment Method Resource Handler
+	paymentMethodMessageHandler := communication.NewPaymentMethodResourceHandler(logger)
+	communication.PaymentMethodResourceKafka.Reader()
+	go func(h *communication.PaymentMethodResourceHandler) {
+		for {
+			msg, err := communication.PaymentMethodResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(paymentMethodMessageHandler)
+
+	defer communication.ProviderResourceKafka.Close()
+	defer communication.UserResourceKafka.Close()
+	defer communication.ServiceResourceKafka.Close()
+	defer communication.GroupServiceResourceKafka.Close()
+	defer communication.HireResourceKafka.Close()
+	defer communication.SocialMediaResourceKafka.Close()
+	defer communication.PaymentMethodResourceKafka.Close()
 
 	e.Logger.Fatal(e.Start(addr))
 }

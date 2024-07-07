@@ -79,6 +79,11 @@ type Repository[T any] struct {
 	Collection string
 }
 
+func (istn *Repository[T]) InsertOne(value interface{}) error {
+	_, err := istn.Client.Db().Collection(istn.Collection).InsertOne(context.Background(), value)
+	return err
+}
+
 func (istn *Repository[T]) FindOneByAtribute(name string, value interface{}) (*T, error) {
 	filter := bson.D{{Key: name, Value: value}}
 	result := new(T)
@@ -101,4 +106,13 @@ func (istn *Repository[T]) FindAllByAtribute(name string, value interface{}) (*[
 		return nil, err
 	}
 	return &results, nil
+}
+
+func (istn *Repository[T]) DeleteOneByAtribute(name string, value interface{}) error {
+	filter := bson.D{{Key: name, Value: value}}
+	_, err := istn.Client.Db().Collection(istn.Collection).DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	return nil
 }

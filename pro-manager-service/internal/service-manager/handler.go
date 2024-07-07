@@ -2,11 +2,14 @@ package servicemanager
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/google/uuid"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
-	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper.go"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/comunitication"
+	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -78,6 +81,21 @@ func (s *ServiceManagerServer) CreateService(
 		return nil, err
 	}
 
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":       "create",
+		"service_id": service.ID.String(),
+		"group_id":   service.GroupServiceId.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.ServiceResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
+
 	return mapper.MapToService(service), nil
 }
 
@@ -124,10 +142,28 @@ func (s *ServiceManagerServer) DeleteService(
 		s.logger.Errorf("failed to delete service: %v", err)
 		return nil, err
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":       "create",
+		"service_id": req.Id,
+		"group_id":   "",
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.ServiceResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 	return &emptypb.Empty{}, nil
 }
 
-func (s *ServiceManagerServer) ListServices(ctx context.Context, req *proapi.ListServicesRequest) (*proapi.ListServicesResponse, error) {
+func (s *ServiceManagerServer) ListServices(
+	ctx context.Context,
+	req *proapi.ListServicesRequest,
+) (*proapi.ListServicesResponse, error) {
 	// Validate DeleteServiceRequest (e.g., check if ID is empty)
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err

@@ -2,14 +2,18 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
-	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper.go"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/comunitication"
+	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -70,6 +74,21 @@ func (s *ProviderService) DeleteProById(ctx context.Context, req *proapi.DeleteP
 		return nil, err
 	}
 
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":        "delete",
+		"provider_id": req.GetId(),
+		"user_id":     ctx.Value("user_id").(string),
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.ProviderResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
+
 	// Delete successful response
 	return nil, nil
 }
@@ -111,6 +130,21 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 		return nil, err
 	}
 
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":        "create",
+		"provider_id": createdPro.ID.String(),
+		"user_id":     userId.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.ProviderResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
+
 	// Potentially interact with paymentRepo for payment methods (not implemented here)
 	// You might need to add logic to handle payment methods based on your requirements
 
@@ -121,7 +155,6 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 // Update information of a professional
 func (s *ProviderService) UpdatePro(ctx context.Context, req *proapi.UpdateProRequest) (*proapi.ProviderInfo, error) {
 	// Validate the request
-	fmt.Println(req.Years)
 	if err := s.validator.Validate(req); err != nil {
 		return nil, err
 	}
@@ -174,12 +207,29 @@ func (s *ProviderService) AddPaymentMethodPro(
 		"name":        req.GetName(),
 		"provider_id": providerID, // Use extracted provider ID
 	}
+	paymentMethodData["id"] = random.GenerateRandomUUID()
 
 	// Create payment method using paymentRepo
+
 	_, err := s.paymentRepo.CreatePaymentMethod(paymentMethodData)
 	if err != nil {
 		return nil, err
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":              "create",
+		"provider_id":       providerID.String(),
+		"payment_method_id": paymentMethodData["id"],
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.PaymentMethodResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 
 	// Return empty response (modify if needed)
 	return &emptypb.Empty{}, nil
@@ -245,10 +295,28 @@ func (s *ProviderService) ReviewPro(ctx context.Context, req *proapi.ReviewProRe
 	data["provider_id"] = providerID
 
 	// Create review record using reviewRepo
-	_, err = s.reviewRepo.CreateReview(data)
+	review, err := s.reviewRepo.CreateReview(data)
 	if err != nil {
 		return nil, err
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":        "create",
+		"review_id":   review.ID.String(),
+		"provider_id": providerID.String(),
+		"user_id":     userID.String(),
+		"hire_id":     req.HireId,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	communication.SocialMediaResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 
 	// Return empty response (modify if needed)
 	return &emptypb.Empty{}, nil
@@ -293,7 +361,6 @@ func (s *ProviderService) AddSocialMediaPro(
 	providerID := uuid.MustParse(
 		ctx.Value("provider_id").(string),
 	) // Implement this function based on your context usage
-	fmt.Println(providerID)
 
 	// Convert request data to map
 	data, err := convert.StructProtoToMap(req)
@@ -305,10 +372,26 @@ func (s *ProviderService) AddSocialMediaPro(
 	data["provider_id"] = providerID
 
 	// Create social media record using socialMediaRepo
-	_, err = s.socialMediaRepo.CreateSocialMedia(data)
+	socialMedia, err := s.socialMediaRepo.CreateSocialMedia(data)
 	if err != nil {
 		return nil, err
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":            "create",
+		"social_media_id": socialMedia.ID.String(),
+		"provider_id":     providerID.String(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	communication.SocialMediaResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 
 	// Return empty response (modify if needed)
 	return &emptypb.Empty{}, nil
@@ -461,5 +544,21 @@ func (s *ProviderService) DeleteSocialMediaPro(
 	if err != nil {
 		return nil, err
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":            "delete",
+		"social_media_id": id.String(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	communication.ServiceResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
+
 	return &emptypb.Empty{}, nil
 }

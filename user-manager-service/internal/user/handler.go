@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -9,7 +10,9 @@ import (
 	userapi "github.com/nguyentrunghieu15/be-beehome-prj/api/user-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/common"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/mapper"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -79,6 +82,21 @@ func (s *UserService) CreateUser(ctx context.Context, req *userapi.CreateUserReq
 		s.logger.Error(common.StandardMsgError(ctx, "create user", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":    "create",
+		"user_id": newUser.ID.String(),
+		"role":    "user",
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.UserResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 
 	userInfo, err := mapper.ConvertUserToUserInfor(newUser)
 	if err != nil {
@@ -183,6 +201,22 @@ func (s *UserService) UpdateUser(ctx context.Context, req *userapi.UpdateUserReq
 		return nil, status.Error(codes.Internal, "internal server")
 	}
 
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":        "delete",
+		"user_id":     req.Id,
+		"role":        "user",
+		"provider_id": updatedUser.ProviderId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.UserResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
+
 	return userInfo, nil
 }
 
@@ -208,6 +242,21 @@ func (s *UserService) DeleteUser(ctx context.Context, req *userapi.DeleteUserReq
 		s.logger.Error(common.StandardMsgError(ctx, "delete user", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":    "delete",
+		"user_id": req.Id,
+		"role":    "user",
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.UserResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 
 	// User successfully deleted, return empty response
 	return &emptypb.Empty{}, nil
