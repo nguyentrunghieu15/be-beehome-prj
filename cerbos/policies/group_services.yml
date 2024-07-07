@@ -1,7 +1,7 @@
 apiVersion: api.cerbos.dev/v1
 resourcePolicy:
     version: "default"
-    resource: "paymentmethod"
+    resource: "groupservice"
     importDerivedRoles:
         - common_roles
     rules:
@@ -9,4 +9,3 @@ resourcePolicy:
           effect: EFFECT_ALLOW
           roles:
               - admin
-              - user

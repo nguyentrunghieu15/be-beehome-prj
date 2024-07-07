@@ -2,14 +2,18 @@ package main
 
 import (
 	"log"
+	"os"
+	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/auth"
+	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/cerbosx"
+	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/middleware"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/pro"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/user"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/envloader"
+	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 )
 
 var addr = ":3133"
@@ -23,8 +27,10 @@ func validateEnverionment() error {
 	var rules = map[string]interface{}{
 		"JWT_SECRET_KEY": "required",
 		"MONGO_USERNAME": "required",
-		"MONGO_PASSWORD" : "required",
-		"MONGO_URI":"required",
+		"MONGO_PASSWORD": "required",
+		"MONGO_URI":      "required",
+		"MONGO_DATABASE": "required",
+		"CERBOS_ADDRESS": "required",
 	}
 	return envloader.MustLoad(envfile, rules)
 }
@@ -37,11 +43,26 @@ func main() {
 
 	e := echo.New()
 	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	e.Use(echomiddleware.Logger())
+	e.Use(echomiddleware.Recover())
 	e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 	}))
+	e.Use(middleware.AttachProviderFunc())
+
+	mongox.DefaultClient = mongox.NewClientMongoWrapperWithConfig(&mongox.MomgoClientConfig{
+		DatabaseName: os.Getenv("MONGO_DATABASE"),
+		Username:     os.Getenv("MONGO_USERNAME"),
+		Password:     os.Getenv("MONGO_PASSWORD"),
+		Address:      os.Getenv("MONGO_URI"),
+		Timeout:      time.Minute,
+	})
+	mongox.DefaultClient.Client()
+
+	cerbosx.DefaultClient = cerbosx.NewCerbosClientWrapperWithConfig(&cerbosx.CerbosClientConfig{
+		CerbosAddress: os.Getenv("CERBOS_ADDRESS"),
+	})
+	cerbosx.DefaultClient.Setup()
 
 	// Routes
 	e.POST("/api/v1/auth/forgot-password", auth.ForgotPasswordHandler)

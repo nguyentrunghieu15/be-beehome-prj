@@ -24,7 +24,6 @@ func LoginHandler(c echo.Context) error {
 	}
 
 	// Handle the login logic
-
 	resp := LoginResponse{
 		AccessToken:  "exampleAccessToken",
 		ExpireTime:   "exampleExpireTime",
@@ -39,9 +38,7 @@ func RefreshTokenHandler(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-
 	// Handle the refresh token logic
-
 	resp := RefreshTokenResponse{
 		AccessToken: "newAccessToken",
 	}
@@ -53,9 +50,7 @@ func ResetPasswordHandler(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-
 	// Handle the reset password logic
-
 	return c.NoContent(http.StatusOK)
 }
 
@@ -64,8 +59,6 @@ func SignUpHandler(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-
 	// Handle the sign up logic
-
 	return c.NoContent(http.StatusOK)
 }
