@@ -2,11 +2,14 @@ package groupservicemanager
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/google/uuid"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -71,6 +74,20 @@ func (gs *GroupServiceManagerServer) CreateGroupService(
 		return nil, err
 	}
 
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":             "create",
+		"group_service_id": gpService.ID.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.GroupServiceResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
+
 	return mapper.MapToGroupService(gpService), nil
 }
 
@@ -117,6 +134,20 @@ func (gs *GroupServiceManagerServer) DeleteService(
 		gs.logger.Errorf("failed to delete service: %v", err)
 		return nil, err
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":             "delete",
+		"group_service_id": gpServiceId.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.GroupServiceResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 	return &emptypb.Empty{}, nil
 }
 

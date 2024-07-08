@@ -27,8 +27,8 @@ func NewServiceResourceHandler(logger logwrapper.ILoggerWrapper) *ServiceResourc
 
 type ServiceResourceMsg struct {
 	Type           string `json:"type"`
-	ServiceId      string `bson:"service_id"`
-	GroupServiceId string `bson:"group_service_id"`
+	ServiceId      string `json:"service_id"`
+	GroupServiceId string `json:"group_service_id"`
 }
 
 func (h *ServiceResourceHandler) Router(msg kafka.Message) error {
@@ -58,7 +58,12 @@ func (h *ServiceResourceHandler) CreateServiceResource(msg *ServiceResourceMsg) 
 		ServiceId:      msg.ServiceId,
 	}
 
-	err := h.serviceRepository.InsertOne(service)
+	exsited, err := h.serviceRepository.FindOneByAtribute("service_id", msg.ServiceId)
+	if err == nil && exsited != nil {
+		return nil
+	}
+
+	err = h.serviceRepository.InsertOne(service)
 	if err != nil {
 		h.logger.Error(err.Error())
 		return err

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -49,7 +50,8 @@ func AuthorizationMiddleware(authServiceAddress string) echo.MiddlewareFunc {
 			}
 			defer resp.Body.Close()
 
-			if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+			if (resp.StatusCode >= 200 && resp.StatusCode < 300) ||
+				strings.HasPrefix(c.Request().RequestURI, "/swagger") {
 				return next(c)
 			}
 

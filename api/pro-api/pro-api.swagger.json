@@ -649,7 +649,7 @@
         ]
       }
     },
-    "/api/v1/providers/delete-service": {
+    "/api/v1/providers/delete-service/{servicesId}": {
       "post": {
         "summary": "Delete a service offered by a professional",
         "operationId": "ProService_DeleteServicePro",
@@ -670,11 +670,22 @@
         },
         "parameters": [
           {
+            "name": "servicesId",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeleteServiceProRequest"
+              "$ref": "#/definitions/ProServiceDeleteServiceProBody"
             }
           }
         ],
@@ -683,7 +694,7 @@
         ]
       }
     },
-    "/api/v1/providers/delete-social-media": {
+    "/api/v1/providers/delete-social-media/{id}": {
       "delete": {
         "summary": "Add social media information for a professional",
         "operationId": "ProService_DeleteSocialMediaPro",
@@ -705,8 +716,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -1376,18 +1387,6 @@
       },
       "title": "Request message for creating a service"
     },
-    "DeleteServiceProRequest": {
-      "type": "object",
-      "properties": {
-        "servicesId": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "title": "Request message for deleting a service offered by a professional"
-    },
     "FilterGroupServices": {
       "type": "object",
       "properties": {
@@ -1804,6 +1803,10 @@
           "format": "double"
         }
       }
+    },
+    "ProServiceDeleteServiceProBody": {
+      "type": "object",
+      "title": "Request message for deleting a service offered by a professional"
     },
     "ProServiceUpdateProBody": {
       "type": "object",

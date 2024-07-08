@@ -58,7 +58,12 @@ func (h *PaymentMethodResourceHandler) CreatePaymentMethodResource(msg *PaymentM
 		ProviderId:      msg.ProviderId,
 	}
 
-	err := h.paymentMethodRepository.InsertOne(paymentMethod)
+	exsited, err := h.paymentMethodRepository.FindOneByAtribute("payment_method_id", msg.PaymentMethodId)
+	if err == nil && exsited != nil {
+		return nil
+	}
+
+	err = h.paymentMethodRepository.InsertOne(paymentMethod)
 	if err != nil {
 		h.logger.Error(err.Error())
 		return err

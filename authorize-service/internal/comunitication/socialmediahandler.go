@@ -27,8 +27,8 @@ func NewSocialMediaResourceHandler(logger logwrapper.ILoggerWrapper) *SocialMedi
 
 type SocialMediaResourceMsg struct {
 	Type          string `json:"type"`
-	SocialMediaId string `bson:"social_media_id"`
-	ProviderId    string `bson:"provider_id"`
+	SocialMediaId string `json:"social_media_id"`
+	ProviderId    string `json:"provider_id"`
 }
 
 func (h *SocialMediaResourceHandler) Router(msg kafka.Message) error {
@@ -58,7 +58,12 @@ func (h *SocialMediaResourceHandler) CreateSocialMediaResource(msg *SocialMediaR
 		ProviderId:    msg.ProviderId,
 	}
 
-	err := h.socialMediaRepository.InsertOne(socialMedia)
+	exsited, err := h.socialMediaRepository.FindOneByAtribute("social_media_id", msg.SocialMediaId)
+	if err == nil && exsited != nil {
+		return nil
+	}
+
+	err = h.socialMediaRepository.InsertOne(socialMedia)
 	if err != nil {
 		h.logger.Error(err.Error())
 		return err

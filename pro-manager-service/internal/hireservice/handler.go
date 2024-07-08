@@ -2,12 +2,15 @@ package hireservice
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/google/uuid"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -62,6 +65,22 @@ func (s *HireService) CreateHire(
 		return nil, err
 	}
 
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":        "create",
+		"provider_id": hire.ProviderId,
+		"user_id":     userId.String(),
+		"hire_id":     hire.ID.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.HireResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
+
 	// Convert internal hire to CreateHireResponse format
 	return &proapi.CreateHireResponse{Hire: mapper.MapToHire(hire)}, nil
 }
@@ -111,6 +130,20 @@ func (s *HireService) DeleteHire(ctx context.Context, req *proapi.DeleteHireRequ
 		s.logger.Error(fmt.Sprintf("failed to delete hire: %w", err))
 		return nil, err
 	}
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":    "delete",
+		"hire_id": hireID.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.HireResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 
 	// Return empty response on successful deletion
 	return &emptypb.Empty{}, nil

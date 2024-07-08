@@ -82,9 +82,9 @@ func (s *ServiceManagerServer) CreateService(
 	}
 
 	tranferMsg, err := json.Marshal(map[string]interface{}{
-		"type":       "create",
-		"service_id": service.ID.String(),
-		"group_id":   service.GroupServiceId.String(),
+		"type":             "create",
+		"service_id":       service.ID.String(),
+		"group_service_id": service.GroupServiceId.String(),
 	})
 	if err != nil {
 		return nil, err
@@ -146,7 +146,6 @@ func (s *ServiceManagerServer) DeleteService(
 	tranferMsg, err := json.Marshal(map[string]interface{}{
 		"type":       "create",
 		"service_id": req.Id,
-		"group_id":   "",
 	})
 	if err != nil {
 		return nil, err

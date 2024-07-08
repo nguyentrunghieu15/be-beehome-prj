@@ -1,4 +1,4 @@
-package comunitication
+package communication
 
 import (
 	"encoding/json"
@@ -27,9 +27,9 @@ func NewHireResourceHandler(logger logwrapper.ILoggerWrapper) *HireResourceHandl
 
 type HireResourceMsg struct {
 	Type       string `json:"type"`
-	HireId     string `bson:"hire_id"`
-	ProviderId string `bson:"provider_id"`
-	UserId     string `bson:"user_id"`
+	HireId     string `json:"hire_id"`
+	ProviderId string `json:"provider_id"`
+	UserId     string `json:"user_id"`
 }
 
 func (h *HireResourceHandler) Router(msg kafka.Message) error {
@@ -59,8 +59,12 @@ func (h *HireResourceHandler) CreateHireResource(msg *HireResourceMsg) error {
 		ProviderId: msg.ProviderId,
 		UserId:     msg.UserId,
 	}
+	hireExsited, err := h.hireRepository.FindOneByAtribute("hire_id", msg.HireId)
+	if err == nil && hireExsited != nil {
+		return nil
+	}
 
-	err := h.hireRepository.InsertOne(hire)
+	err = h.hireRepository.InsertOne(hire)
 	if err != nil {
 		h.logger.Error(err.Error())
 		return err

@@ -16,8 +16,3 @@ const (
 
 var ProviderResourceKafka *kafkax.KafkaClientWrapper
 var UserResourceKafka *kafkax.KafkaClientWrapper
-var ServiceResourceKafka *kafkax.KafkaClientWrapper
-var GroupServiceResourceKafka *kafkax.KafkaClientWrapper
-var HireResourceKafka *kafkax.KafkaClientWrapper
-var SocialMediaResourceKafka *kafkax.KafkaClientWrapper
-var PaymentMethodResourceKafka *kafkax.KafkaClientWrapper

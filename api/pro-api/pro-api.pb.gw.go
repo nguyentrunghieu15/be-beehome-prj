@@ -554,19 +554,25 @@ func local_request_ProService_UpdateSocialMediaPro_0(ctx context.Context, marsha
 
 }
 
-var (
-	filter_ProService_DeleteSocialMediaPro_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
 func request_ProService_DeleteSocialMediaPro_0(ctx context.Context, marshaler runtime.Marshaler, client ProServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteSocialMediaProRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ProService_DeleteSocialMediaPro_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
 	msg, err := client.DeleteSocialMediaPro(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -578,11 +584,21 @@ func local_request_ProService_DeleteSocialMediaPro_0(ctx context.Context, marsha
 	var protoReq DeleteSocialMediaProRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ProService_DeleteSocialMediaPro_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
 	msg, err := server.DeleteSocialMediaPro(ctx, &protoReq)
@@ -598,6 +614,23 @@ func request_ProService_DeleteServicePro_0(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["services_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "services_id")
+	}
+
+	protoReq.ServicesId, err = runtime.StringSlice(val, ",")
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "services_id", err)
+	}
+
 	msg, err := client.DeleteServicePro(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -609,6 +642,23 @@ func local_request_ProService_DeleteServicePro_0(ctx context.Context, marshaler 
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["services_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "services_id")
+	}
+
+	protoReq.ServicesId, err = runtime.StringSlice(val, ",")
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "services_id", err)
 	}
 
 	msg, err := server.DeleteServicePro(ctx, &protoReq)
@@ -1179,7 +1229,7 @@ func RegisterProServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.ProService/DeleteSocialMediaPro", runtime.WithHTTPPathPattern("/api/v1/providers/delete-social-media"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.ProService/DeleteSocialMediaPro", runtime.WithHTTPPathPattern("/api/v1/providers/delete-social-media/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1204,7 +1254,7 @@ func RegisterProServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.ProService/DeleteServicePro", runtime.WithHTTPPathPattern("/api/v1/providers/delete-service"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.ProService/DeleteServicePro", runtime.WithHTTPPathPattern("/api/v1/providers/delete-service/{services_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1707,7 +1757,7 @@ func RegisterProServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.ProService/DeleteSocialMediaPro", runtime.WithHTTPPathPattern("/api/v1/providers/delete-social-media"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.ProService/DeleteSocialMediaPro", runtime.WithHTTPPathPattern("/api/v1/providers/delete-social-media/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1729,7 +1779,7 @@ func RegisterProServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.ProService/DeleteServicePro", runtime.WithHTTPPathPattern("/api/v1/providers/delete-service"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.ProService/DeleteServicePro", runtime.WithHTTPPathPattern("/api/v1/providers/delete-service/{services_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1779,9 +1829,9 @@ var (
 
 	pattern_ProService_UpdateSocialMediaPro_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "providers", "update-social-media"}, ""))
 
-	pattern_ProService_DeleteSocialMediaPro_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "providers", "delete-social-media"}, ""))
+	pattern_ProService_DeleteSocialMediaPro_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "v1", "providers", "delete-social-media", "id"}, ""))
 
-	pattern_ProService_DeleteServicePro_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "providers", "delete-service"}, ""))
+	pattern_ProService_DeleteServicePro_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "v1", "providers", "delete-service", "services_id"}, ""))
 )
 
 var (

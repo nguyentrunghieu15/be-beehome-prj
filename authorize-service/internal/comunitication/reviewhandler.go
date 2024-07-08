@@ -27,10 +27,10 @@ func NewReviewResourceHandler(logger logwrapper.ILoggerWrapper) *ReviewResourceH
 
 type ReviewResourceMsg struct {
 	Type       string `json:"type"`
-	ReviewId   string `bson:"review_id"`
-	HireId     string `bson:"hire_id"`
-	ProviderId string `bson:"provider_id"`
-	UserId     string `bson:"user_id"`
+	ReviewId   string `json:"review_id"`
+	HireId     string `json:"hire_id"`
+	ProviderId string `json:"provider_id"`
+	UserId     string `json:"user_id"`
 }
 
 func (h *ReviewResourceHandler) Router(msg kafka.Message) error {
@@ -62,7 +62,12 @@ func (h *ReviewResourceHandler) CreateReviewResource(msg *ReviewResourceMsg) err
 		UserId:     msg.UserId,
 	}
 
-	err := h.reviewRepository.InsertOne(review)
+	exsited, err := h.reviewRepository.FindOneByAtribute("review_id", msg.ReviewId)
+	if err == nil && exsited != nil {
+		return nil
+	}
+
+	err = h.reviewRepository.InsertOne(review)
 	if err != nil {
 		h.logger.Error(err.Error())
 		return err

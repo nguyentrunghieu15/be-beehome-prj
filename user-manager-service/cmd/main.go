@@ -234,6 +234,8 @@ func main() {
 	defer communication.ProviderResourceKafka.Close()
 	defer communication.UserResourceKafka.Close()
 
+	communication.UserResourceKafka.Writer()
+
 	providerMessageHandler := communication.NewProviderResourceHandler(
 		datasource.NewUserRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb)),
 		datasource.NewBannedAccountsRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb)),

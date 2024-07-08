@@ -312,6 +312,14 @@ func main() {
 	defer communication.ReviewResourceKafka.Close()
 	defer communication.ServiceResourceKafka.Close()
 	defer communication.GroupServiceResourceKafka.Close()
+	defer communication.SocialMediaResourceKafka.Close()
+	communication.HireResourceKafka.Writer()
+	communication.PaymentMethodResourceKafka.Writer()
+	communication.ProviderResourceKafka.Writer()
+	communication.ReviewResourceKafka.Writer()
+	communication.ServiceResourceKafka.Writer()
+	communication.GroupServiceResourceKafka.Writer()
+	communication.SocialMediaResourceKafka.Writer()
 
 	userMessageHandler := communication.NewUserResourceHandler(
 		manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper),

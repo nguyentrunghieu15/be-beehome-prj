@@ -91,7 +91,7 @@ func (s *UserService) CreateUser(ctx context.Context, req *userapi.CreateUserReq
 	if err != nil {
 		return nil, err
 	}
-	communication.UserResourceKafka.WriteMessages(
+	err = communication.UserResourceKafka.WriteMessages(
 		context.Background(),
 		kafka.Message{
 			Value: tranferMsg,

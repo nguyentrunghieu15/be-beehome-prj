@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -14,7 +15,9 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/common"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/datasource"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -285,7 +288,8 @@ func (s *AuthService) SignUp(ctx context.Context, req *pb.SignUpRequest) (*empty
 	}
 	mapUser["status"] = "active"
 
-	if _, err := s.userRepo.CreateUser(mapUser); err != nil {
+	newUser, err := s.userRepo.CreateUser(mapUser)
+	if err != nil {
 		s.logger.Error(common.StandardMsgError(ctx, "sign up", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
@@ -293,6 +297,26 @@ func (s *AuthService) SignUp(ctx context.Context, req *pb.SignUpRequest) (*empty
 	s.logger.Infor(
 		common.StandardMsgInfor(ctx, "sign up", "success full email:"+req.Email),
 	)
+
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":    "create",
+		"user_id": newUser.ID.String(),
+		"role":    "user",
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = communication.UserResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
+	if err != nil {
+		s.logger.Error(common.StandardMsgError(ctx, "create user", err))
+		return nil, status.Error(codes.Internal, "internal server")
+	}
 
 	return &emptypb.Empty{}, nil
 }

@@ -553,7 +553,7 @@ func (s *ProviderService) DeleteSocialMediaPro(
 	if err != nil {
 		return nil, err
 	}
-	communication.ServiceResourceKafka.WriteMessages(
+	communication.SocialMediaResourceKafka.WriteMessages(
 		context.Background(),
 		kafka.Message{
 			Value: tranferMsg,

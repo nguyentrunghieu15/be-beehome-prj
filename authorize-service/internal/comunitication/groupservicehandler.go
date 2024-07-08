@@ -55,8 +55,12 @@ func (h *GroupServiceResourceHandler) CreateGroupServiceResource(msg *GroupServi
 		ID:             primitive.NewObjectID(),
 		GroupServiceId: msg.GroupServiceId,
 	}
+	exsited, err := h.groupServiceRepository.FindOneByAtribute("group_service_id", msg.GroupServiceId)
+	if err == nil && exsited != nil {
+		return nil
+	}
 
-	err := h.groupServiceRepository.InsertOne(groupService)
+	err = h.groupServiceRepository.InsertOne(groupService)
 	if err != nil {
 		h.logger.Error(err.Error())
 		return err

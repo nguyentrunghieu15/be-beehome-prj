@@ -24,9 +24,9 @@ func NewUserResourceHandler(logger logwrapper.ILoggerWrapper,
 
 type UserResourceMsg struct {
 	Type       string `json:"type"`
-	UserId     string `bson:"user_id"`
-	ProviderId string `bson:"provider_id"`
-	Role       string `bson:"role"`
+	UserId     string `json:"user_id"`
+	ProviderId string `json:"provider_id"`
+	Role       string `json:"role"`
 }
 
 func (h *UserResourceHandler) Router(msg kafka.Message) error {

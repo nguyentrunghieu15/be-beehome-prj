@@ -98,6 +98,7 @@ func main() {
 	e.Use(echomiddleware.Recover())
 	e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
 		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"*"},
 	}))
 	e.Use(middleware.AttachProviderFunc())
 
@@ -155,8 +156,8 @@ func main() {
 	e.POST("/api/v1/providers/add-payment-method", pro.AddPaymentMethodPro)
 	e.POST("/api/v1/providers/add-service", pro.AddServicePro)
 	e.POST("/api/v1/providers/add-social-media", pro.AddSocialMediaPro)
-	e.POST("/api/v1/providers/delete-service", pro.DeleteServicePro)
-	e.DELETE("/api/v1/providers/delete-social-media", pro.DeleteSocialMediaPro)
+	e.POST("/api/v1/providers/delete-service:service_id", pro.DeleteServicePro)
+	e.DELETE("/api/v1/providers/delete-social-media:id", pro.DeleteSocialMediaPro)
 	e.GET("/api/v1/providers/owner/profile", pro.GetProviderProfile)
 	e.POST("/api/v1/providers/reply-review", pro.ReplyReviewPro)
 	e.POST("/api/v1/providers/review", pro.ReviewPro)

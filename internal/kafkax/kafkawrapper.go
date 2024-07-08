@@ -57,6 +57,7 @@ func (inst *KafkaClientWrapper) connect() error {
 		Topic:        inst.config.Topic,
 		Balancer:     &kafka.LeastBytes{},
 		RequiredAcks: kafka.RequireAll,
+		BatchBytes:   inst.config.MaxBytes,
 	}
 
 	inst.conn = conn

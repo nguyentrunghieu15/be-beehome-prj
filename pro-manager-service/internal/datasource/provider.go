@@ -128,7 +128,6 @@ func (pr *ProviderRepo) AddServicesForPro(providerID uuid.UUID, serviceIDs ...uu
 	defer func() {
 		if err := recover(); err != nil {
 			tx.Rollback()
-			panic(err)
 		}
 	}()
 
@@ -190,7 +189,6 @@ func (pr *ProviderRepo) RemoveServicesOfPro(providerID uuid.UUID, serviceIDs ...
 	defer func() {
 		if err := recover(); err != nil {
 			tx.Rollback()
-			panic(err)
 		}
 	}()
 
@@ -234,7 +232,11 @@ func (pr *ProviderRepo) FindProviders(req *proapi.FindProsRequest) ([]*ProviderR
 		Joins("JOIN group_services ON group_services.id = services.group_service_id")
 	if req.Filter != nil {
 		if req.Filter.ServiceName != nil {
-			subquery = subquery.Where("services.name = ? OR group_services.name = ?", *req.Filter.ServiceName, *req.Filter.ServiceName)
+			subquery = subquery.Where(
+				"services.name = ? OR group_services.name = ?",
+				*req.Filter.ServiceName,
+				*req.Filter.ServiceName,
+			)
 		}
 	}
 
@@ -259,7 +261,11 @@ func (pr *ProviderRepo) FindProviders(req *proapi.FindProsRequest) ([]*ProviderR
 			query = query.Where("providers.name like %?%", *req.Filter.Name)
 		}
 		if req.Filter.PostalCode != nil {
-			query = query.Where("postal_codes.zipcode = ? AND (hires.status <> ? OR hires.status ISNULL)", *req.Filter.PostalCode, "decline")
+			query = query.Where(
+				"postal_codes.zipcode = ? AND (hires.status <> ? OR hires.status ISNULL)",
+				*req.Filter.PostalCode,
+				"decline",
+			)
 		}
 		if req.Filter.Years != nil {
 			query = query.Where("providers.years = ?", *req.Filter.Years)

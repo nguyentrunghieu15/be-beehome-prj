@@ -50,8 +50,8 @@ func (inst *CerbosClientWrapper) connect() error {
 func (inst *CerbosClientWrapper) doConnect() {
 	for {
 		err := inst.connect()
-		log.Println(err)
 		if err != nil {
+			log.Println(err)
 			time.Sleep(300)
 			continue
 		}

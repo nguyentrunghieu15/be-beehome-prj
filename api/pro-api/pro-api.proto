@@ -175,14 +175,14 @@ service ProService {
   // Add social media information for a professional
   rpc DeleteSocialMediaPro (DeleteSocialMediaProRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/api/v1/providers/delete-social-media"
+      delete: "/api/v1/providers/delete-social-media/{id}"
     };
   }
 
   // Delete a service offered by a professional
   rpc DeleteServicePro (DeleteServiceProRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/providers/delete-service"
+      post: "/api/v1/providers/delete-service/{services_id}"
       body: "*"
     };
   }

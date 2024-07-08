@@ -27,8 +27,8 @@ func NewProviderResourceHandler(logger logwrapper.ILoggerWrapper) *ProviderResou
 
 type ProviderResourceMsg struct {
 	Type       string `json:"type"`
-	ProviderId string `bson:"provider_id"`
-	UserId     string `bson:"user_id"`
+	ProviderId string `json:"provider_id"`
+	UserId     string `json:"user_id"`
 }
 
 func (h *ProviderResourceHandler) Router(msg kafka.Message) error {
@@ -58,7 +58,12 @@ func (h *ProviderResourceHandler) CreateProviderResource(msg *ProviderResourceMs
 		UserId:     msg.UserId,
 	}
 
-	err := h.providerRepository.InsertOne(provider)
+	exsited, err := h.providerRepository.FindOneByAtribute("provider_id", msg.ProviderId)
+	if err == nil && exsited != nil {
+		return nil
+	}
+
+	err = h.providerRepository.InsertOne(provider)
 	if err != nil {
 		h.logger.Error(err.Error())
 		return err
