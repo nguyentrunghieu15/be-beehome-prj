@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+option go_package="github.com/nguyentrunghieu15/be-beehome-prj/proto/addressapi";
+
+
+import "google/api/annotations.proto";
+
+message FindAllAddressRequest {
+  string query = 1;
+}
+
+message FindAllAddressResponse {
+  repeated string address = 1;
+}
+
+message Address {
+	string ward_full_name                 = 1; 
+	string district_full_name             = 2; 
+	string province_full_name             = 3; 
+}
+
+message CheckExistAddressRequest {
+  Address address = 1;
+}
+
+message CheckExistAddressResponse {
+  optional Address address = 1;
+}
+
+message FindAllNameOfAddressUnitRequest {
+  string type = 1;
+  AddressUnit unit = 2;
+}
+
+message AddressUnit {
+  string name = 1;
+  string code = 2;
+}
+
+message FindAllNameOfAddressUnitResponse {
+  repeated AddressUnit unit = 1;
+}
+
+
+
+// Generated according to https://cloud.google.com/apis/design/standard_methods
+service AddressService {
+  rpc FindAllAddress(FindAllAddressRequest) returns (FindAllAddressResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/address/search"
+    };
+  }
+
+  rpc FindAllNameOfAddressUnit(FindAllNameOfAddressUnitRequest) returns (FindAllNameOfAddressUnitResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/address/search-unit"
+    };
+  }
+
+  rpc CheckExistAddress(CheckExistAddressRequest) returns (CheckExistAddressResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/address/check"
+    };
+  }
+}

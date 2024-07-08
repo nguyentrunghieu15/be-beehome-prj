@@ -1,0 +1,220 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/address-api/address-api.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "AddressService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/address/check": {
+      "get": {
+        "operationId": "AddressService_CheckExistAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CheckExistAddressResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "address.wardFullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "address.districtFullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "address.provinceFullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AddressService"
+        ]
+      }
+    },
+    "/api/v1/address/search": {
+      "get": {
+        "operationId": "AddressService_FindAllAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/FindAllAddressResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AddressService"
+        ]
+      }
+    },
+    "/api/v1/address/search-unit": {
+      "get": {
+        "operationId": "AddressService_FindAllNameOfAddressUnit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/FindAllNameOfAddressUnitResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "unit.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "unit.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AddressService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Address": {
+      "type": "object",
+      "properties": {
+        "wardFullName": {
+          "type": "string"
+        },
+        "districtFullName": {
+          "type": "string"
+        },
+        "provinceFullName": {
+          "type": "string"
+        }
+      }
+    },
+    "AddressUnit": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "CheckExistAddressResponse": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        }
+      }
+    },
+    "FindAllAddressResponse": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "FindAllNameOfAddressUnitResponse": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/AddressUnit"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
