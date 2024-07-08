@@ -127,8 +127,17 @@ services:
         depends_on:
             - postgres
             - redis
-        # ports:
-        #     - 3000:3000
+    authorized:
+        image: authorized
+        container_name: authorized
+        build:
+            dockerfile: ./authorize-service/Dockerfile
+        volumes:
+            - ./authorize-service/.docker.env:/authorize-service/.env
+        depends_on:
+            - kafka
+            - cerbos
+
         restart: unless-stopped
         labels:
             - "traefik.http.routers.router1.entryPoints=backend"
