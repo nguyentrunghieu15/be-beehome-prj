@@ -47,7 +47,7 @@ func CreateGroupService(c echo.Context) error {
 	hasPermission, err := cerbosx.DefaultClient.CanActive(
 		context.Background(),
 		p,
-		cerbos.NewResource("service", "*"),
+		cerbos.NewResource("service", "1"),
 		cerbosx.CREATE,
 	)
 	if err != nil || !hasPermission {

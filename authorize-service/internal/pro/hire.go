@@ -67,45 +67,45 @@ func DeleteHire(c echo.Context) error {
 }
 
 func UpdateStatusHire(c echo.Context) error {
-	// req := new(UpdateStatusHireRequest)
-	// if err := c.Bind(req); err != nil {
-	// 	return c.JSON(http.StatusBadRequest, err.Error())
-	// }
+	req := new(UpdateStatusHireRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
 
-	// userReqId := c.Get("user_id")
-	// if userReqId == nil {
-	// 	return c.JSON(http.StatusBadRequest, nil)
-	// }
+	userReqId := c.Get("user_id")
+	if userReqId == nil {
+		return c.JSON(http.StatusBadRequest, nil)
+	}
 
-	// userReq, err := userRepository.FindOneByAtribute("user_id", userReqId)
-	// if err != nil {
-	// 	return err
-	// }
+	userReq, err := userRepository.FindOneByAtribute("user_id", userReqId)
+	if err != nil {
+		return err
+	}
 
-	// hire, err := hireRepository.FindOneByAtribute("hire_id", req.HireID)
-	// if err != nil {
-	// 	return err
-	// }
+	hire, err := hireRepository.FindOneByAtribute("hire_id", req.HireID)
+	if err != nil {
+		return err
+	}
 
-	// p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
-	// if err != nil {
-	// 	return err
-	// }
+	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	if err != nil {
+		return err
+	}
 
-	// r, err := coverter.ToResource(hire)
-	// if err != nil {
-	// 	return err
-	// }
+	r, err := coverter.ToResource(hire)
+	if err != nil {
+		return err
+	}
 
-	// hasPermission, err := cerbosx.DefaultClient.CanActive(
-	// 	context.Background(),
-	// 	p,
-	// 	r,
-	// 	cerbosx.UPDATE,
-	// )
-	// if err != nil || !hasPermission {
-	// 	return c.JSON(http.StatusNonAuthoritativeInfo, nil)
-	// }
+	hasPermission, err := cerbosx.DefaultClient.CanActive(
+		context.Background(),
+		p,
+		r,
+		cerbosx.UPDATE,
+	)
+	if err != nil || !hasPermission {
+		return c.JSON(http.StatusNonAuthoritativeInfo, nil)
+	}
 	return c.JSON(http.StatusOK, nil)
 }
 

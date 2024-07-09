@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/cerbos/cerbos-sdk-go/cerbos"
 	"github.com/labstack/echo/v4"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/cerbosx"
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/coverter"
@@ -62,79 +63,79 @@ func GetProviderProfile(c echo.Context) error {
 }
 
 func ReplyReviewPro(c echo.Context) error {
-	// req := new(ReplyReviewProRequest)
-	// if err := c.Bind(req); err != nil {
-	// 	return c.JSON(http.StatusBadRequest, err.Error())
-	// }
+	req := new(ReplyReviewProRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
 
-	// userReqId := c.Get("user_id")
-	// if userReqId == nil {
-	// 	return c.JSON(http.StatusBadRequest, nil)
-	// }
+	userReqId := c.Get("user_id")
+	if userReqId == nil {
+		return c.JSON(http.StatusBadRequest, nil)
+	}
 
-	// userReq, err := userRepository.FindOneByAtribute("user_id", userReqId)
-	// if err != nil {
-	// 	return err
-	// }
+	userReq, err := userRepository.FindOneByAtribute("user_id", userReqId)
+	if err != nil {
+		return err
+	}
 
-	// review, err := reviewRepository.FindOneByAtribute("review_id", req.ReviewID)
-	// if err != nil {
-	// 	return err
-	// }
+	review, err := reviewRepository.FindOneByAtribute("review_id", req.ReviewID)
+	if err != nil {
+		return err
+	}
 
-	// p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
-	// if err != nil {
-	// 	return err
-	// }
+	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	if err != nil {
+		return err
+	}
 
-	// r, err := coverter.ToResource(review)
-	// if err != nil {
-	// 	return err
-	// }
+	r, err := coverter.ToResource(review)
+	if err != nil {
+		return err
+	}
 
-	// hasPermission, err := cerbosx.DefaultClient.CanActive(
-	// 	context.Background(),
-	// 	p,
-	// 	r,
-	// 	cerbosx.UPDATE,
-	// )
-	// if err != nil || !hasPermission {
-	// 	return c.JSON(http.StatusNonAuthoritativeInfo, nil)
-	// }
+	hasPermission, err := cerbosx.DefaultClient.CanActive(
+		context.Background(),
+		p,
+		r,
+		cerbosx.UPDATE,
+	)
+	if err != nil || !hasPermission {
+		return c.JSON(http.StatusNonAuthoritativeInfo, nil)
+	}
 
 	return c.JSON(http.StatusOK, nil)
 }
 
 func ReviewPro(c echo.Context) error {
-	// req := new(ReviewProRequest)
-	// if err := c.Bind(req); err != nil {
-	// 	return c.JSON(http.StatusBadRequest, err.Error())
-	// }
+	req := new(ReviewProRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
 
-	// userReqId := c.Get("user_id")
-	// if userReqId == nil {
-	// 	return c.JSON(http.StatusBadRequest, nil)
-	// }
+	userReqId := c.Get("user_id")
+	if userReqId == nil {
+		return c.JSON(http.StatusBadRequest, nil)
+	}
 
-	// userReq, err := userRepository.FindOneByAtribute("user_id", userReqId)
-	// if err != nil {
-	// 	return err
-	// }
+	userReq, err := userRepository.FindOneByAtribute("user_id", userReqId)
+	if err != nil {
+		return err
+	}
 
-	// p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
-	// if err != nil {
-	// 	return err
-	// }
+	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	if err != nil {
+		return err
+	}
 
-	// hasPermission, err := cerbosx.DefaultClient.CanActive(
-	// 	context.Background(),
-	// 	p,
-	// 	cerbos.NewResource("review", "1"),
-	// 	cerbosx.UPDATE,
-	// )
-	// if err != nil || !hasPermission {
-	// 	return c.JSON(http.StatusNonAuthoritativeInfo, nil)
-	// }
+	hasPermission, err := cerbosx.DefaultClient.CanActive(
+		context.Background(),
+		p,
+		cerbos.NewResource("review", "1"),
+		cerbosx.UPDATE,
+	)
+	if err != nil || !hasPermission {
+		return c.JSON(http.StatusNonAuthoritativeInfo, nil)
+	}
 
 	return c.JSON(http.StatusOK, nil)
 }
@@ -194,45 +195,45 @@ func DeleteProById(c echo.Context) error {
 }
 
 func UpdatePro(c echo.Context) error {
-	// req := new(UpdateProRequest)
-	// if err := c.Bind(req); err != nil {
-	// 	return c.JSON(http.StatusBadRequest, err.Error())
-	// }
+	req := new(UpdateProRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
 
-	// userReqId := c.Get("user_id")
-	// if userReqId == nil {
-	// 	return c.JSON(http.StatusBadRequest, nil)
-	// }
+	userReqId := c.Get("user_id")
+	if userReqId == nil {
+		return c.JSON(http.StatusBadRequest, nil)
+	}
 
-	// userReq, err := userRepository.FindOneByAtribute("user_id", userReqId)
-	// if err != nil {
-	// 	return err
-	// }
+	userReq, err := userRepository.FindOneByAtribute("user_id", userReqId)
+	if err != nil {
+		return err
+	}
 
-	// provider, err := providerRepository.FindOneByAtribute("provider_id", req.ID)
-	// if err != nil {
-	// 	return err
-	// }
+	provider, err := providerRepository.FindOneByAtribute("provider_id", req.ID)
+	if err != nil {
+		return err
+	}
 
-	// p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
-	// if err != nil {
-	// 	return err
-	// }
+	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	if err != nil {
+		return err
+	}
 
-	// r, err := coverter.ToResource(provider)
-	// if err != nil {
-	// 	return err
-	// }
+	r, err := coverter.ToResource(provider)
+	if err != nil {
+		return err
+	}
 
-	// hasPermission, err := cerbosx.DefaultClient.CanActive(
-	// 	context.Background(),
-	// 	p,
-	// 	r,
-	// 	cerbosx.UPDATE,
-	// )
-	// if err != nil || !hasPermission {
-	// 	return c.JSON(http.StatusNonAuthoritativeInfo, nil)
-	// }
+	hasPermission, err := cerbosx.DefaultClient.CanActive(
+		context.Background(),
+		p,
+		r,
+		cerbosx.UPDATE,
+	)
+	if err != nil || !hasPermission {
+		return c.JSON(http.StatusNonAuthoritativeInfo, nil)
+	}
 	return c.JSON(http.StatusOK, nil)
 }
 

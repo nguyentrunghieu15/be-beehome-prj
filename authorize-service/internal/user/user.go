@@ -35,7 +35,7 @@ func ListUsers(c echo.Context) error {
 	hasPermission, err := cerbosx.DefaultClient.CanActive(
 		context.Background(),
 		p,
-		cerbos.NewResource("user", "*"),
+		cerbos.NewResource("user", "1"),
 		cerbosx.READ,
 	)
 
