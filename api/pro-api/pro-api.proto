@@ -199,7 +199,7 @@ message ProviderInfo {
   string name = 8;
   string introduction = 9;
   int32 years = 11;
-  PostalCode postal_code = 12;
+  string address = 12;
   int32 num_hires = 13;
   repeated SocialMedia social_medias = 14;
   repeated PaymentMethod payment_method = 15;
@@ -210,7 +210,7 @@ message FilterProRequest {
   optional string name = 1;
   optional string introduction = 2;
   optional int32 years = 3;
-  optional string postal_code = 4;
+  optional string address = 4;
   optional string service_name = 5;
 }
 
@@ -237,7 +237,7 @@ message ProviderViewInfor {
   string name = 8;
   string introduction = 9;
   int32 years = 11;
-  PostalCode postal_code = 12;
+  string address = 12;
   int32 num_hires = 13;
   OverviewRating rating = 14;
 }
@@ -252,7 +252,7 @@ message SignUpProRequest {
   string name = 1;
   string introduction = 2;
   int32 years = 3;
-  string postal_code = 4;
+  string address = 4;
 }
 
 // Request message for updating information of a professional
@@ -261,7 +261,7 @@ message UpdateProRequest {
   optional string name = 1;
   optional string introduction = 2;
   optional int32 years = 3;
-  optional string postal_code = 4;
+  optional string address = 4;
 }
 
 
@@ -415,6 +415,8 @@ message HireInfor {
     Service service  =16;
     ProviderInfo provider = 17;
     optional Review review  =18;
+    string address = 20;
+    string full_address = 21;
 }
 
 message FindAllHireResponse {
@@ -430,6 +432,8 @@ message CreateHireRequest {
   optional string status = 13;
   optional string payment_method_id = 14;
   string issue = 15;
+  string address = 8;
+  string full_address = 7;
 }
 
 message CreateHireResponse {

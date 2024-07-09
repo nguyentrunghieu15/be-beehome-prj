@@ -347,46 +347,12 @@
         },
         "parameters": [
           {
-            "name": "providerId",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "serviceId",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "workTimeFrom",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "workTimeTo",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "paymentMethodId",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "issue",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateHireRequest"
+            }
           }
         ],
         "tags": [
@@ -452,11 +418,12 @@
             "type": "string"
           },
           {
-            "name": "newStatus",
-            "description": "Updated status value",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/HireServiceUpdateStatusHireBody"
+            }
           }
         ],
         "tags": [
@@ -503,7 +470,7 @@
             "format": "int32"
           },
           {
-            "name": "filter.postalCode",
+            "name": "filter.address",
             "in": "query",
             "required": false,
             "type": "string"
@@ -682,7 +649,7 @@
         ]
       }
     },
-    "/api/v1/providers/delete-service": {
+    "/api/v1/providers/delete-service/{servicesId}": {
       "post": {
         "summary": "Delete a service offered by a professional",
         "operationId": "ProService_DeleteServicePro",
@@ -703,11 +670,22 @@
         },
         "parameters": [
           {
+            "name": "servicesId",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeleteServiceProRequest"
+              "$ref": "#/definitions/ProServiceDeleteServiceProBody"
             }
           }
         ],
@@ -716,7 +694,7 @@
         ]
       }
     },
-    "/api/v1/providers/delete-social-media": {
+    "/api/v1/providers/delete-social-media/{id}": {
       "delete": {
         "summary": "Add social media information for a professional",
         "operationId": "ProService_DeleteSocialMediaPro",
@@ -738,8 +716,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -1359,6 +1337,38 @@
         }
       }
     },
+    "CreateHireRequest": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string"
+        },
+        "serviceId": {
+          "type": "string"
+        },
+        "workTimeFrom": {
+          "type": "string"
+        },
+        "workTimeTo": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "paymentMethodId": {
+          "type": "string"
+        },
+        "issue": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        }
+      }
+    },
     "CreateHireResponse": {
       "type": "object",
       "properties": {
@@ -1382,18 +1392,6 @@
         }
       },
       "title": "Request message for creating a service"
-    },
-    "DeleteServiceProRequest": {
-      "type": "object",
-      "properties": {
-        "servicesId": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "title": "Request message for deleting a service offered by a professional"
     },
     "FilterGroupServices": {
       "type": "object",
@@ -1428,7 +1426,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
+        "address": {
           "type": "string"
         },
         "serviceName": {
@@ -1463,7 +1461,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/Hire"
+            "$ref": "#/definitions/HireInfor"
           },
           "title": "List of Hire objects"
         }
@@ -1612,6 +1610,86 @@
         },
         "issue": {
           "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        }
+      }
+    },
+    "HireInfor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "deletedBy": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "providerId": {
+          "type": "string"
+        },
+        "serviceId": {
+          "type": "string"
+        },
+        "workTimeFrom": {
+          "type": "string"
+        },
+        "workTimeTo": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "paymentMethodId": {
+          "type": "string"
+        },
+        "issue": {
+          "type": "string"
+        },
+        "service": {
+          "$ref": "#/definitions/Service"
+        },
+        "provider": {
+          "$ref": "#/definitions/ProviderInfo"
+        },
+        "review": {
+          "$ref": "#/definitions/Review"
+        },
+        "address": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        }
+      }
+    },
+    "HireServiceUpdateStatusHireBody": {
+      "type": "object",
+      "properties": {
+        "newStatus": {
+          "type": "string",
+          "title": "Updated status value"
         }
       }
     },
@@ -1700,49 +1778,9 @@
         }
       }
     },
-    "PostalCode": {
+    "ProServiceDeleteServiceProBody": {
       "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "countryCode": {
-          "type": "string"
-        },
-        "zipcode": {
-          "type": "string"
-        },
-        "place": {
-          "type": "string"
-        },
-        "state": {
-          "type": "string"
-        },
-        "stateCode": {
-          "type": "string"
-        },
-        "province": {
-          "type": "string"
-        },
-        "provinceCode": {
-          "type": "string"
-        },
-        "community": {
-          "type": "string"
-        },
-        "communityCode": {
-          "type": "string"
-        },
-        "latitude": {
-          "type": "number",
-          "format": "double"
-        },
-        "longitude": {
-          "type": "number",
-          "format": "double"
-        }
-      }
+      "title": "Request message for deleting a service offered by a professional"
     },
     "ProServiceUpdateProBody": {
       "type": "object",
@@ -1757,7 +1795,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
+        "address": {
           "type": "string"
         }
       },
@@ -1797,8 +1835,8 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
-          "$ref": "#/definitions/PostalCode"
+        "address": {
+          "type": "string"
         },
         "numHires": {
           "type": "integer",
@@ -1862,8 +1900,8 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
-          "$ref": "#/definitions/PostalCode"
+        "address": {
+          "type": "string"
         },
         "numHires": {
           "type": "integer",
@@ -1941,6 +1979,18 @@
         },
         "serviceId": {
           "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "hireId": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "service": {
+          "$ref": "#/definitions/Service"
         }
       }
     },
@@ -1955,6 +2005,15 @@
           "format": "int32"
         },
         "comment": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "hireId": {
           "type": "string"
         }
       },
@@ -2021,7 +2080,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
+        "address": {
           "type": "string"
         }
       },

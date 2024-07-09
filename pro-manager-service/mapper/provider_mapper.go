@@ -31,30 +31,10 @@ func MapProviderToInfo(provider *datasource.Provider) *proapi.ProviderInfo {
 		Name:          provider.Name,
 		Introduction:  provider.Introduction,
 		Years:         provider.Years,
-		PostalCode:    MapPostalCodeToInfo(&provider.PostalCode),
-		NumHires:      int32(len(provider.Hires)), // Assuming PostalCode is populated correctly,
+		Address:       provider.Address,
+		NumHires:      int32(len(provider.Hires)), // Assuming Address is populated correctly,
 		SocialMedias:  MapToSocialMedias(provider.SocialMedias),
 		PaymentMethod: MapToPaymentMethods(provider.PaymentMethods),
-	}
-}
-
-func MapPostalCodeToInfo(postalCode *datasource.PostalCode) *proapi.PostalCode {
-	if postalCode == nil {
-		return nil // Handle nil PostalCode gracefully (optional)
-	}
-	return &proapi.PostalCode{
-		Id:            postalCode.ID,
-		CountryCode:   postalCode.CountryCode,
-		Zipcode:       postalCode.Zipcode,
-		Place:         postalCode.Place,
-		State:         postalCode.State,
-		StateCode:     postalCode.StateCode,
-		Province:      postalCode.Province,
-		ProvinceCode:  postalCode.ProvinceCode,
-		Community:     postalCode.Community,
-		CommunityCode: postalCode.CommunityCode,
-		Latitude:      postalCode.Latitude,
-		Longitude:     postalCode.Longitude,
 	}
 }
 
@@ -85,7 +65,7 @@ func MapToProviderViewInfo(info *datasource.ProviderReviewInfor) *proapi.Provide
 		Name:         info.Provider.Name,
 		Introduction: info.Provider.Introduction,
 		Years:        info.Provider.Years,
-		PostalCode:   MapPostalCodeToInfo(&info.PostalCode),
+		Address:      info.Address,
 		NumHires:     int32(info.HireCount),
 		Rating: &proapi.ProviderViewInfor_OverviewRating{
 			NumRating: int32(info.ReviewCount),

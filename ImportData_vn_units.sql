@@ -11850,3 +11850,23 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 
 -- ----------------------------------
 -- END OF SCRIPT FILE --
+
+
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+-- Create a new immutable function for unaccent
+CREATE OR REPLACE FUNCTION immutable_unaccent(text)
+RETURNS text AS
+$$
+SELECT unaccent($1);
+$$
+LANGUAGE SQL
+IMMUTABLE;
+
+-- Create text search configuration
+CREATE TEXT SEARCH CONFIGURATION vi ( COPY = simple );
+
+-- Create indexes using the immutable unaccent function
+CREATE INDEX idx_provinces_full_name ON provinces USING GIN (to_tsvector('simple', immutable_unaccent(full_name)));
+CREATE INDEX idx_districts_full_name ON districts USING GIN (to_tsvector('simple', immutable_unaccent(full_name)));
+CREATE INDEX idx_wards_full_name ON wards USING GIN (to_tsvector('simple', immutable_unaccent(full_name)));

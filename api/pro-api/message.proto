@@ -13,24 +13,10 @@ message Provider {
     string name = 8;
     string introduction = 9;
     int32 years = 11;
-    int32 postal_code_id = 10;
+    int32 address = 10;
     string user_id = 12;
 }
 
-message PostalCode {
-    int32 id = 1;
-    string country_code = 2;
-    string zipcode = 3;
-    string place = 4;
-    string state = 5;
-    string state_code = 6;
-    string province = 7;
-    string province_code = 8;
-    string community = 9;
-    string community_code = 10;
-    double latitude = 11;
-    double longitude = 12;
-}
 
 message Review {
     string id = 1;
@@ -121,6 +107,8 @@ message Hire {
     string status = 13;
     string payment_method_id = 14;
     string issue = 15;
+    string address = 16;
+    string full_address = 17;
 }
 
 enum TypeSort {

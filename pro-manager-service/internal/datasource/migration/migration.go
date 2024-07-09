@@ -8,7 +8,6 @@ import (
 func MigrationDatasource(db *database.PostgreDb) error {
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 	return db.AutoMigrate(
-		&datasource.PostalCode{},
 		&datasource.GroupService{},
 		&datasource.Service{},
 		&datasource.PaymentMethod{},

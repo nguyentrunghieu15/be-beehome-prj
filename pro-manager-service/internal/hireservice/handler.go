@@ -3,9 +3,12 @@ package hireservice
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
+	addressapi "github.com/nguyentrunghieu15/be-beehome-prj/api/address-api"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
 	communication "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/comunitication"
@@ -53,6 +56,23 @@ func (s *HireService) CreateHire(
 	mapHire, err := convert.StructProtoToMap(req)
 	if err != nil {
 		return nil, err
+	}
+
+	splitedAddress := strings.Split(req.Address, ",")
+	if len(splitedAddress) != 3 {
+		return nil, errors.New("Địa chỉ không đúng định dạng")
+	}
+	// check address
+	isValidAddress, err := s.addressClient.CheckExistAddress(context.Background(), &addressapi.CheckExistAddressRequest{
+		Address: &addressapi.Address{
+			WardFullName:     strings.Trim(splitedAddress[0], " "),
+			DistrictFullName: strings.Trim(splitedAddress[1], " "),
+			ProvinceFullName: strings.Trim(splitedAddress[2], " "),
+		},
+	})
+
+	if !isValidAddress {
+		return nil, errors.New("Không tìm thấy địa chỉ")
 	}
 
 	userId := uuid.MustParse(ctx.Value("user_id").(string))

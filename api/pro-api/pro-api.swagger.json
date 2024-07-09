@@ -470,7 +470,7 @@
             "format": "int32"
           },
           {
-            "name": "filter.postalCode",
+            "name": "filter.address",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1360,6 +1360,12 @@
         },
         "issue": {
           "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
         }
       }
     },
@@ -1420,7 +1426,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
+        "address": {
           "type": "string"
         },
         "serviceName": {
@@ -1604,6 +1610,12 @@
         },
         "issue": {
           "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
         }
       }
     },
@@ -1663,6 +1675,12 @@
         },
         "review": {
           "$ref": "#/definitions/Review"
+        },
+        "address": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
         }
       }
     },
@@ -1760,50 +1778,6 @@
         }
       }
     },
-    "PostalCode": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "countryCode": {
-          "type": "string"
-        },
-        "zipcode": {
-          "type": "string"
-        },
-        "place": {
-          "type": "string"
-        },
-        "state": {
-          "type": "string"
-        },
-        "stateCode": {
-          "type": "string"
-        },
-        "province": {
-          "type": "string"
-        },
-        "provinceCode": {
-          "type": "string"
-        },
-        "community": {
-          "type": "string"
-        },
-        "communityCode": {
-          "type": "string"
-        },
-        "latitude": {
-          "type": "number",
-          "format": "double"
-        },
-        "longitude": {
-          "type": "number",
-          "format": "double"
-        }
-      }
-    },
     "ProServiceDeleteServiceProBody": {
       "type": "object",
       "title": "Request message for deleting a service offered by a professional"
@@ -1821,7 +1795,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
+        "address": {
           "type": "string"
         }
       },
@@ -1861,8 +1835,8 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
-          "$ref": "#/definitions/PostalCode"
+        "address": {
+          "type": "string"
         },
         "numHires": {
           "type": "integer",
@@ -1926,8 +1900,8 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
-          "$ref": "#/definitions/PostalCode"
+        "address": {
+          "type": "string"
         },
         "numHires": {
           "type": "integer",
@@ -2106,7 +2080,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "postalCode": {
+        "address": {
           "type": "string"
         }
       },

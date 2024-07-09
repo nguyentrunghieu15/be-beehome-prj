@@ -96,11 +96,3 @@ ALTER TABLE wards ADD CONSTRAINT wards_district_code_fkey FOREIGN KEY (district_
 
 CREATE INDEX idx_wards_district ON wards(district_code);
 CREATE INDEX idx_wards_unit ON wards(administrative_unit_id);
-
-CREATE EXTENSION IF NOT EXISTS unaccent;
-CREATE TEXT SEARCH CONFIGURATION vi ( COPY = simple );
-
-CREATE INDEX idx_administrative_units_full_name ON administrative_units USING GIN (to_tsvector('simple', unaccent(full_name)));
-CREATE INDEX idx_provinces_full_name ON provinces USING GIN (to_tsvector('simple', unaccent(full_name)));
-CREATE INDEX idx_districts_full_name ON districts USING GIN (to_tsvector('simple', unaccent(full_name)));
-CREATE INDEX idx_wards_full_name ON wards USING GIN (to_tsvector('simple', unaccent(full_name)));

@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
+	addressapi "github.com/nguyentrunghieu15/be-beehome-prj/api/address-api"
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
@@ -105,16 +107,23 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 	if err != nil {
 		return nil, err
 	}
-	delete(data, "postal_code")
 
-	postalCode, err := s.postalCodeRepo.FindPostalCodesByZipcode(req.PostalCode)
-	if err != nil {
-		return nil, err
+	splitedAddress := strings.Split(req.Address, ",")
+	if len(splitedAddress) != 3 {
+		return nil, errors.New("Địa chỉ không đúng định dạng")
 	}
-	if len(postalCode) == 0 {
-		return nil, errors.New("not found zip code")
+	// check address
+	isValidAddress, err := s.addressClient.CheckExistAddress(context.Background(), &addressapi.CheckExistAddressRequest{
+		Address: &addressapi.Address{
+			WardFullName:     strings.Trim(splitedAddress[0], " "),
+			DistrictFullName: strings.Trim(splitedAddress[1], " "),
+			ProvinceFullName: strings.Trim(splitedAddress[2], " "),
+		},
+	})
+
+	if !isValidAddress {
+		return nil, errors.New("Không tìm thấy địa chỉ")
 	}
-	data["postal_code_id"] = postalCode[0].ID
 
 	userId := uuid.MustParse(ctx.Value("user_id").(string))
 	data["user_id"] = userId
@@ -165,16 +174,25 @@ func (s *ProviderService) UpdatePro(ctx context.Context, req *proapi.UpdateProRe
 		return nil, err
 	}
 
-	if _, ok := updateData["postal_code"]; ok {
-		postalCode, err := s.postalCodeRepo.FindPostalCodesByZipcode(req.GetPostalCode())
-		if err != nil {
-			return nil, err
+	if req.Address != nil {
+		splitedAddress := strings.Split(*req.Address, ",")
+		if len(splitedAddress) != 3 {
+			return nil, errors.New("Địa chỉ không đúng định dạng")
 		}
-		if len(postalCode) == 0 {
-			return nil, errors.New("not found zip code")
+		// check address
+		isValidAddress, _ := s.addressClient.CheckExistAddress(
+			context.Background(),
+			&addressapi.CheckExistAddressRequest{
+				Address: &addressapi.Address{
+					WardFullName:     strings.Trim(splitedAddress[0], " "),
+					DistrictFullName: strings.Trim(splitedAddress[1], " "),
+					ProvinceFullName: strings.Trim(splitedAddress[2], " "),
+				},
+			},
+		)
+		if !isValidAddress {
+			return nil, errors.New("Không tìm thấy địa chỉ")
 		}
-		delete(updateData, "postal_code")
-		updateData["postal_code_id"] = postalCode[0].ID
 	}
 
 	// Update provider using GORM with associations (recommended)

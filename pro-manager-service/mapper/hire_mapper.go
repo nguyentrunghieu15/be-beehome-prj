@@ -36,6 +36,8 @@ func MapToHire(hire *datasource.Hire) *proapi.Hire {
 		Status:          hire.Status,
 		PaymentMethodId: hire.PaymentMethodId.String(),
 		Issue:           hire.Issue,
+		Address:         hire.Address,
+		FullAddress:     hire.FullAddress,
 	}
 }
 
@@ -76,6 +78,8 @@ func MapToHireInfor(hire *datasource.Hire) *proapi.HireInfor {
 		Status:          hire.Status,
 		PaymentMethodId: hire.PaymentMethodId.String(),
 		Issue:           hire.Issue,
+		Address:         hire.Address,
+		FullAddress:     hire.FullAddress,
 		Service:         MapToService(hire.Service),
 		Provider:        MapProviderToInfo(hire.Provider),
 		Review:          MapToReview(hire.Review),

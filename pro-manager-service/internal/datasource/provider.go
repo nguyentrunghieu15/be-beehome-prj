@@ -3,6 +3,7 @@ package datasource
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -27,7 +28,6 @@ type IProviderRepo interface {
 
 type ProviderReviewInfor struct {
 	Provider
-	PostalCode
 	HireCount     int64
 	AverageRating float64
 	ReviewCount   int64
@@ -39,7 +39,7 @@ type ProviderRepo struct {
 
 func (pr *ProviderRepo) FindOneById(id uuid.UUID) (*Provider, error) {
 	provider := &Provider{}
-	result := pr.db.Preload("PostalCode").
+	result := pr.db.
 		Preload("PaymentMethods").
 		Preload("SocialMedias").
 		Preload("Hires", "status = ?", "approve").
@@ -52,7 +52,7 @@ func (pr *ProviderRepo) FindOneById(id uuid.UUID) (*Provider, error) {
 
 func (pr *ProviderRepo) FindOneByUserId(id uuid.UUID) (*Provider, error) {
 	provider := &Provider{}
-	result := pr.db.Preload("PostalCode").
+	result := pr.db.
 		Preload("PaymentMethods").
 		Preload("SocialMedias").
 		First(provider, "user_id = ?", id)
@@ -64,7 +64,7 @@ func (pr *ProviderRepo) FindOneByUserId(id uuid.UUID) (*Provider, error) {
 
 func (pr *ProviderRepo) FindOneByName(name string) (*Provider, error) {
 	provider := &Provider{}
-	result := pr.db.Preload("PostalCode").
+	result := pr.db.
 		Preload("PaymentMethods").
 		Preload("SocialMedias").
 		First(provider, "name = ?", name)
@@ -102,7 +102,7 @@ func (pr *ProviderRepo) CreateProvider(data map[string]interface{}) (*Provider, 
 	id := uuid.MustParse(data["id"].(string))
 
 	// Fetch the created record using the retrieved ID
-	if err := pr.db.Preload("PostalCode").First(provider, id).Error; err != nil {
+	if err := pr.db.First(provider, id).Error; err != nil {
 		return nil, err
 	}
 
@@ -224,6 +224,20 @@ func (pr *ProviderRepo) RemoveServicesOfPro(providerID uuid.UUID, serviceIDs ...
 	return nil
 }
 
+func fixAddressToTextSearchQuery(address string) string {
+
+	// Split theo dau phẩy
+	a := strings.Replace(address, ",", " ", -1)
+
+	// Loại bỏ dấu cách dư thừa
+	a = strings.Join(strings.Fields(a), " ")
+
+	// Split theo dau phẩy
+	a = strings.Replace(a, "", " <-> ", -1)
+
+	return a
+}
+
 func (pr *ProviderRepo) FindProviders(req *proapi.FindProsRequest) ([]*ProviderReviewInfor, error) {
 	// Subquery to filter providers offering 'Oven Cleaning' service
 	subquery := pr.db.Select("provider_id").Table("providers").
@@ -243,9 +257,8 @@ func (pr *ProviderRepo) FindProviders(req *proapi.FindProsRequest) ([]*ProviderR
 	// Main query with joins, filtering, aggregations, and pagination
 	var providers []*ProviderReviewInfor
 
-	query := pr.db.Table("providers"). // Preload PostalCode data
-						Select("providers.*, postal_codes.*, COUNT(hires.id) AS hire_count, AVG(reviews.rating) AS average_rating, COUNT(reviews.id) AS review_count").
-						Joins("JOIN postal_codes ON postal_codes.id = providers.postal_code_id").
+	query := pr.db.Table("providers"). // Preload Address data
+						Select("providers.*, COUNT(hires.id) AS hire_count, AVG(reviews.rating) AS average_rating, COUNT(reviews.id) AS review_count").
 						Joins("LEFT JOIN hires ON hires.provider_id = providers.id").
 						Joins("LEFT JOIN reviews ON reviews.provider_id = providers.id")
 
@@ -260,11 +273,10 @@ func (pr *ProviderRepo) FindProviders(req *proapi.FindProsRequest) ([]*ProviderR
 		if req.Filter.Name != nil {
 			query = query.Where("providers.name like %?%", *req.Filter.Name)
 		}
-		if req.Filter.PostalCode != nil {
+		if req.Filter.Address != nil {
 			query = query.Where(
-				"postal_codes.zipcode = ? AND (hires.status <> ? OR hires.status ISNULL)",
-				*req.Filter.PostalCode,
-				"decline",
+				"to_tsvector('simple', unaccent(providers.address)) @@ phraseto_tsquery('simple', unaccent(?))",
+				*req.Filter.Address,
 			)
 		}
 		if req.Filter.Years != nil {
@@ -274,7 +286,7 @@ func (pr *ProviderRepo) FindProviders(req *proapi.FindProsRequest) ([]*ProviderR
 			query = query.Where("providers.introduction like %?%", *req.Filter.Introduction)
 		}
 	}
-	query = query.Group("providers.id, postal_codes.id")
+	query = query.Group("providers.id")
 
 	// Apply pagination based on request parameters
 	if req.Pagination != nil {

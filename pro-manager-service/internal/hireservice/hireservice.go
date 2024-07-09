@@ -6,22 +6,25 @@ import (
 	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
+	addressclient "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/address-client"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource"
 )
 
 type HireService struct {
 	proapi.HireServiceServer
-	hireRepo  datasource.IHireRepo
-	proRepo   datasource.IProviderRepo
-	logger    logwrapper.ILoggerWrapper
-	validator validator.IValidator
+	hireRepo      datasource.IHireRepo
+	proRepo       datasource.IProviderRepo
+	logger        logwrapper.ILoggerWrapper
+	validator     validator.IValidator
+	addressClient addressclient.IAddressClient
 }
 
 type HireServiceBuilder struct {
-	hireRepo  datasource.IHireRepo
-	proRepo   datasource.IProviderRepo
-	logger    logwrapper.ILoggerWrapper
-	validator validator.IValidator
+	hireRepo      datasource.IHireRepo
+	proRepo       datasource.IProviderRepo
+	logger        logwrapper.ILoggerWrapper
+	validator     validator.IValidator
+	addressClient addressclient.IAddressClient
 }
 
 // NewHireServiceBuilder creates a new builder instance
@@ -53,6 +56,11 @@ func (b *HireServiceBuilder) WithValidator(validator validator.IValidator) *Hire
 	return b
 }
 
+func (b *HireServiceBuilder) SetAddressClient(a addressclient.IAddressClient) *HireServiceBuilder {
+	b.addressClient = a
+	return b
+}
+
 // Build constructs the final HireService struct
 func (b *HireServiceBuilder) Build() (*HireService, error) {
 	// Validate all required fields are set
@@ -71,9 +79,10 @@ func (b *HireServiceBuilder) Build() (*HireService, error) {
 
 	// Build the final HireService struct
 	return &HireService{
-		hireRepo:  b.hireRepo,
-		proRepo:   b.proRepo,
-		logger:    b.logger,
-		validator: b.validator,
+		hireRepo:      b.hireRepo,
+		proRepo:       b.proRepo,
+		logger:        b.logger,
+		validator:     b.validator,
+		addressClient: b.addressClient,
 	}, nil
 }

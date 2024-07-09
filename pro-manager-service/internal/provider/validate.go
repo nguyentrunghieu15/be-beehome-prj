@@ -37,7 +37,7 @@ func SetRulesOfSignUpProRequest(v validator.IValidator) {
 		"Name":         "required",
 		"Introduction": "required",
 		"Years":        "gte=0", // Assuming years cannot be negative
-		"PostalCode":   "required",
+		"Address":      "required",
 	}
 	v.RegisterRules(validationRules, &proapi.SignUpProRequest{})
 }
@@ -47,7 +47,7 @@ func SetRulesOfUpdateProRequest(v validator.IValidator) {
 		"Name":         "omitempty,required",
 		"Introduction": "omitempty,required",
 		"Years":        "omitempty,required,gte=0", // Assuming years cannot be negative
-		"PostalCode":   "omitempty,required",
+		"Address":      "omitempty,required",
 	}
 	v.RegisterRules(validationRules, &proapi.UpdateProRequest{})
 }

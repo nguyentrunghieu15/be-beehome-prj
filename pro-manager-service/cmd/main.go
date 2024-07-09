@@ -21,6 +21,7 @@ import (
 	singletonmanager "github.com/nguyentrunghieu15/be-beehome-prj/internal/singleton_manager"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
+	addressclient "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/address-client"
 	communication "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource/migration"
@@ -56,6 +57,7 @@ func validateEnverionment() error {
 		"CHIPHER_KEY":            "required",
 		"AUTHORIZATION_SERVER":   "required",
 		"KAFKA_BOOTSTRAP_SERVER": "required",
+		"ADDRESS_CLIENT_URI":     "required",
 	}
 	return envloader.MustLoad(envfile, rules)
 }
@@ -111,16 +113,24 @@ func main() {
 	}
 	s := grpc.NewServer(grpc.UnaryInterceptor(middleware.UnaryInterceptor))
 
+	addressGrpcClient, err := grpc.NewClient(
+		os.Getenv("ADDRESS_CLIENT_URI"),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Panic(err)
+	}
+
 	proService, err := provider.NewProviderServiceBuilder().
 		SetLogger(manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper)).
 		SetHireRepo(datasource.NewHireRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		SetPaymentMethodRepo(datasource.NewPaymentMethodRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
-		SetPostalCodeRepo(datasource.NewPostalCodeRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		SetProRepo(datasource.NewProviderRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		SetValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
 		SetSocialMediaRepo(datasource.NewSocialMediaRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		SetReviewRepo(datasource.NewReviewRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		SetJwtTokenizer(manager.GetInstance(&jwt.CustomJWTTokenizer{}).(*jwt.CustomJWTTokenizer)).
+		SetAddressClient(addressclient.NewAddressClientWrapper(addressGrpcClient, manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper))).
 		Build()
 	proapi.RegisterProServiceServer(s, proService)
 
@@ -129,6 +139,7 @@ func main() {
 		WithHireRepo(datasource.NewHireRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		WithProviderRepo(datasource.NewProviderRepo(manager.GetInstance(&database.PostgreDb{}).(*database.PostgreDb))).
 		WithValidator(manager.GetInstance(&validator.ValidatorStuctMap{}).(*validator.ValidatorStuctMap)).
+		SetAddressClient(addressclient.NewAddressClientWrapper(addressGrpcClient, manager.GetInstance(&logwrapper.LoggerWrapper{}).(*logwrapper.LoggerWrapper))).
 		Build()
 	proapi.RegisterHireServiceServer(s, hireService)
 

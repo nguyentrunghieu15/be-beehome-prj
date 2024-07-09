@@ -83,39 +83,23 @@ type Review struct {
 	HireId     uuid.UUID      `json:"hire_id,omitempty"`
 }
 
-type PostalCode struct {
-	ID            int32   `json:"id,omitempty"             gorm:"primarykey"`
-	CountryCode   string  `json:"country_code,omitempty"`
-	Zipcode       string  `json:"zipcode,omitempty"`
-	Place         string  `json:"place,omitempty"`
-	State         string  `json:"state,omitempty"`
-	StateCode     string  `json:"state_code,omitempty"`
-	Province      string  `json:"province,omitempty"`
-	ProvinceCode  string  `json:"province_code,omitempty"`
-	Community     string  `json:"community,omitempty"`
-	CommunityCode string  `json:"community_code,omitempty"`
-	Latitude      float64 `json:"latitude,omitempty"`
-	Longitude     float64 `json:"longitude,omitempty"`
-}
-
 type Provider struct {
-	ID             uuid.UUID        `json:"id,omitempty"             gorm:"type:uuid;default:uuid_generate_v4();primarykey;index"`
+	ID             uuid.UUID        `json:"id,omitempty"           gorm:"type:uuid;default:uuid_generate_v4();primarykey;index"`
 	CreatedAt      time.Time        `json:"created_at,omitempty"`
 	CreatedBy      string           `json:"created_by,omitempty"`
 	UpdatedAt      time.Time        `json:"updated_at,omitempty"`
 	UpdatedBy      string           `json:"updated_by,omitempty"`
 	DeletedBy      string           `json:"deleted_by,omitempty"`
-	DeletedAt      gorm.DeletedAt   `json:"deleted_at,omitempty"     gorm:"index"`
+	DeletedAt      gorm.DeletedAt   `json:"deleted_at,omitempty"   gorm:"index"`
 	Name           string           `json:"name,omitempty"`
 	Introduction   string           `json:"introduction,omitempty"`
 	Years          int32            `json:"years,omitempty"`
-	PostalCodeId   int32            `json:"postal_code_id,omitempty"`
-	PostalCode     PostalCode       `json:"postal_code,omitempty"    gorm:"foreignKey:PostalCodeId"`
+	Address        string           `json:"address,omitempty"`
 	UserId         uuid.UUID        `json:"user_id,omitempty"`
-	PaymentMethods []*PaymentMethod `                                gorm:"foreignKey:ProviderId"`
-	SocialMedias   []*SocialMedia   `                                gorm:"foreignKey:ProviderId"`
-	Hires          []*Hire          `                                gorm:"foreignKey:ProviderId"`
-	Services       []*Service       `                                gorm:"many2many:provider_service;"`
+	PaymentMethods []*PaymentMethod `                              gorm:"foreignKey:ProviderId"`
+	SocialMedias   []*SocialMedia   `                              gorm:"foreignKey:ProviderId"`
+	Hires          []*Hire          `                              gorm:"foreignKey:ProviderId"`
+	Services       []*Service       `                              gorm:"many2many:provider_service;"`
 }
 
 type Hire struct {
@@ -138,4 +122,6 @@ type Hire struct {
 	PaymentMethod   *PaymentMethod `json:"payment_method,omitempty"    gorm:"foreignKey:PaymentMethodId"`
 	Issue           string         `json:"issue,omitempty"`
 	Review          *Review        `json:"review,omitempty"            gorm:"foreignKey:HireId"`
+	Address         string         `json:"address,omitempty"`
+	FullAddress     string         `json:"full_address,omitempty"`
 }

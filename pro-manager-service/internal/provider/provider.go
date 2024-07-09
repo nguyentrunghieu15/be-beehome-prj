@@ -5,6 +5,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/validator"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pkg/jwt"
+	addressclient "github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/address-client"
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/internal/datasource"
 )
 
@@ -17,8 +18,8 @@ type ProviderService struct {
 	hireRepo        datasource.IHireRepo
 	reviewRepo      datasource.IReviewRepo
 	socialMediaRepo datasource.ISocialMediaRepo
-	postalCodeRepo  datasource.IPostalCodeRepo
 	jwtTokenizer    jwt.IJsonWebTokenizer
+	addressClient   addressclient.IAddressClient
 }
 
 type ProviderServiceBuilder struct {
@@ -29,8 +30,8 @@ type ProviderServiceBuilder struct {
 	hireRepo        datasource.IHireRepo
 	reviewRepo      datasource.IReviewRepo
 	socialMediaRepo datasource.ISocialMediaRepo
-	postalCodeRepo  datasource.IPostalCodeRepo
 	jwtTokenizer    jwt.IJsonWebTokenizer
+	addressClient   addressclient.IAddressClient
 }
 
 func (b *ProviderServiceBuilder) SetLogger(l logwrapper.ILoggerWrapper) *ProviderServiceBuilder {
@@ -69,13 +70,13 @@ func (b *ProviderServiceBuilder) SetSocialMediaRepo(r datasource.ISocialMediaRep
 	return b
 }
 
-func (b *ProviderServiceBuilder) SetPostalCodeRepo(r datasource.IPostalCodeRepo) *ProviderServiceBuilder {
-	b.postalCodeRepo = r
+func (b *ProviderServiceBuilder) SetJwtTokenizer(j jwt.IJsonWebTokenizer) *ProviderServiceBuilder {
+	b.jwtTokenizer = j
 	return b
 }
 
-func (b *ProviderServiceBuilder) SetJwtTokenizer(j jwt.IJsonWebTokenizer) *ProviderServiceBuilder {
-	b.jwtTokenizer = j
+func (b *ProviderServiceBuilder) SetAddressClient(a addressclient.IAddressClient) *ProviderServiceBuilder {
+	b.addressClient = a
 	return b
 }
 
@@ -92,7 +93,7 @@ func (b *ProviderServiceBuilder) Build() (*ProviderService, error) {
 		hireRepo:        b.hireRepo,
 		reviewRepo:      b.reviewRepo,
 		socialMediaRepo: b.socialMediaRepo,
-		postalCodeRepo:  b.postalCodeRepo,
+		addressClient:   b.addressClient,
 		jwtTokenizer:    b.jwtTokenizer,
 	}, nil
 }

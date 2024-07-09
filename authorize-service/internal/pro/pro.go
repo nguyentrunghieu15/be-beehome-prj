@@ -288,7 +288,7 @@ type SignUpProRequest struct {
 	Name         string `json:"name"         form:"name"         query:"name"`
 	Introduction string `json:"introduction" form:"introduction" query:"introduction"`
 	Years        int32  `json:"years"        form:"years"        query:"years"`
-	PostalCode   string `json:"postal_code"  form:"postal_code"  query:"postal_code"`
+	Address      string `json:"address"      form:"address"      query:"address"`
 }
 
 type UpdateSocialMediaProRequest struct {
@@ -302,5 +302,5 @@ type UpdateProRequest struct {
 	Name         string `json:"name"         form:"name"         query:"name"`
 	Introduction string `json:"introduction" form:"introduction" query:"introduction"`
 	Years        int32  `json:"years"        form:"years"        query:"years"`
-	PostalCode   string `json:"postal_code"  form:"postal_code"  query:"postal_code"`
+	Address      string `json:"address"      form:"address"      query:"address"`
 }
