@@ -92,42 +92,7 @@ func BlockUser(c echo.Context) error {
 }
 
 func GetUser(c echo.Context) error {
-	id := c.Param("id")
-	userId := c.Get("user_id")
-	if userId == nil {
-		return c.JSON(http.StatusNonAuthoritativeInfo, nil)
-	}
 
-	user, err := userRepository.FindOneByAtribute("user_id", userId)
-	if err != nil {
-		return err
-	}
-
-	userResource, err := userRepository.FindOneByAtribute("user_id", id)
-	if err != nil {
-		return err
-	}
-
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*user))
-	if err != nil {
-		return err
-	}
-
-	r, err := coverter.ToResource(userResource)
-	if err != nil {
-		return err
-	}
-
-	hasPermission, err := cerbosx.DefaultClient.CanActive(
-		context.Background(),
-		p,
-		r,
-		cerbosx.READ,
-	)
-
-	if err != nil || !hasPermission {
-		return c.JSON(http.StatusNonAuthoritativeInfo, nil)
-	}
 	return c.JSON(http.StatusOK, nil)
 }
 

@@ -53,6 +53,7 @@ func (b *HireServiceBuilder) WithLogger(logger logwrapper.ILoggerWrapper) *HireS
 // WithValidator sets the validator for the service
 func (b *HireServiceBuilder) WithValidator(validator validator.IValidator) *HireServiceBuilder {
 	b.validator = validator
+	SetRules(validator)
 	return b
 }
 

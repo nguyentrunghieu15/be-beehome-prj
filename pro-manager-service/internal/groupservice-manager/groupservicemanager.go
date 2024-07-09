@@ -46,14 +46,19 @@ func (b *GroupServiceManagerServerBuilder) WithGroupServiceRepo(
 }
 
 // WithLogger sets the logger for the builder.
-func (b *GroupServiceManagerServerBuilder) WithLogger(logger logwrapper.ILoggerWrapper) *GroupServiceManagerServerBuilder {
+func (b *GroupServiceManagerServerBuilder) WithLogger(
+	logger logwrapper.ILoggerWrapper,
+) *GroupServiceManagerServerBuilder {
 	b.logger = logger
 	return b
 }
 
 // WithValidator sets the validator for the builder.
-func (b *GroupServiceManagerServerBuilder) WithValidator(validator validator.IValidator) *GroupServiceManagerServerBuilder {
+func (b *GroupServiceManagerServerBuilder) WithValidator(
+	validator validator.IValidator,
+) *GroupServiceManagerServerBuilder {
 	b.validator = validator
+	SetRules(validator)
 	return b
 }
 

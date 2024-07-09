@@ -128,10 +128,6 @@ func (s *HireService) UpdateStatusHire(
 		return nil, err
 	}
 
-	// Convert and return response (optional)
-	// You can optionally convert the updatedHire object to a gRPC message format
-	// using convertHireToResponse if needed for the response.
-
 	return &proapi.UpdateStatusHireResponse{Hire: mapper.MapToHire(updatedHire)}, nil // Empty response for now
 }
 

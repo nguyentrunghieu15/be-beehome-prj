@@ -9,7 +9,8 @@ import (
 
 type IValidator interface {
 	Validate(interface{}) error
-	RegisterRules(rules map[string]string, typeStruct interface{})
+	RegisterRules(map[string]string, interface{})
+	RegisterValidation(string, validator.Func, ...bool) error
 }
 
 type ValidatorStuctMap struct {
@@ -22,6 +23,10 @@ func (v *ValidatorStuctMap) RegisterRules(rules map[string]string, typeStruct in
 
 func (v *ValidatorStuctMap) Validate(e interface{}) error {
 	return v.validate.Struct(e)
+}
+
+func (v *ValidatorStuctMap) RegisterValidation(tag string, fn validator.Func, callValidationEvenIfNull ...bool) error {
+	return v.validate.RegisterValidation(tag, fn, callValidationEvenIfNull...)
 }
 
 func (*ValidatorStuctMap) Init() interface{} {

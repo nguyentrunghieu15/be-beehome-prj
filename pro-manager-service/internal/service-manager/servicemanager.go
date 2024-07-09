@@ -54,6 +54,7 @@ func (b *ServiceManagerServerBuilder) WithLogger(logger logwrapper.ILoggerWrappe
 // WithValidator sets the validator for the builder.
 func (b *ServiceManagerServerBuilder) WithValidator(validator validator.IValidator) *ServiceManagerServerBuilder {
 	b.validator = validator
+	SetRules(validator)
 	return b
 }
 
