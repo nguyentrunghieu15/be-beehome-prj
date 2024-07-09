@@ -1,0 +1,15 @@
+apiVersion: "api.cerbos.dev/v1"
+derivedRoles:
+    name: common_roles
+    definitions:
+        - name: owner
+          parentRoles: ["user"]
+          condition:
+              match:
+                  expr: request.resource.attr.user_id == P.attr.user_id
+
+        - name: provider
+          parentRoles: ["user"]
+          condition:
+              match:
+                  expr: request.resource.attr.provider_id == P.attr.provider_id

@@ -16,8 +16,8 @@ resourcePolicy:
               - update
               - delete
           effect: EFFECT_ALLOW
-          roles:
-              - owner-account
+          derivedRoles:
+              - owner
 
         - actions:
               - create
