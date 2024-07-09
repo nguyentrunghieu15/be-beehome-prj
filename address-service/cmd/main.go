@@ -25,7 +25,7 @@ import (
 
 const (
 	envfile string = "./address-service/.env"
-	logDir  string = "./address-service/logs/user-service.log"
+	logDir  string = "./address-service/logs/address-service.log"
 )
 
 var rotateWriterConfig = logwrapper.ConfigRollbackWriter{

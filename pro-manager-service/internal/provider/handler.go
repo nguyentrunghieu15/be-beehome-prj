@@ -153,7 +153,6 @@ func (s *ProviderService) SignUpPro(ctx context.Context, req *proapi.SignUpProRe
 			Value: tranferMsg,
 		},
 	)
-
 	// Potentially interact with paymentRepo for payment methods (not implemented here)
 	// You might need to add logic to handle payment methods based on your requirements
 
