@@ -131,6 +131,30 @@ services:
         depends_on:
             - postgres
             - redis
+        restart: unless-stopped
+        labels:
+            - "traefik.http.routers.router1.entryPoints=backend"
+            - "traefik.http.routers.router1.rule=PathPrefix(`/api/v1/auth`) || PathPrefix(`/api/v1/user`) || PathPrefix(`/api/v1/profile`)"
+            - "traefik.http.routers.router1.service=service1"
+            - "traefik.http.services.service1.loadbalancer.server.port=3000"
+
+    address.server:
+        image: address.server
+        container_name: address.server
+        build:
+            dockerfile: ./address-service/Dockerfile
+        volumes:
+            - ./address-service/.docker.env:/address-service/.env
+        depends_on:
+            - postgres
+            - redis
+        restart: unless-stopped
+        labels:
+            - "traefik.http.routers.router3.entryPoints=backend"
+            - "traefik.http.routers.router3.rule=PathPrefix(`/api/v1/address`)"
+            - "traefik.http.routers.router3.service=service3"
+            - "traefik.http.services.service3.loadbalancer.server.port=3004"
+
     authorized:
         image: authorized
         container_name: authorized
@@ -141,15 +165,8 @@ services:
         depends_on:
             - kafka
             - cerbos
-
         restart: unless-stopped
-        labels:
-            - "traefik.http.routers.router1.entryPoints=backend"
-            - "traefik.http.routers.router1.rule=PathPrefix(`/api/v1/auth`) || PathPrefix(`/api/v1/user`) || PathPrefix(`/api/v1/profile`)"
-            - "traefik.http.routers.router1.service=service1"
-            - "traefik.http.services.service1.loadbalancer.server.port=3000"
-            - "traefik.http.middlewares.authorized.forwardauth.address=http://172.17.0.1:3133"
-            - "traefik.http.routers.router1.middlewares=authorized"
+        
     mongo:
         image: mongo:jammy
         container_name: mongo
