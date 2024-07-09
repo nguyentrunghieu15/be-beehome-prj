@@ -52,7 +52,7 @@ func SetRulesOfCreateHireRequest(v validatorwrapper.IValidator) {
 		"ServiceId":       "required,uuid",
 		"WorkTimeFrom":    "required,futuretime",
 		"WorkTimeTo":      "required,timeafter",
-		"Status":          "omitempty",
+		"Status":          "omitempty,oneof=pendding starting finished review cancel",
 		"PaymentMethodId": "omitempty,uuid",
 		"Issue":           "required",
 		"Address":         "required",
@@ -64,7 +64,7 @@ func SetRulesOfCreateHireRequest(v validatorwrapper.IValidator) {
 func SetRulesOfUpdateStatusHireRequest(v validatorwrapper.IValidator) {
 	validationRules := map[string]string{
 		"HireId":    "required,uuid",
-		"NewStatus": "required",
+		"NewStatus": "required,oneof=pendding starting finished review cancel",
 	}
 	v.RegisterRules(validationRules, &proapi.UpdateStatusHireRequest{})
 }
@@ -80,7 +80,7 @@ func SetRulesOfFindAllHireRequest(v validatorwrapper.IValidator) {
 	validationRules := map[string]string{
 		"UserId":     "omitempty,uuid",
 		"ProviderId": "omitempty,uuid",
-		"Status":     "omitempty",
+		"Status":     "omitempty,oneof=pendding starting finished review cancel",
 	}
 	v.RegisterRules(validationRules, &proapi.FindAllHireRequest{})
 }
