@@ -7,7 +7,6 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type PaymentMethodResourceHandler struct {
@@ -20,7 +19,7 @@ func NewPaymentMethodResourceHandler(logger logwrapper.ILoggerWrapper) *PaymentM
 		logger: logger,
 		paymentMethodRepository: mongox.Repository[model.PaymentMethod]{
 			Client:     mongox.DefaultClient,
-			Collection: "payment_method",
+			Collection: "payment_methods",
 		},
 	}
 }
@@ -53,7 +52,6 @@ func (h *PaymentMethodResourceHandler) Router(msg kafka.Message) error {
 
 func (h *PaymentMethodResourceHandler) CreatePaymentMethodResource(msg *PaymentMethodResourceMsg) error {
 	paymentMethod := model.PaymentMethod{
-		ID:              primitive.NewObjectID(),
 		PaymentMethodId: msg.PaymentMethodId,
 		ProviderId:      msg.ProviderId,
 	}

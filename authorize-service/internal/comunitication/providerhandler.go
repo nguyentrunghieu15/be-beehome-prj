@@ -7,7 +7,6 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type ProviderResourceHandler struct {
@@ -20,7 +19,7 @@ func NewProviderResourceHandler(logger logwrapper.ILoggerWrapper) *ProviderResou
 		logger: logger,
 		providerRepository: mongox.Repository[model.Provider]{
 			Client:     mongox.DefaultClient,
-			Collection: "provider",
+			Collection: "providers",
 		},
 	}
 }
@@ -53,7 +52,6 @@ func (h *ProviderResourceHandler) Router(msg kafka.Message) error {
 
 func (h *ProviderResourceHandler) CreateProviderResource(msg *ProviderResourceMsg) error {
 	provider := model.Provider{
-		ID:         primitive.NewObjectID(),
 		ProviderId: msg.ProviderId,
 		UserId:     msg.UserId,
 	}

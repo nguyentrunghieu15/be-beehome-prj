@@ -7,7 +7,6 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type ReviewResourceHandler struct {
@@ -20,7 +19,7 @@ func NewReviewResourceHandler(logger logwrapper.ILoggerWrapper) *ReviewResourceH
 		logger: logger,
 		reviewRepository: mongox.Repository[model.Review]{
 			Client:     mongox.DefaultClient,
-			Collection: "review",
+			Collection: "reviews",
 		},
 	}
 }
@@ -55,7 +54,6 @@ func (h *ReviewResourceHandler) Router(msg kafka.Message) error {
 
 func (h *ReviewResourceHandler) CreateReviewResource(msg *ReviewResourceMsg) error {
 	review := model.Review{
-		ID:         primitive.NewObjectID(),
 		ReviewId:   msg.ReviewId,
 		HireId:     msg.HireId,
 		ProviderId: msg.ProviderId,

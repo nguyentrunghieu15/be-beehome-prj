@@ -369,7 +369,7 @@ message GetAllReviewOfProviderResponse {
 // Service definition for managing hires
 service HireService {
   // Retrieves all hires
-  rpc FindAllHire (FindAllHireRequest) returns (FindAllHireResponse) {
+  rpc FindHire (FindHireRequest) returns (FindHireResponse) {
     option (google.api.http) = {
       get: "/api/v1/hires" // Customize the HTTP path as needed
     };
@@ -399,7 +399,7 @@ service HireService {
   }
 }
 
-message FindAllHireRequest {
+message FindHireRequest {
   // Optional filter by user ID
   optional string user_id = 1;
 
@@ -408,6 +408,8 @@ message FindAllHireRequest {
 
   // Optional filter by status (can be omitted)
   optional string status = 3;
+   // Optional filter by status (can be omitted)
+  optional Pagination pagination = 4;
 }
 
 
@@ -434,7 +436,7 @@ message HireInfor {
     string full_address = 21;
 }
 
-message FindAllHireResponse {
+message FindHireResponse {
   repeated HireInfor hires = 1; // List of Hire objects
 }
 

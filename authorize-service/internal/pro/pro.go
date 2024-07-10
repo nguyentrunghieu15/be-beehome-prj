@@ -12,15 +12,9 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 )
 
-var providerRepository = mongox.Repository[model.Provider]{
-	Client:     mongox.DefaultClient,
-	Collection: "provider",
-}
+var providerRepository mongox.Repository[model.Provider]
 
-var reviewRepository = mongox.Repository[model.Review]{
-	Client:     mongox.DefaultClient,
-	Collection: "review",
-}
+var reviewRepository mongox.Repository[model.Review]
 
 func FindPros(c echo.Context) error {
 	//all user can find pros
@@ -83,12 +77,12 @@ func ReplyReviewPro(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(review)
+	r, err := coverter.ToResource(*review)
 	if err != nil {
 		return err
 	}
@@ -122,7 +116,7 @@ func ReviewPro(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
@@ -172,12 +166,12 @@ func DeleteProById(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(provider)
+	r, err := coverter.ToResource(*provider)
 	if err != nil {
 		return err
 	}
@@ -215,12 +209,12 @@ func UpdatePro(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(provider)
+	r, err := coverter.ToResource(*provider)
 	if err != nil {
 		return err
 	}

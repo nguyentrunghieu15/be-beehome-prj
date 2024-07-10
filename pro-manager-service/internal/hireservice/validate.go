@@ -82,5 +82,5 @@ func SetRulesOfFindAllHireRequest(v validatorwrapper.IValidator) {
 		"ProviderId": "omitempty,uuid",
 		"Status":     "omitempty,oneof=pendding starting finished review cancel",
 	}
-	v.RegisterRules(validationRules, &proapi.FindAllHireRequest{})
+	v.RegisterRules(validationRules, &proapi.FindHireRequest{})
 }

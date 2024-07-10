@@ -12,9 +12,13 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 )
 
-var userRepository = mongox.Repository[model.User]{
-	Client:     mongox.DefaultClient,
-	Collection: "user",
+var userRepository mongox.Repository[model.User]
+
+func SetupRepo(client *mongox.ClientWrapper) {
+	userRepository = mongox.Repository[model.User]{
+		Client:     client,
+		Collection: "users",
+	}
 }
 
 func ListUsers(c echo.Context) error {
@@ -28,7 +32,7 @@ func ListUsers(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*user))
+	p, err := coverter.ToPrincipal(*user)
 	if err != nil {
 		return err
 	}
@@ -68,12 +72,12 @@ func BlockUser(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*user))
+	p, err := coverter.ToPrincipal(*user)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(blockedUser)
+	r, err := coverter.ToResource(*blockedUser)
 	if err != nil {
 		return err
 	}
@@ -113,12 +117,12 @@ func DeleteUser(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*user))
+	p, err := coverter.ToPrincipal(*user)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(userResource)
+	r, err := coverter.ToResource(*userResource)
 	if err != nil {
 		return err
 	}
@@ -153,12 +157,12 @@ func UpdateUser(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*user))
+	p, err := coverter.ToPrincipal(*user)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(userResource)
+	r, err := coverter.ToResource(*userResource)
 	if err != nil {
 		return err
 	}

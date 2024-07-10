@@ -11,10 +11,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 )
 
-var hireRepository = mongox.Repository[model.Hire]{
-	Client:     mongox.DefaultClient,
-	Collection: "hire",
-}
+var hireRepository mongox.Repository[model.Hire]
 
 func FindAllHire(c echo.Context) error {
 	// alway pass by check jwt
@@ -43,12 +40,12 @@ func DeleteHire(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(hire)
+	r, err := coverter.ToResource(*hire)
 	if err != nil {
 		return err
 	}
@@ -67,10 +64,7 @@ func DeleteHire(c echo.Context) error {
 }
 
 func UpdateStatusHire(c echo.Context) error {
-	req := new(UpdateStatusHireRequest)
-	if err := c.Bind(req); err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
+	reqId := c.Param("hireId")
 
 	userReqId := c.Get("user_id")
 	if userReqId == nil {
@@ -82,17 +76,17 @@ func UpdateStatusHire(c echo.Context) error {
 		return err
 	}
 
-	hire, err := hireRepository.FindOneByAtribute("hire_id", req.HireID)
+	hire, err := hireRepository.FindOneByAtribute("hire_id", reqId)
 	if err != nil {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(hire)
+	r, err := coverter.ToResource(*hire)
 	if err != nil {
 		return err
 	}

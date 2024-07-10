@@ -12,10 +12,7 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 )
 
-var groupServiceRepository = mongox.Repository[model.GroupService]{
-	Client:     mongox.DefaultClient,
-	Collection: "group_service",
-}
+var groupServiceRepository mongox.Repository[model.GroupService]
 
 func ListGroupServices(c echo.Context) error {
 	// all user can view
@@ -39,7 +36,7 @@ func CreateGroupService(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
@@ -84,12 +81,12 @@ func DeleteGroupService(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(grpservice)
+	r, err := coverter.ToResource(*grpservice)
 	if err != nil {
 		return err
 	}
@@ -127,12 +124,12 @@ func UpdateGroupService(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(grpservice)
+	r, err := coverter.ToResource(*grpservice)
 	if err != nil {
 		return err
 	}

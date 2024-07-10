@@ -737,37 +737,37 @@ func local_request_ProService_DeleteServicePro_0(ctx context.Context, marshaler 
 }
 
 var (
-	filter_HireService_FindAllHire_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_HireService_FindHire_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_HireService_FindAllHire_0(ctx context.Context, marshaler runtime.Marshaler, client HireServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq FindAllHireRequest
+func request_HireService_FindHire_0(ctx context.Context, marshaler runtime.Marshaler, client HireServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq FindHireRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_HireService_FindAllHire_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_HireService_FindHire_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.FindAllHire(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.FindHire(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_HireService_FindAllHire_0(ctx context.Context, marshaler runtime.Marshaler, server HireServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq FindAllHireRequest
+func local_request_HireService_FindHire_0(ctx context.Context, marshaler runtime.Marshaler, server HireServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq FindHireRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_HireService_FindAllHire_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_HireService_FindHire_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.FindAllHire(ctx, &protoReq)
+	msg, err := server.FindHire(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -1375,7 +1375,7 @@ func RegisterProServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterHireServiceHandlerFromEndpoint instead.
 func RegisterHireServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server HireServiceServer) error {
 
-	mux.Handle("GET", pattern_HireService_FindAllHire_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_HireService_FindHire_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -1383,12 +1383,12 @@ func RegisterHireServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.HireService/FindAllHire", runtime.WithHTTPPathPattern("/api/v1/hires"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.HireService/FindHire", runtime.WithHTTPPathPattern("/api/v1/hires"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_HireService_FindAllHire_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_HireService_FindHire_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -1396,7 +1396,7 @@ func RegisterHireServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 
-		forward_HireService_FindAllHire_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_HireService_FindHire_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -2029,25 +2029,25 @@ func RegisterHireServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 // "HireServiceClient" to call the correct interceptors.
 func RegisterHireServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client HireServiceClient) error {
 
-	mux.Handle("GET", pattern_HireService_FindAllHire_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_HireService_FindHire_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.HireService/FindAllHire", runtime.WithHTTPPathPattern("/api/v1/hires"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.HireService/FindHire", runtime.WithHTTPPathPattern("/api/v1/hires"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_HireService_FindAllHire_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_HireService_FindHire_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_HireService_FindAllHire_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_HireService_FindHire_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -2121,7 +2121,7 @@ func RegisterHireServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 }
 
 var (
-	pattern_HireService_FindAllHire_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "hires"}, ""))
+	pattern_HireService_FindHire_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "hires"}, ""))
 
 	pattern_HireService_CreateHire_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "hires"}, ""))
 
@@ -2131,7 +2131,7 @@ var (
 )
 
 var (
-	forward_HireService_FindAllHire_0 = runtime.ForwardResponseMessage
+	forward_HireService_FindHire_0 = runtime.ForwardResponseMessage
 
 	forward_HireService_CreateHire_0 = runtime.ForwardResponseMessage
 

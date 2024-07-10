@@ -12,14 +12,8 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 )
 
-var serviceRepository = mongox.Repository[model.Service]{
-	Client:     mongox.DefaultClient,
-	Collection: "service",
-}
-var userRepository = mongox.Repository[model.User]{
-	Client:     mongox.DefaultClient,
-	Collection: "user",
-}
+var serviceRepository mongox.Repository[model.Service]
+var userRepository mongox.Repository[model.User]
 
 func ListServices(c echo.Context) error {
 	// all user can view service
@@ -42,7 +36,7 @@ func CreateService(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
@@ -87,12 +81,12 @@ func DeleteService(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(service)
+	r, err := coverter.ToResource(*service)
 	if err != nil {
 		return err
 	}
@@ -130,12 +124,12 @@ func UpdateService(c echo.Context) error {
 		return err
 	}
 
-	p, err := coverter.ToPrincipal(coverter.MongoUserToPrincipalInfor(*userReq))
+	p, err := coverter.ToPrincipal(*userReq)
 	if err != nil {
 		return err
 	}
 
-	r, err := coverter.ToResource(service)
+	r, err := coverter.ToResource(*service)
 	if err != nil {
 		return err
 	}

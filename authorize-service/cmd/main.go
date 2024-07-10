@@ -110,6 +110,8 @@ func main() {
 		Timeout:      time.Minute,
 	})
 	mongox.DefaultClient.Client()
+	pro.SetupRepo(mongox.DefaultClient)
+	user.SetupRepo(mongox.DefaultClient)
 
 	cerbosx.DefaultClient = cerbosx.NewCerbosClientWrapperWithConfig(&cerbosx.CerbosClientConfig{
 		CerbosAddress: os.Getenv("CERBOS_ADDRESS"),

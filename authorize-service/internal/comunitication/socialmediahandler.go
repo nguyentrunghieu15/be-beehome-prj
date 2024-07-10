@@ -7,7 +7,6 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type SocialMediaResourceHandler struct {
@@ -20,7 +19,7 @@ func NewSocialMediaResourceHandler(logger logwrapper.ILoggerWrapper) *SocialMedi
 		logger: logger,
 		socialMediaRepository: mongox.Repository[model.SocialMedia]{
 			Client:     mongox.DefaultClient,
-			Collection: "social_media",
+			Collection: "social_medias",
 		},
 	}
 }
@@ -53,7 +52,6 @@ func (h *SocialMediaResourceHandler) Router(msg kafka.Message) error {
 
 func (h *SocialMediaResourceHandler) CreateSocialMediaResource(msg *SocialMediaResourceMsg) error {
 	socialMedia := model.SocialMedia{
-		ID:            primitive.NewObjectID(),
 		SocialMediaId: msg.SocialMediaId,
 		ProviderId:    msg.ProviderId,
 	}

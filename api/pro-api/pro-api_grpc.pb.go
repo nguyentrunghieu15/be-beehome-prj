@@ -769,7 +769,7 @@ var ProService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	HireService_FindAllHire_FullMethodName      = "/HireService/FindAllHire"
+	HireService_FindHire_FullMethodName         = "/HireService/FindHire"
 	HireService_CreateHire_FullMethodName       = "/HireService/CreateHire"
 	HireService_UpdateStatusHire_FullMethodName = "/HireService/UpdateStatusHire"
 	HireService_DeleteHire_FullMethodName       = "/HireService/DeleteHire"
@@ -780,7 +780,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HireServiceClient interface {
 	// Retrieves all hires
-	FindAllHire(ctx context.Context, in *FindAllHireRequest, opts ...grpc.CallOption) (*FindAllHireResponse, error)
+	FindHire(ctx context.Context, in *FindHireRequest, opts ...grpc.CallOption) (*FindHireResponse, error)
 	// Creates a new hire
 	CreateHire(ctx context.Context, in *CreateHireRequest, opts ...grpc.CallOption) (*CreateHireResponse, error)
 	// Updates the status of a hire
@@ -797,9 +797,9 @@ func NewHireServiceClient(cc grpc.ClientConnInterface) HireServiceClient {
 	return &hireServiceClient{cc}
 }
 
-func (c *hireServiceClient) FindAllHire(ctx context.Context, in *FindAllHireRequest, opts ...grpc.CallOption) (*FindAllHireResponse, error) {
-	out := new(FindAllHireResponse)
-	err := c.cc.Invoke(ctx, HireService_FindAllHire_FullMethodName, in, out, opts...)
+func (c *hireServiceClient) FindHire(ctx context.Context, in *FindHireRequest, opts ...grpc.CallOption) (*FindHireResponse, error) {
+	out := new(FindHireResponse)
+	err := c.cc.Invoke(ctx, HireService_FindHire_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -838,7 +838,7 @@ func (c *hireServiceClient) DeleteHire(ctx context.Context, in *DeleteHireReques
 // for forward compatibility
 type HireServiceServer interface {
 	// Retrieves all hires
-	FindAllHire(context.Context, *FindAllHireRequest) (*FindAllHireResponse, error)
+	FindHire(context.Context, *FindHireRequest) (*FindHireResponse, error)
 	// Creates a new hire
 	CreateHire(context.Context, *CreateHireRequest) (*CreateHireResponse, error)
 	// Updates the status of a hire
@@ -852,8 +852,8 @@ type HireServiceServer interface {
 type UnimplementedHireServiceServer struct {
 }
 
-func (UnimplementedHireServiceServer) FindAllHire(context.Context, *FindAllHireRequest) (*FindAllHireResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindAllHire not implemented")
+func (UnimplementedHireServiceServer) FindHire(context.Context, *FindHireRequest) (*FindHireResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindHire not implemented")
 }
 func (UnimplementedHireServiceServer) CreateHire(context.Context, *CreateHireRequest) (*CreateHireResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateHire not implemented")
@@ -877,20 +877,20 @@ func RegisterHireServiceServer(s grpc.ServiceRegistrar, srv HireServiceServer) {
 	s.RegisterService(&HireService_ServiceDesc, srv)
 }
 
-func _HireService_FindAllHire_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FindAllHireRequest)
+func _HireService_FindHire_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindHireRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HireServiceServer).FindAllHire(ctx, in)
+		return srv.(HireServiceServer).FindHire(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: HireService_FindAllHire_FullMethodName,
+		FullMethod: HireService_FindHire_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HireServiceServer).FindAllHire(ctx, req.(*FindAllHireRequest))
+		return srv.(HireServiceServer).FindHire(ctx, req.(*FindHireRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -957,8 +957,8 @@ var HireService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*HireServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "FindAllHire",
-			Handler:    _HireService_FindAllHire_Handler,
+			MethodName: "FindHire",
+			Handler:    _HireService_FindHire_Handler,
 		},
 		{
 			MethodName: "CreateHire",

@@ -7,7 +7,6 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type GroupServiceResourceHandler struct {
@@ -20,7 +19,7 @@ func NewGroupServiceResourceHandler(logger logwrapper.ILoggerWrapper) *GroupServ
 		logger: logger,
 		groupServiceRepository: mongox.Repository[model.GroupService]{
 			Client:     mongox.DefaultClient,
-			Collection: "group_service",
+			Collection: "group_services",
 		},
 	}
 }
@@ -52,7 +51,6 @@ func (h *GroupServiceResourceHandler) Router(msg kafka.Message) error {
 
 func (h *GroupServiceResourceHandler) CreateGroupServiceResource(msg *GroupServiceResourceMsg) error {
 	groupService := model.GroupService{
-		ID:             primitive.NewObjectID(),
 		GroupServiceId: msg.GroupServiceId,
 	}
 	exsited, err := h.groupServiceRepository.FindOneByAtribute("group_service_id", msg.GroupServiceId)

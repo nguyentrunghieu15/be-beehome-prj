@@ -1,19 +1,22 @@
 package datasource
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
 )
 
 type IHireRepo interface {
 	CreateHire(map[string]interface{}) (*Hire, error)
-	FindOneById(id uuid.UUID) (*Hire, error)
+	FindOneById(uuid.UUID) (*Hire, error)
 	FindAll(map[string]interface{}) ([]*Hire, error)
 	UpdateHireById(uuid.UUID, map[string]interface{}) (*Hire, error)
-	DeleteHire(id uuid.UUID) error
+	DeleteHire(uuid.UUID) error
+	FindByRequest(*proapi.FindHireRequest) ([]*Hire, error)
 }
 
 type HireRepo struct {
@@ -87,6 +90,57 @@ func (r *HireRepo) FindAll(dataParams map[string]interface{}) ([]*Hire, error) {
 				db = db.Where("status = ?", status)
 			}
 		}
+	}
+
+	// Find all matching hires
+	if err := db.Preload("Service").
+		Preload("Provider").
+		Preload("Review").
+		Find(&hires).Error; err != nil {
+		return nil, err
+	}
+
+	return hires, nil
+}
+
+func (r *HireRepo) FindByRequest(req *proapi.FindHireRequest) ([]*Hire, error) {
+	var hires []*Hire
+
+	db := r.db.DB
+
+	// Apply dataParams based on the provided map
+
+	if req.UserId != nil {
+		db = db.Where("user_id = ?", req.UserId)
+	}
+	if req.ProviderId != nil {
+		db = db.Where("provider_id = ?", req.ProviderId)
+	}
+	if req.Status != nil {
+		db = db.Where("status = ?", req.Status)
+	}
+
+	// Apply pagination based on request parameters
+	if req.Pagination != nil {
+		// Add sorting logic based on req.Pagination.Sort and req.Pagination.SortBy
+		if req.Pagination.Sort != nil && req.Pagination.SortBy != nil {
+			sortField := *req.Pagination.SortBy
+			sortOrder := "ASC"
+			if *req.Pagination.Sort == proapi.TypeSort_DESC {
+				sortOrder = "DESC"
+			}
+			db = db.Order(fmt.Sprintf("%s %s", sortField, sortOrder))
+		}
+
+		if req.Pagination.Page != nil && req.Pagination.PageSize != nil {
+			offset := int(*req.Pagination.Page) * int(*req.Pagination.PageSize)
+			db = db.Offset(offset)
+		}
+
+		if req.Pagination.Limit != nil {
+			db = db.Limit(int(*req.Pagination.Limit))
+		}
+
 	}
 
 	// Find all matching hires

@@ -39,10 +39,14 @@ func NewClientMongoWrapperWithConfig(config *MomgoClientConfig) *ClientWrapper {
 func (istn *ClientWrapper) connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), istn.config.Timeout)
 	defer cancel()
+	loggerOptions := options.
+		Logger().
+		SetComponentLevel(options.LogComponentCommand, options.LogLevelDebug)
 	client, err := mongo.Connect(
 		ctx,
 		options.Client().
-			ApplyURI(fmt.Sprintf("mongodb://%v:%v@%v", istn.config.Username, istn.config.Password, istn.config.Address)),
+			ApplyURI(fmt.Sprintf("mongodb://%v:%v@%v", istn.config.Username, istn.config.Password, istn.config.Address)).
+			SetLoggerOptions(loggerOptions),
 	)
 	if err != nil {
 		return err

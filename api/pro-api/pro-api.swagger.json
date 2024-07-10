@@ -286,12 +286,12 @@
     "/api/v1/hires": {
       "get": {
         "summary": "Retrieves all hires",
-        "operationId": "HireService_FindAllHire",
+        "operationId": "HireService_FindHire",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/FindAllHireResponse"
+              "$ref": "#/definitions/FindHireResponse"
             }
           },
           "default": {
@@ -319,6 +319,45 @@
           {
             "name": "status",
             "description": "Optional filter by status (can be omitted)",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.page",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.pageSize",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.sort",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "ASC",
+              "DESC"
+            ],
+            "default": "NONE"
+          },
+          {
+            "name": "pagination.sortBy",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1530,7 +1569,7 @@
         }
       }
     },
-    "FindAllHireResponse": {
+    "FindHireResponse": {
       "type": "object",
       "properties": {
         "hires": {

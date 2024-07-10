@@ -7,7 +7,6 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserResourceHandler struct {
@@ -20,7 +19,7 @@ func NewUserResourceHandler(logger logwrapper.ILoggerWrapper) *UserResourceHandl
 		logger: logger,
 		userRepository: mongox.Repository[model.User]{
 			Client:     mongox.DefaultClient,
-			Collection: "user",
+			Collection: "users",
 		},
 	}
 }
@@ -54,7 +53,6 @@ func (h *UserResourceHandler) Router(msg kafka.Message) error {
 
 func (h *UserResourceHandler) CreateUserResource(msg *UserResourceMsg) error {
 	user := model.User{
-		ID:         primitive.NewObjectID(),
 		ProviderId: msg.ProviderId,
 		UserId:     msg.UserId,
 		Role:       msg.Role,

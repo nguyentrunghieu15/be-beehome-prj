@@ -7,7 +7,6 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/mongox"
 	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type HireResourceHandler struct {
@@ -20,7 +19,7 @@ func NewHireResourceHandler(logger logwrapper.ILoggerWrapper) *HireResourceHandl
 		logger: logger,
 		hireRepository: mongox.Repository[model.Hire]{
 			Client:     mongox.DefaultClient,
-			Collection: "hire",
+			Collection: "hires",
 		},
 	}
 }
@@ -54,7 +53,6 @@ func (h *HireResourceHandler) Router(msg kafka.Message) error {
 
 func (h *HireResourceHandler) CreateHireResource(msg *HireResourceMsg) error {
 	hire := model.Hire{
-		ID:         primitive.NewObjectID(),
 		HireId:     msg.HireId,
 		ProviderId: msg.ProviderId,
 		UserId:     msg.UserId,

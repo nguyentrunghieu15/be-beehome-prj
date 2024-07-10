@@ -17,31 +17,24 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *HireService) FindAllHire(
+func (s *HireService) FindHire(
 	ctx context.Context,
-	req *proapi.FindAllHireRequest,
-) (*proapi.FindAllHireResponse, error) {
+	req *proapi.FindHireRequest,
+) (*proapi.FindHireResponse, error) {
 	// Validate the request
 	if err := s.validator.Validate(req); err != nil {
 		s.logger.Error(fmt.Sprintf("failed to validate FindAllHire request: %v", err))
 		return nil, err
 	}
 
-	// Convert request to map for filtering
-	filters, err := convert.StructProtoToMap(req)
-	if err != nil {
-		s.logger.Error(fmt.Sprintf("failed to convert request to map: %v", err))
-		return nil, err
-	}
-
 	// Use hireRepo to fetch all hires based on filters
-	hires, err := s.hireRepo.FindAll(filters)
+	hires, err := s.hireRepo.FindByRequest(req)
 	if err != nil {
 		s.logger.Error(fmt.Sprintf("failed to fetch hires: %v", err))
 		return nil, err
 	}
 
-	return &proapi.FindAllHireResponse{Hires: mapper.MapToListHireInfors(hires)}, nil
+	return &proapi.FindHireResponse{Hires: mapper.MapToListHireInfors(hires)}, nil
 }
 
 func (s *HireService) CreateHire(

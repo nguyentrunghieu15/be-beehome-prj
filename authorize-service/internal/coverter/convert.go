@@ -6,9 +6,6 @@ import (
 	"strings"
 
 	"github.com/cerbos/cerbos-sdk-go/cerbos"
-	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/cerbosx"
-	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func ToPrincipal(obj interface{}) (*cerbos.Principal, error) {
@@ -19,7 +16,7 @@ func ToPrincipal(obj interface{}) (*cerbos.Principal, error) {
 		return nil, errors.New("ToPrincipal: obj must be a struct")
 	}
 	// Get the 'id' and 'role' fields
-	idField := val.FieldByName("ID")
+	idField := val.FieldByName("UserId")
 	roleField := val.FieldByName("Role")
 
 	// Check if the fields were found and are of type string
@@ -41,7 +38,7 @@ func ToPrincipal(obj interface{}) (*cerbos.Principal, error) {
 		fieldType := typ.Field(i)
 		// Get the bson tag
 		bsonTag := fieldType.Tag.Get("bson")
-		if fieldType.Name != "ID" && fieldType.Name != "Role" {
+		if fieldType.Name != "Role" {
 			result = result.WithAttr(bsonTag, field.Interface())
 		}
 	}
@@ -55,16 +52,9 @@ func ToResource(obj interface{}) (*cerbos.Resource, error) {
 	if val.Kind() != reflect.Struct {
 		return nil, errors.New("ToPrincipal: obj must be a struct")
 	}
-	// Get the 'id' and 'role' fields
-	idField := val.FieldByName("ID")
-
-	// Check if the fields were found and are of type string
-	if !idField.IsValid() {
-		return nil, errors.New("ToPrincipal: id field is missing or not a string")
-	}
 
 	// Convert the fields to strings
-	id := (idField.Interface()).(primitive.ObjectID).String()
+	id := "abcxyz"
 	typ := reflect.TypeOf(obj)
 	structName := strings.ToLower(typ.Name())
 	result := cerbos.NewResource(structName, id)
@@ -74,18 +64,7 @@ func ToResource(obj interface{}) (*cerbos.Resource, error) {
 		fieldType := typ.Field(i)
 		// Get the bson tag
 		bsonTag := fieldType.Tag.Get("bson")
-		if fieldType.Name != "ID" {
-			result = result.WithAttr(bsonTag, field.Interface())
-		}
+		result = result.WithAttr(bsonTag, field.Interface())
 	}
 	return result, nil
-}
-
-func MongoUserToPrincipalInfor(user model.User) cerbosx.PrincipalInfo {
-	return cerbosx.PrincipalInfo{
-		ID:         user.ID.String(),
-		UserId:     user.UserId,
-		ProviderId: user.ProviderId,
-		Role:       user.Role,
-	}
 }
