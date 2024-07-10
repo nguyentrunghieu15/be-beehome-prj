@@ -51,7 +51,7 @@ def main():
     }
 
     # Path to your SQL file
-    sql_file_path = ["CreateTables_vn_units.sql", "ImportData_vn_units.sql"]
+    sql_file_path = ["CreateTables_vn_units.sql", "ImportData_vn_units.sql","Import_data_be.sql"]
 
     # Execute the SQL file
     for path in sql_file_path:
