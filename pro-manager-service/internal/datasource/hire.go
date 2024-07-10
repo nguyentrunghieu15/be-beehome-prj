@@ -64,9 +64,28 @@ func (repo *HireRepo) UpdateHireById(id uuid.UUID, updateParams map[string]inter
 }
 
 func (repo *HireRepo) DeleteHire(id uuid.UUID) error {
-	var hire Hire
-	hire.ID = id
-	return repo.db.Delete(&hire).Error
+	// Bắt đầu transaction
+	tx := repo.db.Begin()
+
+	// Kiểm tra lỗi transaction
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	// Xóa các review liên quan đến hire
+	if err := tx.Where("hire_id = ?", id).Delete(&Review{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// Xóa hire
+	if err := tx.Where("id = ?", id).Delete(&Hire{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// Commit transaction
+	return tx.Commit().Error
 }
 
 func (r *HireRepo) FindAll(dataParams map[string]interface{}) ([]*Hire, error) {
@@ -99,7 +118,6 @@ func (r *HireRepo) FindAll(dataParams map[string]interface{}) ([]*Hire, error) {
 		Find(&hires).Error; err != nil {
 		return nil, err
 	}
-
 	return hires, nil
 }
 

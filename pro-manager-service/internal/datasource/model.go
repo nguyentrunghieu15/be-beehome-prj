@@ -59,7 +59,7 @@ type GroupService struct {
 	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 	Name      string         `json:"name,omitempty"`
 	Detail    string         `json:"detail,omitempty"`
-	Services  []*Service     `                            gorm:"foreignKey:GroupServiceId"`
+	Services  []*Service     `                            gorm:"foreignKey:GroupServiceId;constraint:OnDelete:CASCADE;"`
 }
 
 type Review struct {
@@ -96,10 +96,10 @@ type Provider struct {
 	Years          int32            `json:"years,omitempty"`
 	Address        string           `json:"address,omitempty"`
 	UserId         uuid.UUID        `json:"user_id,omitempty"`
-	PaymentMethods []*PaymentMethod `                              gorm:"foreignKey:ProviderId"`
-	SocialMedias   []*SocialMedia   `                              gorm:"foreignKey:ProviderId"`
-	Hires          []*Hire          `                              gorm:"foreignKey:ProviderId"`
-	Services       []*Service       `                              gorm:"many2many:provider_service;"`
+	PaymentMethods []*PaymentMethod `                              gorm:"foreignKey:ProviderId;constraint:OnDelete:CASCADE;"`
+	SocialMedias   []*SocialMedia   `                              gorm:"foreignKey:ProviderId;constraint:OnDelete:CASCADE;"`
+	Hires          []*Hire          `                              gorm:"foreignKey:ProviderId;constraint:OnDelete:CASCADE;"`
+	Services       []*Service       `                              gorm:"many2many:provider_service;constraint:OnDelete:CASCADE;"`
 }
 
 type Hire struct {
@@ -121,7 +121,7 @@ type Hire struct {
 	PaymentMethodId uuid.UUID      `json:"payment_method_id,omitempty"`
 	PaymentMethod   *PaymentMethod `json:"payment_method,omitempty"    gorm:"foreignKey:PaymentMethodId"`
 	Issue           string         `json:"issue,omitempty"`
-	Review          *Review        `json:"review,omitempty"            gorm:"foreignKey:HireId"`
+	Review          *Review        `json:"review,omitempty"            gorm:"foreignKey:HireId;constraint:OnDelete:CASCADE;"`
 	Address         string         `json:"address,omitempty"`
 	FullAddress     string         `json:"full_address,omitempty"`
 }

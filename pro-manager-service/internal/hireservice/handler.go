@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	addressapi "github.com/nguyentrunghieu15/be-beehome-prj/api/address-api"
@@ -15,6 +16,14 @@ import (
 	"github.com/nguyentrunghieu15/be-beehome-prj/pro-manager-service/mapper"
 	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/emptypb"
+)
+
+const (
+	PENDDING = "pendding"
+	START    = "starting"
+	FINISH   = "finished"
+	REVIEW   = "review"
+	CANCEL   = "cancel"
 )
 
 func (s *HireService) FindHire(
@@ -110,6 +119,44 @@ func (s *HireService) UpdateStatusHire(
 
 	// Parse Hire ID
 	hireID := uuid.MustParse(req.GetHireId())
+
+	hire, err := s.hireRepo.FindOneById(hireID)
+	if err != nil {
+		s.logger.Error(fmt.Sprintf("failed to update hire status: %w", err))
+		return nil, err
+	}
+
+	switch req.NewStatus {
+	case START:
+		endTimeHire, err := time.Parse(time.RFC3339Nano, hire.WorkTimeTo)
+		if err != nil {
+			s.logger.Error(fmt.Sprintf("failed to update hire status: %w", err))
+			return nil, err
+		}
+		if time.Now().After(endTimeHire) {
+			s.hireRepo.UpdateHireById(hireID, map[string]interface{}{
+				"status": CANCEL,
+			})
+			return nil, errors.New("The request expried time")
+		}
+	case FINISH:
+		if hire.Status == CANCEL {
+			return nil, errors.New("The request was be cancel")
+		}
+	case REVIEW:
+		if hire.Status != FINISH {
+			return nil, errors.New("The request was be not finish")
+		}
+	case CANCEL:
+		startTimeHire, err := time.Parse(time.RFC3339Nano, hire.WorkTimeFrom)
+		if err != nil {
+			s.logger.Error(fmt.Sprintf("failed to update hire status: %w", err))
+			return nil, err
+		}
+		if time.Now().After(startTimeHire) && hire.Status != PENDDING {
+			return nil, errors.New("The request was started")
+		}
+	}
 
 	// Update params
 	updateParams := map[string]interface{}{"status": req.NewStatus}
