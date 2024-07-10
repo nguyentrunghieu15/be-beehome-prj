@@ -579,3 +579,25 @@ func (s *ProviderService) DeleteSocialMediaPro(
 
 	return &emptypb.Empty{}, nil
 }
+
+func (s *ProviderService) GetReviewsOfProvider(
+	ctx context.Context,
+	req *proapi.GetReviewOfProviderRequest,
+) (*proapi.GetAllReviewOfProviderResponse, error) {
+	// Validate the request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, err
+	}
+
+	// Extract provider ID from context (assuming context carries provider ID)
+	providerID := uuid.MustParse(req.GetId())
+
+	reviews, err := s.reviewRepo.FindReviewsByProviderIdWithOptions(providerID, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proapi.GetAllReviewOfProviderResponse{
+		Reviews: mapper.MapToReviews(reviews),
+	}, nil
+}

@@ -166,7 +166,8 @@ func main() {
 	e.GET("/api/v1/providers/:id", pro.FindProById)
 	e.DELETE("/api/v1/providers/:id", pro.DeleteProById)
 	e.PUT("/api/v1/providers/:id", pro.UpdatePro)
-	e.GET("/api/v1/providers/:id/reviews", pro.GetAllReviewsOfProvider)
+	e.GET("/api/v1/providers/:id/reviews/all", pro.GetAllReviewsOfProvider)
+	e.GET("/api/v1/providers/:id/reviews", pro.GetReviewsOfProvider)
 	e.GET("/api/v1/providers/:id/services", pro.GetAllServiceOfProvider)
 
 	// ServiceManagerService routes

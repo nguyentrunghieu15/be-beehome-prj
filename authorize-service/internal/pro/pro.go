@@ -242,6 +242,11 @@ func GetAllReviewsOfProvider(c echo.Context) error {
 	return c.JSON(http.StatusOK, nil)
 }
 
+func GetReviewsOfProvider(c echo.Context) error {
+	// all user can view
+	return c.JSON(http.StatusOK, nil)
+}
+
 func GetAllServiceOfProvider(c echo.Context) error {
 	// all user can view
 	return c.JSON(http.StatusOK, nil)

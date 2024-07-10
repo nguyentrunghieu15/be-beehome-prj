@@ -27,6 +27,10 @@ func MapToReview(ds *datasource.Review) *proapi.Review {
 	serviceId := ds.ServiceId.String() // Assuming ServiceId can be represented by int32
 
 	// Map fields with matching names
+	note := ""
+	if ds.Note != nil {
+		note = *ds.Note
+	}
 	return &proapi.Review{
 		Id:         id,
 		CreatedAt:  createdAt,
@@ -43,7 +47,7 @@ func MapToReview(ds *datasource.Review) *proapi.Review {
 		ServiceId:  serviceId,
 		UserName:   ds.UserName,
 		HireId:     ds.HireId.String(),
-		Note:       *ds.Note,
+		Note:       note,
 		Service:    MapToService(ds.Service),
 	}
 }

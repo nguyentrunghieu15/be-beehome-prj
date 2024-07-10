@@ -1,9 +1,11 @@
 package datasource
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	proapi "github.com/nguyentrunghieu15/be-beehome-prj/api/pro-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/database"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/random"
 )
@@ -13,6 +15,7 @@ type IReviewRepo interface {
 	FindOneById(uuid.UUID) (*Review, error)
 	FindReviewsByUserId(uuid.UUID) ([]*Review, error)
 	FindReviewsByProviderId(uuid.UUID) ([]*Review, error)
+	FindReviewsByProviderIdWithOptions(uuid.UUID, *proapi.GetReviewOfProviderRequest) ([]*Review, error)
 	UpdateOneById(uuid.UUID, map[string]interface{}) (*Review, error)
 	CreateReview(map[string]interface{}) (*Review, error)
 	DeleteOneById(uuid.UUID) error
@@ -43,6 +46,48 @@ func (rr *ReviewRepo) FindReviewsByUserId(userId uuid.UUID) ([]*Review, error) {
 func (rr *ReviewRepo) FindReviewsByProviderId(providerId uuid.UUID) ([]*Review, error) {
 	var reviews []*Review
 	result := rr.db.Preload("Provider").Preload("Service").Find(&reviews, "provider_id = ?", providerId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return reviews, nil
+}
+
+func (rr *ReviewRepo) FindReviewsByProviderIdWithOptions(
+	providerId uuid.UUID,
+	req *proapi.GetReviewOfProviderRequest,
+) ([]*Review, error) {
+	var reviews []*Review
+	result := rr.db.Preload("Provider").Preload("Service").Where("provider_id = ?", providerId)
+	fmt.Println(req)
+	if req != nil && req.Filter != nil {
+		if req.Filter.Rating > 0 && req.Filter.Rating < 6 {
+			result = result.Where("rating = ?", req.Filter.Rating)
+		}
+	}
+
+	// Apply pagination based on request parameters
+	if req.Pagination != nil {
+		// Add sorting logic based on req.Pagination.Sort and req.Pagination.SortBy
+		if req.Pagination.Sort != nil && req.Pagination.SortBy != nil {
+			sortField := *req.Pagination.SortBy
+			sortOrder := "ASC"
+			if *req.Pagination.Sort == proapi.TypeSort_DESC {
+				sortOrder = "DESC"
+			}
+			result = result.Order(fmt.Sprintf("%s %s", sortField, sortOrder))
+		}
+
+		if req.Pagination.Page != nil && req.Pagination.PageSize != nil {
+			offset := int(*req.Pagination.Page) * int(*req.Pagination.PageSize)
+			result = result.Offset(offset)
+		}
+
+		if req.Pagination.Limit != nil {
+			result = result.Limit(int(*req.Pagination.Limit))
+		}
+	}
+
+	result = result.Find(&reviews)
 	if result.Error != nil {
 		return nil, result.Error
 	}

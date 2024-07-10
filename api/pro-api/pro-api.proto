@@ -83,6 +83,12 @@ service ProService {
 
   rpc GetAllReviewsOfProvider (GetAllReviewOfProviderRequest) returns (GetAllReviewOfProviderResponse){
     option (google.api.http) = {
+      get: "/api/v1/providers/{id}/reviews/all"
+    };
+  };
+
+  rpc GetReviewsOfProvider (GetReviewOfProviderRequest) returns (GetAllReviewOfProviderResponse){
+    option (google.api.http) = {
       get: "/api/v1/providers/{id}/reviews"
     };
   };
@@ -340,6 +346,15 @@ message GetAllServiceOfProviderRequest {
 
 message GetAllReviewOfProviderRequest {
   string id = 1;
+}
+
+message GetReviewOfProviderRequest {
+  string id = 1;
+  message Filter {
+    int32 rating = 1;
+  }
+  optional Filter filter =3;
+  optional Pagination pagination = 2;
 }
 
 message GetAllServiceOfProviderResponse {
