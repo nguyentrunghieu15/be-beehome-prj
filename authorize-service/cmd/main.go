@@ -257,6 +257,17 @@ func main() {
 		},
 	)
 
+	communication.ReviewResourceKafka = kafkax.NewKafkaClientWrapperWithConfig(
+		&kafkax.KafkaClientConfig{
+			Topic:            communication.TOPIC_RESOURCE_REVIEW,
+			BooststrapServer: os.Getenv("KAFKA_BOOTSTRAP_SERVER"),
+			Protocall:        "tcp",
+			MaxBytes:         10e6,
+			TimeoutRead:      time.Second,
+			TimeoutWrite:     time.Second,
+		},
+	)
+
 	// Provider Resource Handler
 	providerMessageHandler := communication.NewProviderResourceHandler(logger)
 	communication.ProviderResourceKafka.Reader()
@@ -355,6 +366,20 @@ func main() {
 		}
 	}(paymentMethodMessageHandler)
 
+	// Payment Method Resource Handler
+	reviewMessageHandler := communication.NewReviewResourceHandler(logger)
+	communication.ReviewResourceKafka.Reader()
+	go func(h *communication.ReviewResourceHandler) {
+		for {
+			msg, err := communication.ReviewResourceKafka.ReadMessage(context.Background())
+			if err != nil {
+				logger.Error(err.Error())
+				continue
+			}
+			h.Router(msg)
+		}
+	}(reviewMessageHandler)
+
 	defer communication.ProviderResourceKafka.Close()
 	defer communication.UserResourceKafka.Close()
 	defer communication.ServiceResourceKafka.Close()
@@ -362,6 +387,7 @@ func main() {
 	defer communication.HireResourceKafka.Close()
 	defer communication.SocialMediaResourceKafka.Close()
 	defer communication.PaymentMethodResourceKafka.Close()
+	defer communication.ReviewResourceKafka.Close()
 
 	e.Logger.Fatal(e.Start(addr))
 }

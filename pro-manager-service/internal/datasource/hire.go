@@ -66,6 +66,11 @@ func (repo *HireRepo) UpdateHireById(id uuid.UUID, updateParams map[string]inter
 func (repo *HireRepo) DeleteHire(id uuid.UUID) error {
 	// Bắt đầu transaction
 	tx := repo.db.Begin()
+	defer func() {
+		if err := recover(); err != nil {
+			tx.Rollback()
+		}
+	}()
 
 	// Kiểm tra lỗi transaction
 	if tx.Error != nil {

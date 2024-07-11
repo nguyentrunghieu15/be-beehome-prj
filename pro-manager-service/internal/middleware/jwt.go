@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -30,14 +29,12 @@ func WrapperJwtFunc() echo.MiddlewareFunc {
 func AttachProviderFunc() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			fmt.Println("Here")
 			if skipAttachProviderJwt(c) {
 				return next(c)
 			}
 			// Access request headers
 			jwtParser := customJwt.CustomJWTTokenizer{}
 			providerToken := c.Request().Header.Get("Provider-Id")
-			fmt.Println(providerToken, "Hea")
 			if id, err := jwtParser.ParseToken(providerToken); err != nil {
 				return err
 			} else {

@@ -268,8 +268,8 @@ type DeleteSocialMediaProRequest struct {
 }
 
 type ReplyReviewProRequest struct {
-	ReviewID string `json:"review_id" form:"review_id" query:"review_id"`
-	Reply    string `json:"reply"     form:"reply"     query:"reply"`
+	ReviewID string `json:"reviewId" form:"review_id" query:"reviewId"`
+	Reply    string `json:"reply"    form:"reply"     query:"reply"`
 }
 
 type ReviewProRequest struct {

@@ -58,7 +58,6 @@ func (rr *ReviewRepo) FindReviewsByProviderIdWithOptions(
 ) ([]*Review, error) {
 	var reviews []*Review
 	result := rr.db.Preload("Provider").Preload("Service").Where("provider_id = ?", providerId)
-	fmt.Println(req)
 	if req != nil && req.Filter != nil {
 		if req.Filter.Rating > 0 && req.Filter.Rating < 6 {
 			result = result.Where("rating = ?", req.Filter.Rating)

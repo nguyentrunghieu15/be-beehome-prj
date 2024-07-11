@@ -110,10 +110,38 @@ func (pr *ProviderRepo) CreateProvider(data map[string]interface{}) (*Provider, 
 }
 
 func (pr *ProviderRepo) DeleteOneById(id uuid.UUID) error {
-	result := pr.db.Delete(&Provider{}, "id = ?", id)
+	tx := pr.db.Begin()
+	defer func() {
+		if err := recover(); err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Raw("DELETE provider_service WHERE provider_id = ?", id).Scan(nil); err.Error != nil {
+		tx.Rollback()
+		return err.Error
+	}
+
+	if err := tx.Raw("UPDATE reviews SET deleted_at = NOW() WHERE provider_id = ?", id).Scan(nil); err.Error != nil {
+		tx.Rollback()
+		return err.Error
+	}
+
+	if err := tx.Raw("UPDATE hires SET deleted_at = NOW()  WHERE provider_id = ?", id).Scan(nil); err.Error != nil {
+		tx.Rollback()
+		return err.Error
+	}
+
+	result := tx.Delete(&Provider{}, "id = ?", id)
 	if result.Error != nil {
+		tx.Rollback()
 		return result.Error
 	}
+
+	if err := tx.Commit(); err.Error != nil {
+		return fmt.Errorf("failed to commit transaction: %v", err)
+	}
+
 	return nil
 }
 
@@ -260,7 +288,8 @@ func (pr *ProviderRepo) FindProviders(req *proapi.FindProsRequest) ([]*ProviderR
 	query := pr.db.Table("providers"). // Preload Address data
 						Select("providers.*, COUNT(hires.id) AS hire_count, AVG(reviews.rating) AS average_rating, COUNT(reviews.id) AS review_count").
 						Joins("LEFT JOIN hires ON hires.provider_id = providers.id").
-						Joins("LEFT JOIN reviews ON reviews.provider_id = providers.id")
+						Joins("LEFT JOIN reviews ON reviews.provider_id = providers.id").
+						Where("providers.deleted_at IS NULL")
 
 	if req.Filter != nil {
 		if req.Filter.ServiceName != nil {

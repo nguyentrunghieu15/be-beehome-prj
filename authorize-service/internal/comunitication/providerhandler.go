@@ -2,7 +2,6 @@ package communication
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/model"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
@@ -11,9 +10,12 @@ import (
 )
 
 type ProviderResourceHandler struct {
-	logger             logwrapper.ILoggerWrapper
-	providerRepository mongox.Repository[model.Provider]
-	userRpository      mongox.Repository[model.User]
+	logger                  logwrapper.ILoggerWrapper
+	providerRepository      mongox.Repository[model.Provider]
+	userRepository          mongox.Repository[model.User]
+	hireRepository          mongox.Repository[model.Hire]
+	socialMediaRepository   mongox.Repository[model.SocialMedia]
+	paymentMethodRepository mongox.Repository[model.PaymentMethod]
 }
 
 func NewProviderResourceHandler(logger logwrapper.ILoggerWrapper) *ProviderResourceHandler {
@@ -23,9 +25,21 @@ func NewProviderResourceHandler(logger logwrapper.ILoggerWrapper) *ProviderResou
 			Client:     mongox.DefaultClient,
 			Collection: "providers",
 		},
-		userRpository: mongox.Repository[model.User]{
+		userRepository: mongox.Repository[model.User]{
 			Client:     mongox.DefaultClient,
 			Collection: "users",
+		},
+		hireRepository: mongox.Repository[model.Hire]{
+			Client:     mongox.DefaultClient,
+			Collection: "hires",
+		},
+		socialMediaRepository: mongox.Repository[model.SocialMedia]{
+			Client:     mongox.DefaultClient,
+			Collection: "social_medias",
+		},
+		paymentMethodRepository: mongox.Repository[model.PaymentMethod]{
+			Client:     mongox.DefaultClient,
+			Collection: "payment_methods",
 		},
 	}
 }
@@ -62,8 +76,6 @@ func (h *ProviderResourceHandler) CreateProviderResource(msg *ProviderResourceMs
 		UserId:     msg.UserId,
 	}
 
-	fmt.Println(msg)
-
 	exsited, err := h.providerRepository.FindOneByAtribute("provider_id", msg.ProviderId)
 	if err == nil && exsited != nil {
 		return nil
@@ -75,7 +87,7 @@ func (h *ProviderResourceHandler) CreateProviderResource(msg *ProviderResourceMs
 		return err
 	}
 
-	h.userRpository.UpdateOneByFilterForOneAtribute(map[string]interface{}{
+	h.userRepository.UpdateOneByFilterForOneAtribute(map[string]interface{}{
 		"user_id": msg.UserId,
 	}, "provider_id", msg.ProviderId)
 
@@ -92,5 +104,21 @@ func (h *ProviderResourceHandler) DeleteProviderResource(msg *ProviderResourceMs
 		h.logger.Error(err.Error())
 		return err
 	}
+	err = h.socialMediaRepository.DeleteOneByAtribute("provider_id", msg.ProviderId)
+	if err != nil {
+		h.logger.Error(err.Error())
+		return err
+	}
+	err = h.paymentMethodRepository.DeleteOneByAtribute("provider_id", msg.ProviderId)
+	if err != nil {
+		h.logger.Error(err.Error())
+		return err
+	}
+	err = h.hireRepository.DeleteOneByAtribute("provider_id", msg.ProviderId)
+	if err != nil {
+		h.logger.Error(err.Error())
+		return err
+	}
+
 	return nil
 }

@@ -2,7 +2,6 @@ package communication
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/model"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
@@ -83,7 +82,6 @@ func (h *UserResourceHandler) UpdateUserResource(msg *UserResourceMsg) error {
 }
 
 func (h *UserResourceHandler) DeleteUserResource(msg *UserResourceMsg) error {
-	fmt.Println(msg)
 	err := h.userRepository.DeleteOneByAtribute("user_id", msg.UserId)
 	if err != nil {
 		h.logger.Error(err.Error())

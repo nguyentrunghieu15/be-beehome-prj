@@ -328,7 +328,7 @@ func (s *ProviderService) ReviewPro(ctx context.Context, req *proapi.ReviewProRe
 	if err != nil {
 		return nil, err
 	}
-	communication.SocialMediaResourceKafka.WriteMessages(
+	communication.ReviewResourceKafka.WriteMessages(
 		context.Background(),
 		kafka.Message{
 			Value: tranferMsg,
