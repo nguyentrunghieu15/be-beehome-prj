@@ -488,12 +488,10 @@ func (s *ProviderService) DeleteServicePro(
 	providerID := uuid.MustParse(ctx.Value("provider_id").(string))
 
 	// Convert service ID from string to uuid.UUID
-	servicesID := make([]uuid.UUID, 0)
-	for _, id := range req.GetServicesId() {
-		servicesID = append(servicesID, uuid.MustParse(id))
-	}
+	servicesID := uuid.MustParse(req.ServicesId)
+
 	// Add service to provider using providerRepo
-	err := s.proRepo.RemoveServicesOfPro(providerID, servicesID...)
+	err := s.proRepo.RemoveServicesOfPro(providerID, servicesID)
 	if err != nil {
 		return nil, err
 	}

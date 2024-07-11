@@ -701,7 +701,7 @@
       }
     },
     "/api/v1/providers/delete-service/{servicesId}": {
-      "post": {
+      "delete": {
         "summary": "Delete a service offered by a professional",
         "operationId": "ProService_DeleteServicePro",
         "responses": {
@@ -724,20 +724,7 @@
             "name": "servicesId",
             "in": "path",
             "required": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "csv",
-            "minItems": 1
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ProServiceDeleteServiceProBody"
-            }
+            "type": "string"
           }
         ],
         "tags": [
@@ -1913,10 +1900,6 @@
           "type": "string"
         }
       }
-    },
-    "ProServiceDeleteServiceProBody": {
-      "type": "object",
-      "title": "Request message for deleting a service offered by a professional"
     },
     "ProServiceUpdateProBody": {
       "type": "object",

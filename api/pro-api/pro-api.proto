@@ -188,8 +188,7 @@ service ProService {
   // Delete a service offered by a professional
   rpc DeleteServicePro (DeleteServiceProRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/providers/delete-service/{services_id}"
-      body: "*"
+      delete: "/api/v1/providers/delete-service/{services_id}"
     };
   }
 }
@@ -301,7 +300,7 @@ message AddServiceProRequest {
 
 // Request message for deleting a service offered by a professional
 message DeleteServiceProRequest {
-  repeated string services_id = 1;
+  string services_id = 1;
 }
 
 // Request message for adding social media information for a professional
