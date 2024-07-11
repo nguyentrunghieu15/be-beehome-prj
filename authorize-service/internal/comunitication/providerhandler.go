@@ -2,6 +2,7 @@ package communication
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/model"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
@@ -12,6 +13,7 @@ import (
 type ProviderResourceHandler struct {
 	logger             logwrapper.ILoggerWrapper
 	providerRepository mongox.Repository[model.Provider]
+	userRpository      mongox.Repository[model.User]
 }
 
 func NewProviderResourceHandler(logger logwrapper.ILoggerWrapper) *ProviderResourceHandler {
@@ -20,6 +22,10 @@ func NewProviderResourceHandler(logger logwrapper.ILoggerWrapper) *ProviderResou
 		providerRepository: mongox.Repository[model.Provider]{
 			Client:     mongox.DefaultClient,
 			Collection: "providers",
+		},
+		userRpository: mongox.Repository[model.User]{
+			Client:     mongox.DefaultClient,
+			Collection: "users",
 		},
 	}
 }
@@ -56,6 +62,8 @@ func (h *ProviderResourceHandler) CreateProviderResource(msg *ProviderResourceMs
 		UserId:     msg.UserId,
 	}
 
+	fmt.Println(msg)
+
 	exsited, err := h.providerRepository.FindOneByAtribute("provider_id", msg.ProviderId)
 	if err == nil && exsited != nil {
 		return nil
@@ -66,6 +74,10 @@ func (h *ProviderResourceHandler) CreateProviderResource(msg *ProviderResourceMs
 		h.logger.Error(err.Error())
 		return err
 	}
+
+	h.userRpository.UpdateOneByFilterForOneAtribute(map[string]interface{}{
+		"user_id": msg.UserId,
+	}, "provider_id", msg.ProviderId)
 
 	return nil
 }

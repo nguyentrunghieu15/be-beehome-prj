@@ -406,6 +406,10 @@ message FindHireRequest {
   // Optional filter by provider ID
   optional string provider_id = 2;
 
+  optional string service_id = 5;
+
+  optional string search_name = 6;
+
   // Optional filter by status (can be omitted)
   optional string status = 3;
    // Optional filter by status (can be omitted)

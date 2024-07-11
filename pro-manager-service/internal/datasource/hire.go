@@ -124,7 +124,9 @@ func (r *HireRepo) FindAll(dataParams map[string]interface{}) ([]*Hire, error) {
 func (r *HireRepo) FindByRequest(req *proapi.FindHireRequest) ([]*Hire, error) {
 	var hires []*Hire
 
-	db := r.db.DB
+	db := r.db.DB.Preload("Service").
+		Preload("Provider").
+		Preload("Review")
 
 	// Apply dataParams based on the provided map
 
@@ -136,6 +138,20 @@ func (r *HireRepo) FindByRequest(req *proapi.FindHireRequest) ([]*Hire, error) {
 	}
 	if req.Status != nil {
 		db = db.Where("status = ?", req.Status)
+	}
+
+	if req.ServiceId != nil && *req.ServiceId != "" {
+		db = db.Where("service_id = ?", req.ServiceId)
+	}
+
+	if req.SearchName != nil && *req.SearchName != "" {
+		db = db.Where(`(
+  to_tsvector('simple', unaccent(hires.address)) @@ phraseto_tsquery('simple', unaccent(?)) AND
+  hires.address IS NOT NULL
+) OR (
+  to_tsvector('simple', unaccent(hires.issue)) @@ phraseto_tsquery('simple', unaccent(?)) AND
+  hires.issue IS NOT NULL
+)`, req.SearchName, req.SearchName)
 	}
 
 	// Apply pagination based on request parameters
@@ -162,10 +178,7 @@ func (r *HireRepo) FindByRequest(req *proapi.FindHireRequest) ([]*Hire, error) {
 	}
 
 	// Find all matching hires
-	if err := db.Preload("Service").
-		Preload("Provider").
-		Preload("Review").
-		Find(&hires).Error; err != nil {
+	if err := db.Find(&hires).Error; err != nil {
 		return nil, err
 	}
 

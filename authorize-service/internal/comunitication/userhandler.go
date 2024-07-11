@@ -2,6 +2,7 @@ package communication
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/nguyentrunghieu15/be-beehome-prj/authorize-service/internal/model"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/logwrapper"
@@ -10,8 +11,9 @@ import (
 )
 
 type UserResourceHandler struct {
-	logger         logwrapper.ILoggerWrapper
-	userRepository mongox.Repository[model.User]
+	logger             logwrapper.ILoggerWrapper
+	userRepository     mongox.Repository[model.User]
+	providerRepository mongox.Repository[model.Provider]
 }
 
 func NewUserResourceHandler(logger logwrapper.ILoggerWrapper) *UserResourceHandler {
@@ -20,6 +22,10 @@ func NewUserResourceHandler(logger logwrapper.ILoggerWrapper) *UserResourceHandl
 		userRepository: mongox.Repository[model.User]{
 			Client:     mongox.DefaultClient,
 			Collection: "users",
+		},
+		providerRepository: mongox.Repository[model.Provider]{
+			Client:     mongox.DefaultClient,
+			Collection: "providers",
 		},
 	}
 }
@@ -43,10 +49,10 @@ func (h *UserResourceHandler) Router(msg kafka.Message) error {
 		h.CreateUserResource(parsedMsg)
 
 	case "update":
-		h.CreateUserResource(parsedMsg)
+		h.UpdateUserResource(parsedMsg)
 
 	case "delete":
-		h.CreateUserResource(parsedMsg)
+		h.DeleteUserResource(parsedMsg)
 	}
 	return nil
 }
@@ -77,10 +83,14 @@ func (h *UserResourceHandler) UpdateUserResource(msg *UserResourceMsg) error {
 }
 
 func (h *UserResourceHandler) DeleteUserResource(msg *UserResourceMsg) error {
+	fmt.Println(msg)
 	err := h.userRepository.DeleteOneByAtribute("user_id", msg.UserId)
 	if err != nil {
 		h.logger.Error(err.Error())
 		return err
 	}
+
+	h.providerRepository.DeleteOneByAtribute("user_id", msg.UserId)
+
 	return nil
 }

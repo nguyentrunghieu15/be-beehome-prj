@@ -50,10 +50,10 @@ func (h *ProviderResourceHandler) Router(msg kafka.Message) error {
 		h.CreateProviderResource(parsedMsg)
 
 	case "update":
-		h.CreateProviderResource(parsedMsg)
+		h.UpdateProviderResource(parsedMsg)
 
 	case "delete":
-		h.CreateProviderResource(parsedMsg)
+		h.DeleteProviderResource(parsedMsg)
 	}
 	return nil
 }

@@ -41,10 +41,10 @@ func (h *UserResourceHandler) Router(msg kafka.Message) error {
 		h.CreateUserResource(parsedMsg)
 
 	case "update":
-		h.CreateUserResource(parsedMsg)
+		h.UpdateUserResource(parsedMsg)
 
 	case "delete":
-		h.CreateUserResource(parsedMsg)
+		h.DeleteUserResource(parsedMsg)
 	}
 	return nil
 }

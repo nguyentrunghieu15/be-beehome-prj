@@ -189,10 +189,7 @@ func DeleteProById(c echo.Context) error {
 }
 
 func UpdatePro(c echo.Context) error {
-	req := new(UpdateProRequest)
-	if err := c.Bind(req); err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
+	id := c.Param("id")
 
 	userReqId := c.Get("user_id")
 	if userReqId == nil {
@@ -204,7 +201,7 @@ func UpdatePro(c echo.Context) error {
 		return err
 	}
 
-	provider, err := providerRepository.FindOneByAtribute("provider_id", req.ID)
+	provider, err := providerRepository.FindOneByAtribute("provider_id", id)
 	if err != nil {
 		return err
 	}

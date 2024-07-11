@@ -200,23 +200,6 @@ func (s *UserService) UpdateUser(ctx context.Context, req *userapi.UpdateUserReq
 		s.logger.Error(common.StandardMsgError(ctx, "update user", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
-
-	tranferMsg, err := json.Marshal(map[string]interface{}{
-		"type":        "delete",
-		"user_id":     req.Id,
-		"role":        "user",
-		"provider_id": updatedUser.ProviderId,
-	})
-	if err != nil {
-		return nil, err
-	}
-	communication.UserResourceKafka.WriteMessages(
-		context.Background(),
-		kafka.Message{
-			Value: tranferMsg,
-		},
-	)
-
 	return userInfo, nil
 }
 

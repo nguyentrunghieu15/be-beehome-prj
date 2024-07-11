@@ -2,13 +2,16 @@ package profiles
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 
 	"github.com/google/uuid"
 	userapi "github.com/nguyentrunghieu15/be-beehome-prj/api/user-api"
 	"github.com/nguyentrunghieu15/be-beehome-prj/internal/convert"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/common"
+	communication "github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/comunitication"
 	"github.com/nguyentrunghieu15/be-beehome-prj/user-manager-service/internal/mapper"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -151,5 +154,19 @@ func (ps *ProfileService) DeactiveAccount(ctx context.Context, req *emptypb.Empt
 		ps.logger.Error(common.StandardMsgError(ctx, "deactive account", err))
 		return nil, status.Error(codes.Internal, "internal server")
 	}
+	tranferMsg, err := json.Marshal(map[string]interface{}{
+		"type":    "delete",
+		"user_id": userId.String(),
+		"role":    "user",
+	})
+	if err != nil {
+		return nil, err
+	}
+	communication.UserResourceKafka.WriteMessages(
+		context.Background(),
+		kafka.Message{
+			Value: tranferMsg,
+		},
+	)
 	return &emptypb.Empty{}, nil
 }

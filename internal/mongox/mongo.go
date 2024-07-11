@@ -120,3 +120,22 @@ func (istn *Repository[T]) DeleteOneByAtribute(name string, value interface{}) e
 	}
 	return nil
 }
+
+func (istn *Repository[T]) UpdateOneByFilterForOneAtribute(
+	filter map[string]interface{},
+	name string,
+	value interface{},
+) error {
+	filterQuery := filter
+	_, err := istn.Client.Db().
+		Collection(istn.Collection).
+		UpdateOne(context.TODO(), filterQuery, bson.D{
+			{"$set", bson.D{
+				{Key: name, Value: value},
+			}},
+		})
+	if err != nil {
+		return err
+	}
+	return nil
+}

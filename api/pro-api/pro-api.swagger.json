@@ -317,6 +317,18 @@
             "type": "string"
           },
           {
+            "name": "serviceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "searchName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "status",
             "description": "Optional filter by status (can be omitted)",
             "in": "query",
