@@ -17,40 +17,40 @@ services:
         volumes:
             # So that Traefik can listen to the Docker events
             - /var/run/docker.sock:/var/run/docker.sock
-    elastic:
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
-        container_name: elasticsearch
-        environment:
-            - ELASTIC_PASSWORD=123456a@
-            - KIBANA_PASSWORD=123456a@
-            - discovery.type=single-node
-            - xpack.security.http.ssl.enabled=false
-            - xpack.license.self_generated.type=trial
-        ports:
-            - 9200:9200
-        volumes:
-            - ./setup_kibana_password.sh:/usr/local/bin/setup_kibana_password.sh
-        entrypoint:
-            - /bin/bash
-            - -c
-            - |
-                /usr/local/bin/setup_kibana_password.sh &
-                /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
-    kibana:
-        image: docker.elastic.co/kibana/kibana:8.14.1
-        container_name: kibana
-        ports:
-            - 5601:5601
-        environment:
-            - ELASTICSEARCH_URL=http://elasticsearch:9200
-            - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-            - ELASTICSEARCH_USERNAME=kibana_system
-            - ELASTICSEARCH_PASSWORD=123456a@
-            - xpack.security.enabled=false
-            - xpack.license.self_generated.type=basic
-        depends_on:
-            - elastic
-        restart: unless-stopped
+    # elastic:
+    #     image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+    #     container_name: elasticsearch
+    #     environment:
+    #         - ELASTIC_PASSWORD=123456a@
+    #         - KIBANA_PASSWORD=123456a@
+    #         - discovery.type=single-node
+    #         - xpack.security.http.ssl.enabled=false
+    #         - xpack.license.self_generated.type=trial
+    #     ports:
+    #         - 9200:9200
+    #     volumes:
+    #         - ./setup_kibana_password.sh:/usr/local/bin/setup_kibana_password.sh
+    #     entrypoint:
+    #         - /bin/bash
+    #         - -c
+    #         - |
+    #             /usr/local/bin/setup_kibana_password.sh &
+    #             /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
+    # kibana:
+    #     image: docker.elastic.co/kibana/kibana:8.14.1
+    #     container_name: kibana
+    #     ports:
+    #         - 5601:5601
+    #     environment:
+    #         - ELASTICSEARCH_URL=http://elasticsearch:9200
+    #         - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    #         - ELASTICSEARCH_USERNAME=kibana_system
+    #         - ELASTICSEARCH_PASSWORD=123456a@
+    #         - xpack.security.enabled=false
+    #         - xpack.license.self_generated.type=basic
+    #     depends_on:
+    #         - elastic
+    #     restart: unless-stopped
 
     kafka:
         image: "bitnami/kafka:3.3"

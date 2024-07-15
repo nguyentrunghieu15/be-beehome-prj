@@ -43,11 +43,11 @@ def execute_sql_file(file_path, db_config):
 def main():
     # Database configuration
     db_config = {
-        "dbname": "beehome",
+        "dbname": "bee-home",
         "user": "hiro",
-        "password": "1",
+        "password": "123456a@",
         "host": "localhost",
-        "port": "5432",
+        "port": "5433",
     }
 
     # Path to your SQL file
